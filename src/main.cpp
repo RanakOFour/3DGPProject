@@ -2,10 +2,8 @@
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 #include <glm/ext.hpp>
-// Needs to be defined before the include in exactly
-// one compilation unit.
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+
+#include "Pipeline/Texture.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -198,43 +196,7 @@ int main()
 	GLint modelLoc = glGetUniformLocation(programId, "u_Model");
 	GLint projectionLoc = glGetUniformLocation(programId, "u_Projection");
 
-	int imageWidth = 0;
-	int imageHeight = 0;
-
-	// Load image from file
-	stbi_set_flip_vertically_on_load(1);
-	unsigned char* data = stbi_load("./test.png", &imageWidth, &imageHeight, NULL, 4);
-	if (!data || data == NULL)
-	{
-		printf("Failed to load image\n");
-		throw std::exception();
-	}
-	printf("Image loaded\n");
-
-	// Create texture on the GPU
-	GLuint textureId = 0;
-	glGenTextures(1, &textureId);
-	if (!textureId)
-	{
-		throw std::exception();
-	}
-
-	// Associate GL_TEXTURE_2D with the new texture on GPU
-	glBindTexture(GL_TEXTURE_2D, textureId);
-
-	// Upload the image data to the bound texture unit in the GPU
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-	printf("Texture uploaded\n");
-
-	// Free the loaded data because we now have a copy on the GPU
-	free(data);
-
-	// Generate Mipmap so the texture can be mapped correctly
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	// Unbind the texture because we are done operating on it
-	glBindTexture(GL_TEXTURE_2D, 0);
+	Texture* texture = new Texture("./test.png");
 
 	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
@@ -260,13 +222,13 @@ int main()
 		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 		glViewport(0, 0, windowWidth, windowHeight);
 
-		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Instruct OpenGL to use our shader program, VAO and texture
 		glUseProgram(programId);
 		glBindVertexArray(vaoId);
-		glBindTexture(GL_TEXTURE_2D, textureId);
+		glBindTexture(GL_TEXTURE_2D, texture->id());
 
 		// Prepare the perspective matrix
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.f);
