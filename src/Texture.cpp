@@ -24,21 +24,7 @@ Texture::Texture(const std::string& _path) :
 		throw std::exception();
 	}
 
-	printf("Interating by %d on X and %d on Y\n", m_size.x, m_size.y);
-
-	unsigned char* currentChannel = data;
-
-	for (int i = 0; i < m_size.y; i++)
-	{
-		for (int j = 0; j < m_size.x; j++)
-		{
-			for (int k = 0; k < 4; k++)
-			{
-				m_data.push_back(*currentChannel);
-				++currentChannel;
-			}
-		}
-	}
+	m_data.assign(data, data + m_size.x * m_size.y * 4);
 
 	// Free the loaded data because we now have a copy on the GPU
 	free(data);
@@ -49,7 +35,7 @@ Texture::Texture(glm::ivec2 _size) :
 	m_dirty(true),
 	m_data(),
 	m_size(_size),
-	m_id(-1)
+	m_id(0)
 {
 
 }
@@ -63,12 +49,17 @@ GLuint Texture::id()
 {
 	if (m_dirty)
 	{
+		if (m_id != 0)
+		{
+			glDeleteBuffers(1, &m_id);
+		}
+
 		glGenTextures(1, &m_id);
 
 		glBindTexture(GL_TEXTURE_2D, m_id);
 
 		// Upload the image data to the bound texture unit in the GPU
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.x, m_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, &m_data[0]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.x, m_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_data.data());
 
 		// Generate Mipmap so the texture can be mapped correctly
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -77,6 +68,7 @@ GLuint Texture::id()
 		glBindTexture(GL_TEXTURE_2D, 0);
 
 		printf("Texture %d cleaned\n", m_id);
+
 		m_dirty = false;
 	}
 
@@ -97,10 +89,9 @@ const glm::ivec2 Texture::size()
 
 void Texture::load(const std::string& _path)
 {
-	if (m_id != -1)
+	if (!m_dirty)
 	{
-		// Delete data on buffer
-		m_dirty = false;
+		glDeleteBuffers(1, &m_id);
 	}
 
 	unsigned char* data = stbi_load(_path.c_str(), &m_size.x, &m_size.y, NULL, 4);
@@ -131,45 +122,24 @@ void Texture::load(const std::string& _path)
 		}
 	}
 
-	// Create and bind a texture.
-	glGenTextures(1, &m_id);
-
-	if (!m_id)
-	{
-		throw std::exception();
-	}
-
-	glBindTexture(GL_TEXTURE_2D, m_id);
-
-	// Upload the image data to the bound texture unit in the GPU
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.x, m_size.y, 0, GL_RGBA, GL_FLOAT, data);
-
-	// Free the loaded data because we now have a copy on the GPU
-	free(data);
-
-	// Generate Mipmap so the texture can be mapped correctly
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	// Unbind the texture because we are done operating on it
-	glBindTexture(GL_TEXTURE_2D, 0);
-
-	// set m_data data
+	m_dirty = true;
 }
 
 void Texture::pixel(glm::ivec2 _position, glm::vec4& _color)
 {
 	// Put data from _color into pixel at _position
+	unsigned char* colStart = &m_data[m_size.y * _position.y * _position.x];
+
+	colStart[0] = _color[0];
+	colStart[1] = _color[1];
+	colStart[2] = _color[2];
+	colStart[3] = _color[3];
+
 }
 
 const glm::vec4 Texture::pixel(glm::ivec2 _position)
 {
-	// Return color of pixel at _position
-	int pixel = (int)m_data[_position.x * m_size.x + _position.y];
-	unsigned char r = pixel >> 24;
-	unsigned char g = pixel >> 16;
-	unsigned char b = pixel >> 8;
-	unsigned char a = pixel;
+	unsigned char* colStart = &m_data[m_size.y * _position.y * _position.x];
 
-
-	return glm::vec4(r, g, b, a);
+	return glm::vec4(colStart[0], colStart[1], colStart[2], colStart[3]);
 }

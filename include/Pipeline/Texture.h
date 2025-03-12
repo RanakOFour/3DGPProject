@@ -7,7 +7,7 @@
 class Texture
 {
 	bool m_dirty;
-	std::vector<float> m_data;
+	std::vector<unsigned char> m_data;
 	glm::ivec2 m_size;
 	GLuint m_id;
 

@@ -4,6 +4,7 @@
 #include <glm/ext.hpp>
 
 #include "Pipeline/Texture.h"
+#include "Pipeline/VertexBuffer.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -27,31 +28,21 @@ int main()
 	}
 
 	//Setup positions
-	const GLfloat positions[] = {
-								 -0.5f, 0.5f, 0.0f,
-								 0.5f, -0.5f, 0.0f,
-								 0.5f, 0.5f, 0.0f,
-								 0.5f, -0.5f, 0.0f,
-								 -0.5f, 0.5f, 0.0f,
-								 -0.5f, -0.5f, 0.0f
+	const std::vector<glm::vec3> positions= {
+											{-0.5f, 0.5f, 0.0f},
+											{0.5f, -0.5f, 0.0f},
+											{0.5f, 0.5f, 0.0f},
+											{0.5f, -0.5f, 0.0f},
+											{-0.5f, 0.5f, 0.0f},
+											{-0.5f, -0.5f, 0.0f}
 	};
 
+	VertexBuffer* positionBuffer = new VertexBuffer(3);
 
-	// Create VBO for positions on the GPU and upload positions into it
-	GLuint positionsVboId = 0;
-	// Gen buffer and return id of buffer in positionsVboId
-	glGenBuffers(1, &positionsVboId);
-	if (!positionsVboId)
+	for (int i = 0; i < positions.size(); i++)
 	{
-		throw std::exception();
+		positionBuffer->Add(positions[i]);
 	}
-	// Assign positionVboId as the currently selected Buffer
-	glBindBuffer(GL_ARRAY_BUFFER, positionsVboId);
-	// Upload a copy of 'positions' from memory into the new VBO
-	printf("New size of positions buffer, %d\n", sizeof(positions));
-	glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW);
-	// Reset the state
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	printf("Positions uploaded\n");
 
 
@@ -66,9 +57,10 @@ int main()
 	// Bind the new VAO to current context 
 	glBindVertexArray(vaoId);
 	// Bind the position VBO to current context
-	glBindBuffer(GL_ARRAY_BUFFER, positionsVboId);
+	glBindBuffer(GL_ARRAY_BUFFER, positionBuffer->GetID());
 	// Tells the VAO how to interpret the positionsVBO
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
+
 	printf("GLFloat size: %d\n", sizeof(GLfloat));
 
 	// Enables VAO for use
@@ -79,14 +71,21 @@ int main()
 	printf("VAO Uploaded and positions VBO bound\n");
 
 	// Setup colors
-	const GLfloat textureCoords[] = {
-		0.0f, 1.0f,
-		1.0f, 0.0f,
-		1.0f, 1.0f,
-		1.0f, 0.0f,
-		0.0f, 1.0f,
-		0.0f, 0.0f
+	const std::vector<glm::vec2> textureCoords = {
+		{0.0f, 1.0f},
+		{1.0f, 0.0f},
+		{1.0f, 1.0f},
+		{1.0f, 0.0f},
+		{0.0f, 1.0f},
+		{0.0f, 0.0f}
 	};
+
+	VertexBuffer* texCoordBuffer = new VertexBuffer(2);
+
+	for (int i = 0; i < textureCoords.size(); i++)
+	{
+		texCoordBuffer->Add(textureCoords[i]);
+	}
 
 	// Create colors VBO
 	GLuint texCoordsVBO = 0;
@@ -199,7 +198,6 @@ int main()
 	Texture* texture = new Texture("./test.png");
 
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glPolygonMode(GL_FRONT, GL_LINE);
 
 	float angle = 0.5f;
@@ -221,7 +219,7 @@ int main()
 		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 		glViewport(0, 0, windowWidth, windowHeight);
 
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Instruct OpenGL to use our shader program, VAO and texture
