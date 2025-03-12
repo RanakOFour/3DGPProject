@@ -26,26 +26,17 @@ Texture::Texture(const std::string& _path) :
 
 	printf("Interating by %d on X and %d on Y\n", m_size.x, m_size.y);
 
+	unsigned char* currentChannel = data;
+
 	for (int i = 0; i < m_size.y; i++)
 	{
 		for (int j = 0; j < m_size.x; j++)
 		{
-			unsigned char* pixel = data + ((i * m_size.x + j) * 4);
-			
-			printf("Currently loaded pixel data:\n %d\n %d\n %d\n %d\n\n", pixel[0], pixel[1], pixel[2], pixel[3]);
-
-			unsigned int pixelData{ 0 };
-
-			pixelData = (pixel[0] + (pixel[1] << 8) + (pixel[2] << 16) + (pixel[3] << 24));
-
-			m_data.push_back((float)pixelData);
-
-			if (m_data.size() == 129)
+			for (int k = 0; k < 4; k++)
 			{
-				printf("Should be black %d", pixelData);
+				m_data.push_back(*currentChannel);
+				++currentChannel;
 			}
-
-			//m_data.push_back(*pixel);
 		}
 	}
 
@@ -72,27 +63,12 @@ GLuint Texture::id()
 {
 	if (m_dirty)
 	{
-		// load texture or smth
-		// Create and bind a texture.
-		if (m_id == 0)
-		{
-			glGenTextures(1, &m_id);
-			printf("Created texture id %d\n", m_id);
-
-			if (!m_id)
-			{
-				printf("Failed to create texture\n");
-				throw std::exception();
-			}
-		}
+		glGenTextures(1, &m_id);
 
 		glBindTexture(GL_TEXTURE_2D, m_id);
 
 		// Upload the image data to the bound texture unit in the GPU
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.x, m_size.y, 0, GL_RGBA,
-			GL_UNSIGNED_BYTE, m_data.data());
-
-
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.x, m_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, &m_data[0]);
 
 		// Generate Mipmap so the texture can be mapped correctly
 		glGenerateMipmap(GL_TEXTURE_2D);
@@ -166,8 +142,7 @@ void Texture::load(const std::string& _path)
 	glBindTexture(GL_TEXTURE_2D, m_id);
 
 	// Upload the image data to the bound texture unit in the GPU
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.x, m_size.y, 0, GL_RGBA,
-		GL_UNSIGNED_BYTE, data);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.x, m_size.y, 0, GL_RGBA, GL_FLOAT, data);
 
 	// Free the loaded data because we now have a copy on the GPU
 	free(data);
