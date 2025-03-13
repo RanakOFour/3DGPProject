@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "Pipeline/ShaderProgram.h"
+#include "Pipeline/VertexArray.h"
 
 ShaderProgram::ShaderProgram(const GLchar* _vertex, const GLchar* _frag)
 {
@@ -66,6 +67,11 @@ ShaderProgram::ShaderProgram(const GLchar* _vertex, const GLchar* _frag)
 }
 
 ShaderProgram::~ShaderProgram()
+{
+
+}
+
+void ShaderProgram::Draw(VertexArray* _vertexArray)
 {
 
 }
