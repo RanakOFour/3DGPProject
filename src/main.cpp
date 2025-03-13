@@ -5,6 +5,8 @@
 
 #include "Pipeline/Texture.h"
 #include "Pipeline/VertexBuffer.h"
+#include "Pipeline/VertexArray.h"
+#include "Pipeline/ShaderProgram.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -45,29 +47,9 @@ int main()
 	}
 	printf("Positions uploaded\n");
 
+	VertexArray* vertexArray = new VertexArray();
+	vertexArray->SetBuffer("something", positionBuffer);
 
-	// Create VAO
-	GLuint vaoId = 0;
-	// Create a new VAO on the GPU and returns id to vaoId
-	glGenVertexArrays(1, &vaoId);
-	if (!vaoId)
-	{
-		throw std::exception();
-	}
-	// Bind the new VAO to current context 
-	glBindVertexArray(vaoId);
-	// Bind the position VBO to current context
-	glBindBuffer(GL_ARRAY_BUFFER, positionBuffer->GetID());
-	// Tells the VAO how to interpret the positionsVBO
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*)0);
-
-	printf("GLFloat size: %d\n", sizeof(GLfloat));
-
-	// Enables VAO for use
-	glEnableVertexAttribArray(0);
-	// Reset the state
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
 	printf("VAO Uploaded and positions VBO bound\n");
 
 	// Setup colors
@@ -87,25 +69,8 @@ int main()
 		texCoordBuffer->Add(textureCoords[i]);
 	}
 
-	// Create colors VBO
-	GLuint texCoordsVBO = 0;
-	glGenBuffers(1, &texCoordsVBO);
-	if (!texCoordsVBO)
-	{
-		throw std::exception();
-	}
-	//Bind vao to color vbo
-	glBindVertexArray(vaoId);
-	glBindBuffer(GL_ARRAY_BUFFER, texCoordsVBO);
-	// Upload a copy of the data from memory into the colors VBO
-	glBufferData(GL_ARRAY_BUFFER, sizeof(textureCoords), textureCoords, GL_STATIC_DRAW);
-	// Tell VAO the attrib pointer is pos 1, has 4 GL_FLOATS
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (void*)0);
-	// Enable VBO 1 (colors)
-	glEnableVertexAttribArray(1);
-	// Reset state
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	vertexArray->SetBuffer("something", texCoordBuffer);
+
 	printf("Colours VBO created and bound to VAO\n");
 
 	// Vertex shader code
@@ -122,23 +87,6 @@ int main()
 		" v_texCoord = a_PixelColor;                  "\
 		"}";
 
-	// Create a new vertex shader
-	GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
-	// Attach shader code
-	glShaderSource(vertexShaderId, 1, &vertexShaderSrc, NULL);
-	// Compile shader
-	glCompileShader(vertexShaderId);
-
-	// Get success val for shader program compilation
-	GLint success = 0;
-	glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		printf("Failed to create vertex shader\n");
-		throw std::exception();
-	}
-	printf("Vertex shader created\n");
-
 	// Fragment shader code
 	const GLchar* fragmentShaderSrc =
 		"varying vec2 v_texCoord;    " \
@@ -150,50 +98,11 @@ int main()
 		" gl_FragColor = tex; " \
 		"}                         ";
 
-	// Create a new fragment shader
-	GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
-	// Upload shader code to GPU
-	glShaderSource(fragmentShaderId, 1, &fragmentShaderSrc, NULL);
-	// Compiler fragment shader
-	glCompileShader(fragmentShaderId);
-	// Get success val for shader compilation
-	glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		printf("Failed to create frag shader\n");
-		throw std::exception();
-	}
-	printf("Vertex frag created\n");
-
-	// Create new shader program and attach shader objects
-	GLuint programId = glCreateProgram();
-	glAttachShader(programId, vertexShaderId);
-	glAttachShader(programId, fragmentShaderId);
-
-	// Associated values in VBOs to variables in the shader code
-	glBindAttribLocation(programId, 0, "a_Position");
-	glBindAttribLocation(programId, 1, "a_PixelColor");
-
-	// Perform the link and check for failure
-	glLinkProgram(programId);
-	glGetProgramiv(programId, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		printf("Failed to link shader program\n");
-		throw std::exception();
-	}
-	printf("Shader program linked\n");
-
-	// Detach and destroy the shader objects. These are no longer needed
-	// because we now have a complete shader program.
-	glDetachShader(programId, vertexShaderId);
-	glDeleteShader(vertexShaderId);
-	glDetachShader(programId, fragmentShaderId);
-	glDeleteShader(fragmentShaderId);
+	ShaderProgram* shaderProgram = new ShaderProgram(vertexShaderSrc, fragmentShaderSrc);
 
 	// Find uniform locations in the shader programs
-	GLint modelLoc = glGetUniformLocation(programId, "u_Model");
-	GLint projectionLoc = glGetUniformLocation(programId, "u_Projection");
+	GLint modelLoc = glGetUniformLocation(shaderProgram->GetID(), "u_Model");
+	GLint projectionLoc = glGetUniformLocation(shaderProgram->GetID(), "u_Projection");
 
 	Texture* texture = new Texture("./test.png");
 
@@ -223,8 +132,8 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Instruct OpenGL to use our shader program, VAO and texture
-		glUseProgram(programId);
-		glBindVertexArray(vaoId);
+		glUseProgram(shaderProgram->GetID());
+		glBindVertexArray(vertexArray->GetID());
 		glBindTexture(GL_TEXTURE_2D, texture->id());
 
 		// Prepare the perspective matrix
