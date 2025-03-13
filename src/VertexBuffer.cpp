@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 VertexBuffer::VertexBuffer(int _componentsPerObject) :
-    m_id(-1),
+    m_id(0),
     m_components(_componentsPerObject),
     m_dirty(true),
     m_data()
@@ -71,12 +71,10 @@ GLuint VertexBuffer::GetID()
 {
     if (m_dirty)
     {
-        if (m_id != 0)
+        if (!m_id)
         {
-            glDeleteBuffers(1, &m_id);
+            glGenBuffers(1, &m_id);
         }
-
-        glGenBuffers(1, &m_id);
 
         glBindBuffer(GL_ARRAY_BUFFER, m_id);
 

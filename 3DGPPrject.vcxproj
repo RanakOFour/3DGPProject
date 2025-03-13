@@ -150,10 +150,15 @@
     <ClCompile Include="src\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Pipeline\Model.h" />
     <ClInclude Include="include\Pipeline\ShaderProgram.h" />
     <ClInclude Include="include\Pipeline\Texture.h" />
     <ClInclude Include="include\Pipeline\VertexArray.h" />
     <ClInclude Include="include\Pipeline\VertexBuffer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\textureFrag.fs" />
+    <None Include="resources\textureVertex.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

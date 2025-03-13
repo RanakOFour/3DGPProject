@@ -14,7 +14,7 @@ Texture::Texture(const std::string& _path) :
 	m_size(0, 0),
 	m_id(0)
 {
-	stbi_set_flip_vertically_on_load(true);
+	//stbi_set_flip_vertically_on_load(true);
 
 	unsigned char* data = stbi_load(_path.c_str(), &m_size.x, &m_size.y, NULL, 4);
 
@@ -49,12 +49,10 @@ GLuint Texture::id()
 {
 	if (m_dirty)
 	{
-		if (m_id != 0)
+		if (!m_id)
 		{
-			glDeleteBuffers(1, &m_id);
+			glGenTextures(1, &m_id);
 		}
-
-		glGenTextures(1, &m_id);
 
 		glBindTexture(GL_TEXTURE_2D, m_id);
 

@@ -6,7 +6,7 @@
 #include <string>
 
 VertexArray::VertexArray() :
-    m_id(-1),
+    m_id(0),
     m_dirty(true),
     m_bufferObjects()
 {
@@ -46,12 +46,11 @@ GLuint VertexArray::GetID()
 {
     if (m_dirty)
     {
-        if (m_id != 0)
+        if (!m_id)
         {
-            glDeleteVertexArrays(1, &m_id);
+            glGenVertexArrays(1, &m_id);
         }
 
-        glGenVertexArrays(1, &m_id);
 
         glBindVertexArray(m_id);
 

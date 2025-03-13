@@ -2,16 +2,53 @@
 #include <glm/ext.hpp>
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
 
 #include "Pipeline/ShaderProgram.h"
 #include "Pipeline/VertexArray.h"
 
-ShaderProgram::ShaderProgram(const GLchar* _vertex, const GLchar* _frag)
+ShaderProgram::ShaderProgram(const std::string& _vertexPath, const std::string& _fragPath)
 {
+	// Load vertex and frag shader text from file paths
+
+	std::string vertexCode;
+	std::string fragmentCode;
+	std::ifstream vShaderFile;
+	std::ifstream fShaderFile;
+	// ensure ifstream objects can throw exceptions:
+	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	try
+	{
+		// open files
+		vShaderFile.open(_vertexPath);
+		fShaderFile.open(_fragPath);
+		std::stringstream vShaderStream, fShaderStream;
+		// read file's buffer contents into streams
+		vShaderStream << vShaderFile.rdbuf();
+		fShaderStream << fShaderFile.rdbuf();
+		// close file handlers
+		vShaderFile.close();
+		fShaderFile.close();
+		// convert stream into string
+		vertexCode = vShaderStream.str();
+		fragmentCode = fShaderStream.str();
+	}
+	catch (std::ifstream::failure e)
+	{
+		printf("ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ");
+	}
+	const char* vShaderCode = vertexCode.c_str();
+	const char* fShaderCode = fragmentCode.c_str();
+
+	//printf("Vertex Shader: %s\n Frag Shader: %s\n", vShaderCode, fShaderCode);
+
+
 	// Create a new vertex shader
 	GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
 	// Attach shader code
-	glShaderSource(vertexShaderId, 1, &_vertex, NULL);
+	glShaderSource(vertexShaderId, 1, &vShaderCode, NULL);
 	// Compile shader
 	glCompileShader(vertexShaderId);
 
@@ -28,7 +65,7 @@ ShaderProgram::ShaderProgram(const GLchar* _vertex, const GLchar* _frag)
 	// Create a new fragment shader
 	GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
 	// Upload shader code to GPU
-	glShaderSource(fragmentShaderId, 1, &_frag, NULL);
+	glShaderSource(fragmentShaderId, 1, &fShaderCode, NULL);
 	// Compiler fragment shader
 	glCompileShader(fragmentShaderId);
 	// Get success val for shader compilation

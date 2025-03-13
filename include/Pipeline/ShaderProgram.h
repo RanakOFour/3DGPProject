@@ -14,7 +14,7 @@ class ShaderProgram
 
 
 	public:
-		ShaderProgram(const GLchar* _vertex, const GLchar* _frag);
+		ShaderProgram(const std::string& _vertexPath, const std::string& _fragPath);
 		~ShaderProgram();
 
 		void Use();

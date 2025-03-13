@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 
+#include "Pipeline/Model.h"
 #include "Pipeline/Texture.h"
 #include "Pipeline/VertexBuffer.h"
 #include "Pipeline/VertexArray.h"
@@ -29,81 +30,16 @@ int main()
 		throw std::runtime_error("Glew not ok");
 	}
 
-	//Setup positions
-	const std::vector<glm::vec3> positions= {
-											{-0.5f, 0.5f, 0.0f},
-											{0.5f, -0.5f, 0.0f},
-											{0.5f, 0.5f, 0.0f},
-											{0.5f, -0.5f, 0.0f},
-											{-0.5f, 0.5f, 0.0f},
-											{-0.5f, -0.5f, 0.0f}
-	};
+	ShaderProgram shaderProgram("./resources/textureVertex.vs", "./resources/textureFrag.fs");
 
-	VertexBuffer* positionBuffer = new VertexBuffer(3);
 
-	for (int i = 0; i < positions.size(); i++)
-	{
-		positionBuffer->Add(positions[i]);
-	}
-	printf("Positions uploaded\n");
+	Model catModel("./resources/curuthers/curuthers.obj");
 
-	VertexArray* vertexArray = new VertexArray();
-	vertexArray->SetBuffer("something", positionBuffer);
-
-	printf("VAO Uploaded and positions VBO bound\n");
-
-	// Setup colors
-	const std::vector<glm::vec2> textureCoords = {
-		{0.0f, 1.0f},
-		{1.0f, 0.0f},
-		{1.0f, 1.0f},
-		{1.0f, 0.0f},
-		{0.0f, 1.0f},
-		{0.0f, 0.0f}
-	};
-
-	VertexBuffer* texCoordBuffer = new VertexBuffer(2);
-
-	for (int i = 0; i < textureCoords.size(); i++)
-	{
-		texCoordBuffer->Add(textureCoords[i]);
-	}
-
-	vertexArray->SetBuffer("something", texCoordBuffer);
-
-	printf("Colours VBO created and bound to VAO\n");
-
-	// Vertex shader code
-	const GLchar* vertexShaderSrc =
-		"attribute vec3 a_Position;            " \
-		"attribute vec2 a_PixelColor;               " \
-		"uniform mat4 u_Projection;			   " \
-		"uniform mat4 u_View;" \
-		"uniform mat4 u_Model;				   " \
-		"varying vec2 v_texCoord;                 " \
-		"                                       " \
-		"void main()                            " \
-		"{                                      " \
-		" gl_Position = u_Projection * u_View * u_Model * vec4(a_Position, 1.0); " \
-		" v_texCoord = a_PixelColor;                  "\
-		"}";
-
-	// Fragment shader code
-	const GLchar* fragmentShaderSrc =
-		"varying vec2 v_texCoord;    " \
-		"uniform sampler2D u_Texture;"\
-		"						   "\
-		"void main()               " \
-		"{                         " \
-		" vec4 tex = texture2D(u_Texture, v_texCoord);" \
-		" gl_FragColor = tex; " \
-		"}                         ";
-
-	ShaderProgram* shaderProgram = new ShaderProgram(vertexShaderSrc, fragmentShaderSrc);
-
-	Texture* texture = new Texture("./test.png");
-
-	glEnable(GL_BLEND);
+	Texture texture("./resources/curuthers/Whiskers_diffuse.png");
+	
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
 	// Wireframe
 	//glPolygonMode(GL_FRONT, GL_LINE);
@@ -169,30 +105,26 @@ int main()
 		glViewport(0, 0, windowWidth, windowHeight);
 
 		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		// Clear color and depth testing buffers
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Instruct OpenGL to use our shader program, VAO and texture
-		shaderProgram->Use();
-		glBindVertexArray(vertexArray->GetID());
-		glBindTexture(GL_TEXTURE_2D, texture->id());
+		shaderProgram.Use();
+		glBindVertexArray(catModel.vao_id());
+		glBindTexture(GL_TEXTURE_2D, texture.id());
 
 
 		projectionMatrix = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.f);
 
-
-
 		//modelMatrix = glm::rotate(modelMatrix, glm::radians(rotSpeed), glm::vec3(0, 1, 0));
 
-
-		// Make sure the current program is bound
-
-		// Upload the model matrix
-		shaderProgram->SetUniform("u_Model", modelMatrix);
-		shaderProgram->SetUniform("u_View", viewMatrix);
-		shaderProgram->SetUniform("u_Projection", projectionMatrix);
+		// Upload the matriCES
+		shaderProgram.SetUniform("u_Model", modelMatrix);
+		shaderProgram.SetUniform("u_View", viewMatrix);
+		shaderProgram.SetUniform("u_Projection", projectionMatrix);
 
 		// Draw shape
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawArrays(GL_TRIANGLES, 0, catModel.vertex_count());
 
 		// Reset the state
 		glBindVertexArray(0);
