@@ -18,10 +18,10 @@ class ShaderProgram
 		~ShaderProgram();
 
 		void Use();
-		void SetUniform(const std::string& _uniform, glm::mat4 _value);
-		void SetUniform(const std::string& _uniform, glm::vec4 _value);
-		void SetUniform(const std::string& _uniform, glm::vec3 _value);
-		void SetUniform(const std::string& _uniform, float _value);
+		void SetUniform(const std::string& _uniformName, glm::mat4 _value);
+		void SetUniform(const std::string& _uniformName, glm::vec4 _value);
+		void SetUniform(const std::string& _uniformName, glm::vec3 _value);
+		void SetUniform(const std::string& _uniformName, float _value);
 
 		GLuint GetID();
 };

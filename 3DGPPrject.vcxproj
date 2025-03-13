@@ -144,16 +144,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Sampler.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Pipeline\Sampler.h" />
-    <ClInclude Include="include\Pipeline\Shader.h" />
     <ClInclude Include="include\Pipeline\ShaderProgram.h" />
     <ClInclude Include="include\Pipeline\Texture.h" />
     <ClInclude Include="include\Pipeline\VertexArray.h" />

@@ -153,8 +153,7 @@ int main()
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		// Prepare the orthographic projection matrix (reusing the variable)
-		projection = glm::ortho(0.0f, (float)windowWidth, 0.0f,
-			(float)windowHeight, 0.0f, 1.0f);
+		projection = glm::ortho(0.0f, (float)windowWidth, 0.0f, (float)windowHeight, 0.0f, 1.0f);
 
 		// Prepare model matrix. The scale is important because now our triangle
 		// would be the size of a single pixel when mapped to an orthographic
