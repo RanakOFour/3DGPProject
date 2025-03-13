@@ -157,12 +157,12 @@ int main()
 
 		if (key[SDL_SCANCODE_LEFT])
 		{
-			viewMatrix = glm::rotate(viewMatrix, 0.00872665f, glm::vec3(0.0f, 1.0f, 0.0f));
+			viewMatrix = glm::rotate(viewMatrix, 0.78539816339f / 2, glm::vec3(0.0f, 1.0f, 0.0f));
 		}
 
 		if (key[SDL_SCANCODE_RIGHT])
 		{
-			viewMatrix = glm::rotate(viewMatrix, -0.00872665f, glm::vec3(0.0f, 1.0f, 0.0f));
+			viewMatrix = glm::rotate(viewMatrix, -0.78539816339f / 2, glm::vec3(0.0f, 1.0f, 0.0f));
 		}
 
 		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
