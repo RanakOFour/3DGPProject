@@ -78,12 +78,13 @@ int main()
 		"attribute vec3 a_Position;            " \
 		"attribute vec2 a_PixelColor;               " \
 		"uniform mat4 u_Projection;			   " \
+		"uniform mat4 u_View;" \
 		"uniform mat4 u_Model;				   " \
 		"varying vec2 v_texCoord;                 " \
 		"                                       " \
 		"void main()                            " \
 		"{                                      " \
-		" gl_Position = u_Projection * u_Model * vec4(a_Position, 1.0); " \
+		" gl_Position = u_Projection * u_View * u_Model * vec4(a_Position, 1.0); " \
 		" v_texCoord = a_PixelColor;                  "\
 		"}";
 
@@ -103,11 +104,23 @@ int main()
 	Texture* texture = new Texture("./test.png");
 
 	glEnable(GL_BLEND);
+
+	// Wireframe
 	//glPolygonMode(GL_FRONT, GL_LINE);
 
-	float angle = 0.5f;
+	float rotSpeed = 0.5f;
 	int windowWidth, windowHeight;
 	bool quit = false;
+
+	glm::mat4 projectionMatrix = glm::mat4(1.0f);
+
+	glm::mat4 viewMatrix = glm::mat4(1.0f);
+
+	glm::mat4 modelMatrix = glm::mat4(1.0f);
+	modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, -2.5f));
+
+	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 0.25f);
+	glm::vec3 left = glm::vec3(0.25f, 0.0f, 0.0f);
 
 	while (!quit)
 	{
@@ -121,6 +134,37 @@ int main()
 			}
 		}
 
+		const Uint8* key = SDL_GetKeyboardState(NULL);
+		if (key[SDL_SCANCODE_A])
+		{
+			viewMatrix = glm::translate(viewMatrix, left);
+		}
+
+		if (key[SDL_SCANCODE_D])
+		{
+			viewMatrix = glm::translate(viewMatrix, -left);
+		}
+		
+		if (key[SDL_SCANCODE_W])
+		{
+			viewMatrix = glm::translate(viewMatrix, forward);
+		}
+
+		if (key[SDL_SCANCODE_S])
+		{
+			viewMatrix = glm::translate(viewMatrix, -forward);
+		}
+
+		if (key[SDL_SCANCODE_LEFT])
+		{
+			viewMatrix = glm::rotate(viewMatrix, 0.00872665f, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+
+		if (key[SDL_SCANCODE_RIGHT])
+		{
+			viewMatrix = glm::rotate(viewMatrix, -0.00872665f, glm::vec3(0.0f, 1.0f, 0.0f));
+		}
+
 		SDL_GetWindowSize(window, &windowWidth, &windowHeight);
 		glViewport(0, 0, windowWidth, windowHeight);
 
@@ -132,41 +176,22 @@ int main()
 		glBindVertexArray(vertexArray->GetID());
 		glBindTexture(GL_TEXTURE_2D, texture->id());
 
-		// Prepare the perspective matrix
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.f);
 
-		// Prepare the model matrix
-		glm::mat4 model(1.0f);
-		model = glm::translate(model, glm::vec3(0, 0, -2.5f));
-		model = glm::rotate(model, glm::radians(angle), glm::vec3(0, 1, 0));
+		projectionMatrix = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.f);
 
-		// Increase the float angle so next frame the triangle rotates further
-		angle += 0.1f;
+
+
+		//modelMatrix = glm::rotate(modelMatrix, glm::radians(rotSpeed), glm::vec3(0, 1, 0));
+
 
 		// Make sure the current program is bound
 
 		// Upload the model matrix
-		shaderProgram->SetUniform("u_Model", model);
-		shaderProgram->SetUniform("u_Projection", projection);
+		shaderProgram->SetUniform("u_Model", modelMatrix);
+		shaderProgram->SetUniform("u_View", viewMatrix);
+		shaderProgram->SetUniform("u_Projection", projectionMatrix);
 
 		// Draw shape
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		// Prepare the orthographic projection matrix (reusing the variable)
-		projection = glm::ortho(0.0f, (float)windowWidth, 0.0f, (float)windowHeight, 0.0f, 1.0f);
-
-		// Prepare model matrix. The scale is important because now our triangle
-		// would be the size of a single pixel when mapped to an orthographic
-		// projection.
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(100, windowHeight - 100, 0));
-		model = glm::scale(model, glm::vec3(100, 100, 1));
-
-		// Upload the model matrix
-		shaderProgram->SetUniform("u_Model", model);
-		shaderProgram->SetUniform("u_Projection", projection);
-
-		// Draw shape again
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		// Reset the state
