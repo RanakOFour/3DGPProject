@@ -100,10 +100,6 @@ int main()
 
 	ShaderProgram* shaderProgram = new ShaderProgram(vertexShaderSrc, fragmentShaderSrc);
 
-	// Find uniform locations in the shader programs
-	GLint modelLoc = glGetUniformLocation(shaderProgram->GetID(), "u_Model");
-	GLint projectionLoc = glGetUniformLocation(shaderProgram->GetID(), "u_Projection");
-
 	Texture* texture = new Texture("./test.png");
 
 	glEnable(GL_BLEND);
@@ -132,7 +128,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Instruct OpenGL to use our shader program, VAO and texture
-		glUseProgram(shaderProgram->GetID());
+		shaderProgram->Use();
 		glBindVertexArray(vertexArray->GetID());
 		glBindTexture(GL_TEXTURE_2D, texture->id());
 
@@ -150,11 +146,8 @@ int main()
 		// Make sure the current program is bound
 
 		// Upload the model matrix
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-		// Upload the projection matrix
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE,
-			glm::value_ptr(projection));
+		shaderProgram->SetUniform("u_Model", model);
+		shaderProgram->SetUniform("u_Projection", projection);
 
 		// Draw shape
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -171,11 +164,8 @@ int main()
 		model = glm::scale(model, glm::vec3(100, 100, 1));
 
 		// Upload the model matrix
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-		// Upload the projection matrix
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE,
-			glm::value_ptr(projection));
+		shaderProgram->SetUniform("u_Model", model);
+		shaderProgram->SetUniform("u_Projection", projection);
 
 		// Draw shape again
 		glDrawArrays(GL_TRIANGLES, 0, 6);

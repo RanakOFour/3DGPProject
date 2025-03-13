@@ -15,13 +15,13 @@ class ShaderProgram
 
 	public:
 		ShaderProgram(const GLchar* _vertex, const GLchar* _frag);
-		ShaderProgram(Shader* _vertex, Shader* _frag);
 		~ShaderProgram();
 
-		void Draw(VertexArray* _vertexArray);
+		void Use();
+		void SetUniform(const std::string& _uniform, glm::mat4 _value);
 		void SetUniform(const std::string& _uniform, glm::vec4 _value);
+		void SetUniform(const std::string& _uniform, glm::vec3 _value);
 		void SetUniform(const std::string& _uniform, float _value);
-		void SetUniform(const std::string& _uniform, Texture* _value);
 
 		GLuint GetID();
 };

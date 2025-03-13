@@ -1,4 +1,5 @@
 #include <GL/glew.h>
+#include <glm/ext.hpp>
 #include <string>
 #include <vector>
 
@@ -71,9 +72,31 @@ ShaderProgram::~ShaderProgram()
 
 }
 
-void ShaderProgram::Draw(VertexArray* _vertexArray)
+void ShaderProgram::Use()
 {
+	glUseProgram(m_id);
+}
 
+void ShaderProgram::SetUniform(const std::string& _uniformName, glm::mat4 _value)
+{
+	glUniformMatrix4fv(glGetUniformLocation(m_id, _uniformName.c_str()), 1, GL_FALSE, glm::value_ptr(_value));
+}
+
+void ShaderProgram::SetUniform(const std::string& _uniformName, glm::vec4 _value)
+{
+	const GLfloat values[] = { _value.x, _value.y, _value.z, _value.w };
+	glUniform4fv(glGetUniformLocation(m_id, _uniformName.c_str()), 4, values);
+}
+
+void ShaderProgram::SetUniform(const std::string& _uniformName, glm::vec3 _value)
+{
+	const GLfloat values[] = { _value.x, _value.y, _value.z };
+	glUniform3fv(glGetUniformLocation(m_id, _uniformName.c_str()), 3, values);
+}
+
+void ShaderProgram::SetUniform(const std::string& _uniformName, float _value)
+{
+	glUniform1f(glGetUniformLocation(m_id, _uniformName.c_str()), _value);
 }
 
 GLuint ShaderProgram::GetID()
