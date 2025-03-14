@@ -1,6 +1,3 @@
-#ifndef MODEL_H
-#define MODEL_H
-
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
@@ -8,19 +5,8 @@
 #include <fstream>
 #include <vector>
 
-struct Model
+class Model
 {
-  Model();
-  Model(const std::string& _path);
-
-  Model(const Model& _copy);
-  Model& operator=(const Model& _assign);
-  virtual ~Model();
-
-  GLsizei vertex_count() const;
-  GLuint vao_id();
-
-private:
   struct Vertex
   {
     Vertex();
@@ -38,29 +24,41 @@ private:
   };
 
   std::vector<Face> m_faces;
-  GLuint m_vaoid;
-  GLuint m_vboid;
+  GLuint m_vaoId;
+  GLuint m_vboId;
   bool m_dirty;
 
-  void split_string_whitespace(const std::string& _input,
+  void SplitStringWhitespace(const std::string& _input,
     std::vector<std::string>& _output);
 
-  void split_string(const std::string& _input, char _splitter,
+  void SplitString(const std::string& _input, char _splitter,
     std::vector<std::string>& _output);
 
+  public:
+  
+  Model();
+  Model(const std::string& _path);
+
+  Model(const Model& _copy);
+  Model& operator=(const Model& _assign);
+  virtual ~Model();
+
+  GLsizei GetVertexCount() const;
+  GLuint GetVAO();
 };
 
 #include <stdexcept>
 
+
 inline Model::Model()
-  : m_vboid(0)
-  , m_vaoid(0)
+  : m_vboId(0)
+  , m_vaoId(0)
   , m_dirty(false)
 { }
 
 inline Model::Model(const std::string& _path)
-  : m_vboid(0)
-  , m_vaoid(0)
+  : m_vboId(0)
+  , m_vaoId(0)
   , m_dirty(false)
 {
   std::vector<glm::vec3> positions;
@@ -81,7 +79,7 @@ inline Model::Model(const std::string& _path)
     if(currentline.length() < 1) continue;
 
     std::vector<std::string> tokens;
-    split_string_whitespace(currentline, tokens);
+    SplitStringWhitespace(currentline, tokens);
     if(tokens.size() < 1) continue;
 
     if(tokens.at(0) == "v" && tokens.size() >= 4)
@@ -111,19 +109,19 @@ inline Model::Model(const std::string& _path)
     {
       Face f;
       std::vector<std::string> sub;
-      split_string(tokens.at(1), '/', sub);
+      SplitString(tokens.at(1), '/', sub);
       if(sub.size() >= 1) f.a.position = positions.at(atoi(sub.at(0).c_str()) - 1);
       if(sub.size() >= 2) f.a.texcoord = tcs.at(atoi(sub.at(1).c_str()) - 1);
       if(sub.size() >= 3) f.a.normal = normals.at(atoi(sub.at(2).c_str()) - 1);
 
       for(size_t ti = 2; ti + 1 < tokens.size(); ti++)
       {
-        split_string(tokens.at(ti), '/', sub);
+        SplitString(tokens.at(ti), '/', sub);
         if(sub.size() >= 1) f.b.position = positions.at(atoi(sub.at(0).c_str()) - 1);
         if(sub.size() >= 2) f.b.texcoord = tcs.at(atoi(sub.at(1).c_str()) - 1);
         if(sub.size() >= 3) f.b.normal = normals.at(atoi(sub.at(2).c_str()) - 1);
 
-        split_string(tokens.at(ti + 1), '/', sub);
+        SplitString(tokens.at(ti + 1), '/', sub);
         if(sub.size() >= 1) f.c.position = positions.at(atoi(sub.at(0).c_str()) - 1);
         if(sub.size() >= 2) f.c.texcoord = tcs.at(atoi(sub.at(1).c_str()) - 1);
         if(sub.size() >= 3) f.c.normal = normals.at(atoi(sub.at(2).c_str()) - 1);
@@ -137,20 +135,20 @@ inline Model::Model(const std::string& _path)
 
 inline Model::~Model()
 {
-  if(m_vaoid)
+  if(m_vaoId)
   {
-    glDeleteVertexArrays(1, &m_vaoid);
+    glDeleteVertexArrays(1, &m_vaoId);
   }
 
-  if(m_vboid)
+  if(m_vboId)
   {
-    glDeleteBuffers(1, &m_vboid);
+    glDeleteBuffers(1, &m_vboId);
   }
 }
 
 inline Model::Model(const Model& _copy)
-  : m_vaoid(0)
-  , m_vboid(0)
+  : m_vaoId(0)
+  , m_vboId(0)
   , m_faces(_copy.m_faces)
   , m_dirty(true)
 { }
@@ -163,7 +161,7 @@ inline Model& Model::operator=(const Model& _assign)
   return *this;
 }
 
-inline void Model::split_string_whitespace(const std::string& _input,
+inline void Model::SplitStringWhitespace(const std::string& _input,
   std::vector<std::string>& _output)
 {
   std::string curr;
@@ -195,7 +193,7 @@ inline void Model::split_string_whitespace(const std::string& _input,
   }
 }
 
-inline void Model::split_string(const std::string& _input, char _splitter,
+inline void Model::SplitString(const std::string& _input, char _splitter,
   std::vector<std::string>& _output)
 {
   std::string curr;
@@ -221,28 +219,28 @@ inline void Model::split_string(const std::string& _input, char _splitter,
   }
 }
 
-inline GLuint Model::vao_id()
+inline GLuint Model::GetVAO()
 {
   if(!m_faces.size())
   {
     throw std::runtime_error("Model is empty");
   }
 
-  if(!m_vboid)
+  if(!m_vboId)
   {
-    glGenBuffers(1, &m_vboid);
+    glGenBuffers(1, &m_vboId);
 
-    if(!m_vboid)
+    if(!m_vboId)
     {
       throw std::runtime_error("Failed to generate vertex buffer");
     }
   }
 
-  if(!m_vaoid)
+  if(!m_vaoId)
   {
-    glGenVertexArrays(1, &m_vaoid);
+    glGenVertexArrays(1, &m_vaoId);
 
-    if(!m_vaoid)
+    if(!m_vaoId)
     {
       throw std::runtime_error("Failed to generate vertex array");
     }
@@ -282,12 +280,12 @@ inline GLuint Model::vao_id()
       data.push_back(m_faces[fi].c.normal.z);
     }
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_vboid);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vboId);
     glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(data.at(0)), &data.at(0), GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    glBindVertexArray(m_vaoid);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vboid);
+    glBindVertexArray(m_vaoId);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vboId);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
       8 * sizeof(data.at(0)), (void*)0);
@@ -310,10 +308,10 @@ inline GLuint Model::vao_id()
     m_dirty = false;
   }
 
-  return m_vaoid;
+  return m_vaoId;
 }
 
-inline GLsizei Model::vertex_count() const
+inline GLsizei Model::GetVertexCount() const
 {
   return (GLsizei)m_faces.size() * 3;
 }
@@ -323,5 +321,3 @@ inline Model::Vertex::Vertex()
   , texcoord(0, 0)
   , normal(0, 0, 0)
 { }
-
-#endif

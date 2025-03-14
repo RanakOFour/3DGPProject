@@ -110,7 +110,7 @@ int main()
 
 		// Instruct OpenGL to use our shader program, VAO and texture
 		shaderProgram.Use();
-		glBindVertexArray(catModel.vao_id());
+		glBindVertexArray(catModel.GetVAO());
 		glBindTexture(GL_TEXTURE_2D, texture.id());
 
 
@@ -124,7 +124,7 @@ int main()
 		shaderProgram.SetUniform("u_Projection", projectionMatrix);
 
 		// Draw shape
-		glDrawArrays(GL_TRIANGLES, 0, catModel.vertex_count());
+		glDrawArrays(GL_TRIANGLES, 0, catModel.GetVertexCount());
 
 		// Reset the state
 		glBindVertexArray(0);
