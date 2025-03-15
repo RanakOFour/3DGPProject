@@ -9,4 +9,4 @@ add_subdirectory(src)
 target_include_directories(3DGPPrject PUBLIC include)
 target_link_directories(3DGPPrject PUBLIC lib)
 
-target_link_libraries(3DGPPrject PUBLIC SDL2 GL GLEW)
+target_link_libraries(3DGPPrject PUBLIC SDL2 SDL2main GL GLEW)

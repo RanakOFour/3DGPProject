@@ -94,7 +94,8 @@ ShaderProgram::ShaderProgram(const std::string& _vertexPath, const std::string& 
 		printf("Failed to link shader program\n");
 		throw std::exception();
 	}
-	printf("Shader program linked\n");
+
+	printf("Shader program created\n");
 
 	// Detach and destroy the shader objects. These are no longer needed
 	// because we now have a complete shader program.

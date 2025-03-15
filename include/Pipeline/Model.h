@@ -306,6 +306,7 @@ inline GLuint Model::GetVAO()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     m_dirty = false;
+    printf("Model cleaned\n");
   }
 
   return m_vaoId;
