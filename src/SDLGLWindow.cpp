@@ -19,10 +19,10 @@
 SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
     m_Window(nullptr),
     m_Objects(),
-    m_Shader("./resources/textureVertex.vs", "./resources/textureFrag.fs"),
+    m_Shader(nullptr),
     m_Quit(false)
 {
-    m_Window = SDL_CreateWindow(_title, 0, 0, _width, _height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+    m_Window = SDL_CreateWindow(_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
     if(m_Window == nullptr)
     {
         printf("Could not create SDL Window\n");
@@ -41,6 +41,8 @@ SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
         printf("Failed to start GLEW\n");
 		throw std::runtime_error("Jinkies");
 	}
+
+	m_Shader = new ShaderProgram("./resources/textureVertex.vs", "./resources/textureFrag.fs");
 
     glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
@@ -117,11 +119,11 @@ void SDLGLWindow::Update()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Instruct OpenGL to use our shader program, VAO and texture
-	m_Shader.Use();
+	m_Shader->Use();
 
-    m_Shader.SetUniform("u_Model", m_model);
-	m_Shader.SetUniform("u_View", m_view);
-	m_Shader.SetUniform("u_Projection", m_projection);
+    m_Shader->SetUniform("u_Model", m_model);
+	m_Shader->SetUniform("u_View", m_view);
+	m_Shader->SetUniform("u_Projection", m_projection);
 
     for(int i = 0; i < m_Objects.size(); i++)
     {
@@ -143,6 +145,6 @@ void SDLGLWindow::AddObject(Object* _object)
 
 void SDLGLWindow::SetShaderProgram(ShaderProgram* _program)
 {
-    m_Shader = *_program;
+    m_Shader = _program;
     printf("Shader for window set\n");
 }

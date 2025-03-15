@@ -143,7 +143,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\Object.cpp" />
+    <ClCompile Include="src\SDLGLWindow.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
@@ -151,6 +153,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Pipeline\Model.h" />
+    <ClInclude Include="include\Pipeline\Object.h" />
+    <ClInclude Include="include\Pipeline\SDLGLWindow.h" />
     <ClInclude Include="include\Pipeline\ShaderProgram.h" />
     <ClInclude Include="include\Pipeline\Texture.h" />
     <ClInclude Include="include\Pipeline\VertexArray.h" />
@@ -159,6 +163,12 @@
   <ItemGroup>
     <None Include="resources\textureFrag.fs" />
     <None Include="resources\textureVertex.vs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\glew32.lib" />
+    <Library Include="lib\glew32s.lib" />
+    <Library Include="lib\SDL2.lib" />
+    <Library Include="lib\SDL2main.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

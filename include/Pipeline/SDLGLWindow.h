@@ -1,5 +1,3 @@
-#include "Pipeline/ShaderProgram.h"
-
 #include <SDL2/SDL.h>
 #include <memory>
 #include <vector>
@@ -7,11 +5,12 @@
 
 #pragma once
 class Object;
+class ShaderProgram;
 class SDLGLWindow
 {
     SDL_Window* m_Window;
+    ShaderProgram* m_Shader;
     std::vector<std::shared_ptr<Object>> m_Objects;
-    ShaderProgram m_Shader;
     glm::mat4 m_projection;
     glm::mat4 m_view;
     glm::mat4 m_model;

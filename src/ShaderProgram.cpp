@@ -44,6 +44,7 @@ ShaderProgram::ShaderProgram(const std::string& _vertexPath, const std::string& 
 
 	//printf("Vertex Shader: %s\n Frag Shader: %s\n", vShaderCode, fShaderCode);
 
+	printf("Pre vertex shader\n");
 
 	// Create a new vertex shader
 	GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
