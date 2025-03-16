@@ -48,12 +48,12 @@ SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-    m_projection = glm::mat4(1.0f);
+    m_projection = glm::perspective(45.0f, 1.0f, 0.1f, 100.0f);
 
 	m_view = glm::mat4(1.0f);
 
 	m_model = glm::mat4(1.0f);
-	m_model = glm::translate(m_model, glm::vec3(0, 0, -2.5f));
+    m_model = glm::translate(m_model, glm::vec3(0.0f, 0.0f, 2.5f));
 
     printf("Window created\n");
 }
@@ -120,14 +120,13 @@ void SDLGLWindow::Update()
 
 	// Instruct OpenGL to use our shader program, VAO and texture
 	m_Shader->Use();
-
-    m_Shader->SetUniform("u_Model", m_model);
+    
 	m_Shader->SetUniform("u_View", m_view);
 	m_Shader->SetUniform("u_Projection", m_projection);
 
     for(int i = 0; i < m_Objects.size(); i++)
     {
-        m_Objects[i]->Draw();
+        m_Objects[i]->Draw(m_Shader);
     }
 
 	glUseProgram(0);
