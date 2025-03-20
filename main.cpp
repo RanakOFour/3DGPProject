@@ -8,7 +8,6 @@
 
 int main()
 {
-	printf("Start\n");
 	SDLGLWindow window("Test", 800, 600);
 
 	Object catWarrior("./resources/curuthers/curuthers.obj", 

@@ -1,13 +1,14 @@
+#ifndef SHADERPROGRAM_H
+#define SHADERPROGRAM_H
+
+#include "Pipeline/VertexArray.h"
+#include "Pipeline/Texture.h"
+
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 #include <string>
 #include <vector>
 
-#pragma once
-
-class Shader;
-class VertexArray;
-class Texture;
 class ShaderProgram
 {
 	GLuint m_id;
@@ -25,3 +26,5 @@ class ShaderProgram
 
 	GLuint GetID();
 };
+
+#endif

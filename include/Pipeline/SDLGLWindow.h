@@ -1,3 +1,8 @@
+#ifndef SDLGLWINDOW_H
+#define SDLGLWINDOW_H
+
+#include "Pipeline/Camera.h"
+
 #include <SDL2/SDL.h>
 #include <memory>
 #include <vector>
@@ -9,11 +14,8 @@ class ShaderProgram;
 class SDLGLWindow
 {
     SDL_Window* m_Window;
-    ShaderProgram* m_Shader;
+    Camera* m_camera;
     std::vector<std::shared_ptr<Object>> m_Objects;
-    glm::mat4 m_projection;
-    glm::mat4 m_view;
-    glm::mat4 m_model;
 
     public:
     bool m_Quit;
@@ -25,3 +27,5 @@ class SDLGLWindow
     void SetShaderProgram(ShaderProgram* _program);
     void AddObject(Object* _object);
 };
+
+#endif

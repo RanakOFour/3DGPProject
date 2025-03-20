@@ -1,6 +1,6 @@
 #include "Pipeline/SDLGLWindow.h"
-#include "Pipeline/ShaderProgram.h"
 #include "Pipeline/Object.h"
+#include "Pipeline/Camera.h"
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
@@ -19,7 +19,7 @@
 SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
     m_Window(nullptr),
     m_Objects(),
-    m_Shader(nullptr),
+	m_camera(nullptr),
     m_Quit(false)
 {
     m_Window = SDL_CreateWindow(_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
@@ -42,18 +42,11 @@ SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
 		throw std::runtime_error("Jinkies");
 	}
 
-	m_Shader = new ShaderProgram("./resources/textureVertex.vs", "./resources/textureFrag.fs");
+	m_camera = new Camera();
 
     glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-
-    m_projection = glm::perspective(45.0f, 1.0f, 0.1f, 100.0f);
-
-	m_view = glm::mat4(1.0f);
-
-	m_model = glm::mat4(1.0f);
-    m_model = glm::translate(m_model, glm::vec3(0.0f, 0.0f, 2.5f));
 
     printf("Window created\n");
 }
@@ -82,32 +75,22 @@ void SDLGLWindow::Update()
 	const Uint8* key = SDL_GetKeyboardState(NULL);
 	if (key[SDL_SCANCODE_A])
 	{
-		m_view = glm::translate(m_view, left);
+		m_camera->Translate(left);
 	}
 
 	if (key[SDL_SCANCODE_D])
 	{
-		m_view = glm::translate(m_view, -left);
+		m_camera->Translate(-left);
 	}
 		
 	if (key[SDL_SCANCODE_W])
 	{
-		m_view = glm::translate(m_view, forward);
+		m_camera->Translate(forward);
 	}
 
 	if (key[SDL_SCANCODE_S])
 	{
-		m_view = glm::translate(m_view, -forward);
-	}
-
-	if (key[SDL_SCANCODE_LEFT])
-	{
-		m_view = glm::rotate(m_view, 0.78539816339f / 2, glm::vec3(0.0f, 1.0f, 0.0f));
-	}
-
-	if (key[SDL_SCANCODE_RIGHT])
-	{
-		m_view = glm::rotate(m_view, -0.78539816339f / 2, glm::vec3(0.0f, 1.0f, 0.0f));
+		m_camera->Translate(-forward);
 	}
 
     // Render
@@ -119,14 +102,11 @@ void SDLGLWindow::Update()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Instruct OpenGL to use our shader program, VAO and texture
-	m_Shader->Use();
-    
-	m_Shader->SetUniform("u_View", m_view);
-	m_Shader->SetUniform("u_Projection", m_projection);
+	m_camera->Use();
 
     for(int i = 0; i < m_Objects.size(); i++)
     {
-        m_Objects[i]->Draw(m_Shader);
+        m_Objects[i]->Draw(m_camera->GetShader());
     }
 
 	glUseProgram(0);
@@ -140,10 +120,4 @@ void SDLGLWindow::AddObject(Object* _object)
     m_Objects.push_back(newObjectPtr);
 
     printf("Object added\n");
-}
-
-void SDLGLWindow::SetShaderProgram(ShaderProgram* _program)
-{
-    m_Shader = _program;
-    printf("Shader for window set\n");
 }
