@@ -8,9 +8,6 @@
 
 #include <memory>
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/string_cast.hpp>
-
 #include <stdexcept>
 #include <iostream>
 
@@ -22,7 +19,8 @@ SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
 	m_camera(nullptr),
     m_Quit(false)
 {
-    m_Window = SDL_CreateWindow(_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _width, _height, SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
+	printf("Creating window\n");
+    m_Window = SDL_CreateWindow("Test", 1, 1, 800, 800, SDL_WINDOW_OPENGL);
     if(m_Window == nullptr)
     {
         printf("Could not create SDL Window\n");
@@ -30,17 +28,17 @@ SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
     }
     printf("SDLWindow created\n");
 
-    if (!SDL_GL_CreateContext(m_Window))
-	{
-        printf("Failed to create GL context\n");
-		throw std::runtime_error("Damn");
-	}
-
 	if (glewInit() != GLEW_OK)
 	{
         printf("Failed to start GLEW\n");
 		throw std::runtime_error("Jinkies");
 	}
+
+    if (!SDL_GL_CreateContext(m_Window))
+	{
+        printf("Failed to create GL context\n");
+		throw std::runtime_error("Damn");
+	}	
 
 	m_camera = new Camera();
 
@@ -58,6 +56,7 @@ SDLGLWindow::~SDLGLWindow()
 
 void SDLGLWindow::Update()
 {
+	printf("Updating");
     // Handle input
 	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 0.25f);
 	glm::vec3 left = glm::vec3(0.25f, 0.0f, 0.0f);

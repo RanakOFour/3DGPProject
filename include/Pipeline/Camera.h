@@ -13,12 +13,11 @@ class Camera
     glm::vec3 m_Position;
     glm::vec3 m_EulerRotation;
 
-    glm::vec3 m_Forward;
-    glm::vec3 m_Up;
+    glm::mat4 m_RotationMatrix;
     glm::mat4 m_Projection;
     glm::mat4 m_View;
 
-    void CalculateUp();
+    void CalculateView();
 
     public:
     Camera();
@@ -27,6 +26,7 @@ class Camera
     void Use();
     void Translate(glm::vec3 _translation);
     void Rotate(glm::vec3 _eulerRotation);
+    glm::vec3 GetForward();
     ShaderProgram* GetShader();
 };
 

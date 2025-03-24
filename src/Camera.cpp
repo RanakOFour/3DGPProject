@@ -8,11 +8,10 @@
 #include <glm/gtx/string_cast.hpp>
 
 Camera::Camera() :
-    m_Position(0.0f, 0.0f, 0.0f),
+    m_Position(0.0f, 0.0f, 3.0f),
     m_EulerRotation(0.0f, 0.0f, 0.0f),
-    m_Forward(0.0f, 0.0f, 0.0f),
-    m_Up(0.0f, 0.0f, 0.0f),
     m_Projection(glm::perspective(45.0f, 1.0f, 0.1f, 100.0f)),
+    m_RotationMatrix(),
     m_View(1.0f),
     m_Shader("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs")
 {
@@ -24,24 +23,21 @@ Camera::~Camera()
 
 }
 
-void Camera::CalculateUp()
+void Camera::CalculateView()
 {
-    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-    m_Forward = glm::normalize(m_Position - cameraTarget);
+    glm::vec3 normalPos = glm::normalize(m_Position); 
+    
 
-    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); 
-    glm::vec3 cameraRight = glm::normalize(glm::cross(up, m_Forward));
-
-    m_Up = glm::cross(m_Forward, cameraRight);
+    m_View = glm::lookAt(m_Position,
+                         glm::vec3(0.0f, 0.0f, 0.0f),
+                         glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void Camera::Use()
 {
     m_Shader.Use();
-    
-    m_View = glm::lookAt(m_Position,
-                         m_Position + m_Forward,
-                         m_Up);
+
+    CalculateView();
 
 	m_Shader.SetUniform("u_View", m_View);
 	m_Shader.SetUniform("u_Projection", m_Projection);

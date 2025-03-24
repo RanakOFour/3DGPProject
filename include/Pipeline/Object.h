@@ -10,8 +10,8 @@ class Object
 {
     std::shared_ptr<Model> m_Model;
     std::shared_ptr<Texture> m_Texture;
-    glm::mat4 m_MatrixCoords;
     glm::vec3 m_Coords;
+    glm::mat4 m_MatrixCoords;
 
     public:
     Object(const char* _modelPath, const char* _texturePath);

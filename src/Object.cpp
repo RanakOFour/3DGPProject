@@ -8,11 +8,12 @@
 
 Object::Object(const char* _modelPath, const char* _texturePath)
 {
+	printf("Obejct constructor");
     m_Model = std::make_shared<Model>(_modelPath);
     m_Texture = std::make_shared<Texture>(_texturePath);
 
-	m_Coords = glm::vec3(0.0f, 0.0f, 0.0f);
 	m_MatrixCoords = glm::mat4(1.0f);
+	m_Coords = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 Object::~Object()
