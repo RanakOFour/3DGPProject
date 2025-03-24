@@ -13,7 +13,8 @@ class Camera
     glm::vec3 m_Position;
     glm::vec3 m_EulerRotation;
 
-    glm::mat4 m_RotationMatrix;
+    glm::vec3 m_Forward;
+    
     glm::mat4 m_Projection;
     glm::mat4 m_View;
 

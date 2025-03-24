@@ -61,10 +61,10 @@ inline Model::Model(const std::string& _path)
   , m_vaoId(0)
   , m_dirty(false)
 {
-  std::vector<glm::vec3> positions;
-  std::vector<glm::vec2> tcs;
-  std::vector<glm::vec3> normals;
-  std::string currentline;
+  std::vector<glm::vec3> L_positions;
+  std::vector<glm::vec2> L_tcs;
+  std::vector<glm::vec3> L_normals;
+  std::string L_currentline;
 
   std::ifstream file(_path.c_str());
 
@@ -75,56 +75,56 @@ inline Model::Model(const std::string& _path)
 
   while(!file.eof())
   {
-    std::getline(file, currentline);
-    if(currentline.length() < 1) continue;
+    std::getline(file, L_currentline);
+    if(L_currentline.length() < 1) continue;
 
-    std::vector<std::string> tokens;
-    SplitStringWhitespace(currentline, tokens);
-    if(tokens.size() < 1) continue;
+    std::vector<std::string> L_tokens;
+    SplitStringWhitespace(L_currentline, L_tokens);
+    if(L_tokens.size() < 1) continue;
 
-    if(tokens.at(0) == "v" && tokens.size() >= 4)
+    if(L_tokens.at(0) == "v" && L_tokens.size() >= 4)
     {
-      glm::vec3 p(atof(tokens.at(1).c_str()),
-        atof(tokens.at(2).c_str()),
-        atof(tokens.at(3).c_str()));
+      glm::vec3 p(atof(L_tokens.at(1).c_str()),
+        atof(L_tokens.at(2).c_str()),
+        atof(L_tokens.at(3).c_str()));
 
-      positions.push_back(p);
+      L_positions.push_back(p);
     }
-    else if(tokens.at(0) == "vt" && tokens.size() >= 3)
+    else if(L_tokens.at(0) == "vt" && L_tokens.size() >= 3)
     {
-      glm::vec2 tc(atof(tokens.at(1).c_str()),
-        1.0f - atof(tokens.at(2).c_str()));
+      glm::vec2 tc(atof(L_tokens.at(1).c_str()),
+        1.0f - atof(L_tokens.at(2).c_str()));
 
-      tcs.push_back(tc);
+      L_tcs.push_back(tc);
     }
-    else if(tokens.at(0) == "vn" && tokens.size() >= 4)
+    else if(L_tokens.at(0) == "vn" && L_tokens.size() >= 4)
     {
-      glm::vec3 n(atof(tokens.at(1).c_str()),
-        atof(tokens.at(2).c_str()),
-        atof(tokens.at(3).c_str()));
+      glm::vec3 n(atof(L_tokens.at(1).c_str()),
+        atof(L_tokens.at(2).c_str()),
+        atof(L_tokens.at(3).c_str()));
 
-      normals.push_back(n);
+      L_normals.push_back(n);
     }
-    else if(tokens.at(0) == "f" && tokens.size() >= 4)
+    else if(L_tokens.at(0) == "f" && L_tokens.size() >= 4)
     {
       Face f;
       std::vector<std::string> sub;
-      SplitString(tokens.at(1), '/', sub);
-      if(sub.size() >= 1) f.a.position = positions.at(atoi(sub.at(0).c_str()) - 1);
-      if(sub.size() >= 2) f.a.texcoord = tcs.at(atoi(sub.at(1).c_str()) - 1);
-      if(sub.size() >= 3) f.a.normal = normals.at(atoi(sub.at(2).c_str()) - 1);
+      SplitString(L_tokens.at(1), '/', sub);
+      if(sub.size() >= 1) f.a.position = L_positions.at(atoi(sub.at(0).c_str()) - 1);
+      if(sub.size() >= 2) f.a.texcoord = L_tcs.at(atoi(sub.at(1).c_str()) - 1);
+      if(sub.size() >= 3) f.a.normal = L_normals.at(atoi(sub.at(2).c_str()) - 1);
 
-      for(size_t ti = 2; ti + 1 < tokens.size(); ti++)
+      for(size_t ti = 2; ti + 1 < L_tokens.size(); ti++)
       {
-        SplitString(tokens.at(ti), '/', sub);
-        if(sub.size() >= 1) f.b.position = positions.at(atoi(sub.at(0).c_str()) - 1);
-        if(sub.size() >= 2) f.b.texcoord = tcs.at(atoi(sub.at(1).c_str()) - 1);
-        if(sub.size() >= 3) f.b.normal = normals.at(atoi(sub.at(2).c_str()) - 1);
+        SplitString(L_tokens.at(ti), '/', sub);
+        if(sub.size() >= 1) f.b.position = L_positions.at(atoi(sub.at(0).c_str()) - 1);
+        if(sub.size() >= 2) f.b.texcoord = L_tcs.at(atoi(sub.at(1).c_str()) - 1);
+        if(sub.size() >= 3) f.b.normal = L_normals.at(atoi(sub.at(2).c_str()) - 1);
 
-        SplitString(tokens.at(ti + 1), '/', sub);
-        if(sub.size() >= 1) f.c.position = positions.at(atoi(sub.at(0).c_str()) - 1);
-        if(sub.size() >= 2) f.c.texcoord = tcs.at(atoi(sub.at(1).c_str()) - 1);
-        if(sub.size() >= 3) f.c.normal = normals.at(atoi(sub.at(2).c_str()) - 1);
+        SplitString(L_tokens.at(ti + 1), '/', sub);
+        if(sub.size() >= 1) f.c.position = L_positions.at(atoi(sub.at(0).c_str()) - 1);
+        if(sub.size() >= 2) f.c.texcoord = L_tcs.at(atoi(sub.at(1).c_str()) - 1);
+        if(sub.size() >= 3) f.c.normal = L_normals.at(atoi(sub.at(2).c_str()) - 1);
 
         m_faces.push_back(f);
         m_dirty = true;

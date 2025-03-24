@@ -1,2 +1,2 @@
-file(GLOB SRCS *.cpp)
-target_sources(3DGPPrject PUBLIC ${SRCS})
+add_subdirectory(Pipeline)
+add_subdirectory(Components)
