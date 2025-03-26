@@ -10,7 +10,7 @@
 Camera::Camera() :
     m_Projection(glm::perspective(45.0f, 1.0f, 0.1f, 100.0f)),
     m_Transform(),
-    m_Shader("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs")
+    m_Shader("./resources/shaders/diffuse/vert.vs", "./resources/shaders/diffuse/frag.fs")
 {
     
 }
