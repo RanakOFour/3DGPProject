@@ -24,7 +24,10 @@ VertexArray::VertexArray() :
 
 VertexArray::~VertexArray()
 {
-
+    if(m_id != 0)
+    {  
+        glDeleteVertexArrays(1, &m_id);  
+    }
 }
 
 void VertexArray::SetBuffer(std::string _attribute, VertexBuffer* _buffer)

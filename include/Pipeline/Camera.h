@@ -2,6 +2,7 @@
 #define CAMERA_H
 
 #include "Pipeline/ShaderProgram.h"
+#include "Components/Transform.h"
 
 #include <GL/glew.h>
 #include <glm/ext.hpp>
@@ -10,10 +11,7 @@ class Camera
 {
     ShaderProgram m_Shader;
 
-    glm::vec3 m_Position;
-    glm::vec3 m_EulerRotation;
-
-    glm::vec3 m_Forward;
+    Transform m_Transform;
     
     glm::mat4 m_Projection;
     glm::mat4 m_View;

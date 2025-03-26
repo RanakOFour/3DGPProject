@@ -9,13 +9,13 @@
 #include <glm/ext.hpp>
 
 #pragma once
-class Object;
+class Entity;
 class ShaderProgram;
 class SDLGLWindow
 {
     SDL_Window* m_Window;
     Camera* m_camera;
-    std::vector<std::shared_ptr<Object>> m_Objects;
+    std::vector<std::shared_ptr<Entity>> m_Entities;
 
     public:
     bool m_Quit;
@@ -25,7 +25,7 @@ class SDLGLWindow
 
     void Update();
     void SetShaderProgram(ShaderProgram* _program);
-    void AddObject(Object* _object);
+    void AddEntity(Entity* _object);
 };
 
 #endif

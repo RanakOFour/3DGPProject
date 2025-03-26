@@ -24,7 +24,10 @@ VertexBuffer::VertexBuffer(int _componentsPerObject) :
 
 VertexBuffer::~VertexBuffer()
 {
-
+    if(m_id != 0)
+    {
+        glDeleteBuffers(1, &m_id);
+    }
 }
 
 void VertexBuffer::Add(glm::vec2 _value)

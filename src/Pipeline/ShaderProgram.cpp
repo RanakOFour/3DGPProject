@@ -108,7 +108,10 @@ ShaderProgram::ShaderProgram(const std::string& _vertexPath, const std::string& 
 
 ShaderProgram::~ShaderProgram()
 {
-
+	if(m_id != 0)
+	{
+		glDeleteProgram(m_id);
+	}
 }
 
 void ShaderProgram::Use()

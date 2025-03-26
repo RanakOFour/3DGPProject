@@ -1,3 +1,7 @@
+#ifndef TRANSFORM_H
+
+#define TRANSFORM_H
+
 #include <glm/ext.hpp>
 
 class Transform
@@ -13,5 +17,7 @@ class Transform
     Transform();
     ~Transform();
 
-
+    glm::mat4 GetModelMatrix();
 };
+
+#endif

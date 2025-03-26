@@ -16,3 +16,17 @@ Transform::~Transform()
 {
 
 }
+
+glm::mat4 Transform::GetModelMatrix()
+{
+    glm::mat4 L_modelMatrix = glm::mat4(1.0f);
+
+    
+    L_modelMatrix = glm::rotate(L_modelMatrix, glm::radians(m_EulerRotation.x), glm::vec3(0.0f, 1.0f, 0.0f));
+    L_modelMatrix = glm::rotate(L_modelMatrix, glm::radians(m_EulerRotation.y), glm::vec3(0.0f, 0.0f, 1.0f));
+    L_modelMatrix = glm::rotate(L_modelMatrix, glm::radians(m_EulerRotation.z), glm::vec3(1.0f, 0.0f, 0.0f));
+    
+    L_modelMatrix = glm::translate(L_modelMatrix, m_Position);
+
+    return L_modelMatrix;
+}

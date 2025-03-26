@@ -1,3 +1,7 @@
+#ifndef MODEL_H
+
+#define MODEL_H
+
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
@@ -322,3 +326,5 @@ inline Model::Vertex::Vertex()
   , texcoord(0, 0)
   , normal(0, 0, 0)
 { }
+
+#endif

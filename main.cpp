@@ -2,7 +2,7 @@
 #include <glm/ext.hpp>
 
 #include "Pipeline/SDLGLWindow.h"
-#include "Pipeline/Object.h"
+#include "Pipeline/Entity.h"
 
 #undef main
 
@@ -10,10 +10,10 @@ int main()
 {
 	SDLGLWindow window("Test", 800, 600);
 
-	Object catWarrior("./resources/curuthers/curuthers.obj", 
+	Entity catWarrior("./resources/curuthers/curuthers.obj", 
 					  "./resources/curuthers/Whiskers_diffuse.png");
 
-	window.AddObject(&catWarrior);
+	window.AddEntity(&catWarrior);
 
 	while (!window.m_Quit)
 	{

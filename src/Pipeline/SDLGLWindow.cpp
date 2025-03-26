@@ -1,5 +1,5 @@
 #include "Pipeline/SDLGLWindow.h"
-#include "Pipeline/Object.h"
+#include "Pipeline/Entity.h"
 #include "Pipeline/Camera.h"
 
 #include <SDL2/SDL.h>
@@ -15,7 +15,7 @@
 
 SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
     m_Window(nullptr),
-    m_Objects(),
+    m_Entities(),
 	m_camera(nullptr),
     m_Quit(false)
 {
@@ -91,6 +91,26 @@ void SDLGLWindow::Update()
 		m_camera->Translate(-forward);
 	}
 
+	if(key[SDL_SCANCODE_LEFT])
+	{
+		m_Entities[0]->Move(left);
+	}
+
+	if(key[SDL_SCANCODE_RIGHT])
+	{
+		m_Entities[0]->Move(-left);
+	}
+
+	if(key[SDL_SCANCODE_UP])
+	{
+		m_Entities[0]->Move(forward);
+	}
+
+	if(key[SDL_SCANCODE_DOWN])
+	{
+		m_Entities[0]->Move(-forward);
+	}
+
     // Render
     int windowWidth, windowHeight;
     SDL_GetWindowSize(m_Window, &windowWidth, &windowHeight);
@@ -102,9 +122,9 @@ void SDLGLWindow::Update()
 	// Instruct OpenGL to use our shader program, VAO and texture
 	m_camera->Use();
 
-    for(int i = 0; i < m_Objects.size(); i++)
+    for(int i = 0; i < m_Entities.size(); i++)
     {
-        m_Objects[i]->Draw(m_camera->GetShader());
+        m_Entities[i]->Draw(m_camera->GetShader());
     }
 
 	glUseProgram(0);
@@ -112,10 +132,10 @@ void SDLGLWindow::Update()
 	SDL_GL_SwapWindow(m_Window);
 }
 
-void SDLGLWindow::AddObject(Object* _object)
+void SDLGLWindow::AddEntity(Entity* _object)
 {
-    std::shared_ptr<Object> newObjectPtr(_object);
-    m_Objects.push_back(newObjectPtr);
+    std::shared_ptr<Entity> L_newEntityPtr(_object);
+    m_Entities.push_back(L_newEntityPtr);
 
-    printf("Object added\n");
+    printf("Entity added\n");
 }

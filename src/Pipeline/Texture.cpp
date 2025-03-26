@@ -43,6 +43,7 @@ Texture::Texture(glm::ivec2 _size) :
 Texture::~Texture()
 {
 	// delete data in vbo
+	glDeleteTextures(1, &m_id);
 }
 
 GLuint Texture::id()

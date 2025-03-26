@@ -1,3 +1,7 @@
+#ifndef TEXTURE_H
+
+#define TEXTURE_H
+
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 #include <string>
@@ -29,3 +33,4 @@ public:
 	GLuint id();
 };
 
+#endif
