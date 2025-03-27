@@ -22,6 +22,8 @@ class Entity
 
     void Draw(ShaderProgram* _shader);
     void Move(glm::vec3 _movement);
+    void Rotate(glm::vec3 _rotation);
+    void Scale(glm::vec3 _scaleChange);
 };
 
 #endif

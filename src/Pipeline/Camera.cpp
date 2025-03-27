@@ -37,19 +37,12 @@ void Camera::Use()
 
 void Camera::Translate(glm::vec3 _translate)
 {
-    m_Transform.m_Position += _translate;
-    
-    printf("New camera position: %s\n", glm::to_string(m_Transform.m_Position).c_str());
+    m_Transform.Translate(_translate);
 }
 
 void Camera::Rotate(glm::vec3 _eulerRotation)
 {
-    m_Transform.m_EulerRotation += _eulerRotation;
-
-    //m_View = glm::rotate(m_View, _eulerRotation.x, glm::vec3(0.0f, 1.0f, 0.0f));
-    
-    printf("New camera rotation: %s\n", glm::to_string(m_Transform.m_EulerRotation).c_str());
-
+    m_Transform.Rotate(_eulerRotation);
 }
 
 ShaderProgram* Camera::GetShader()

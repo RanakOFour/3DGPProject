@@ -24,7 +24,6 @@ class SDLGLWindow
     ~SDLGLWindow();
 
     void Update();
-    void SetShaderProgram(ShaderProgram* _program);
     void AddEntity(Entity* _object);
 };
 

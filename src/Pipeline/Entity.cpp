@@ -37,5 +37,15 @@ void Entity::Draw(ShaderProgram* _shaderProgram)
 
 void Entity::Move(glm::vec3 _movement)
 {
-	m_Transform.m_Position += _movement;
+	m_Transform.Translate(_movement);
+}
+
+void Entity::Rotate(glm::vec3 _rotation)
+{
+	m_Transform.Rotate(_rotation);
+}
+
+void Entity::Scale(glm::vec3 _scale)
+{
+	m_Transform.Scale(_scale);
 }

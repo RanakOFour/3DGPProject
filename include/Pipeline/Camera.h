@@ -14,7 +14,6 @@ class Camera
     Transform m_Transform;
     
     glm::mat4 m_Projection;
-    glm::mat4 m_View;
 
     void CalculateView();
 

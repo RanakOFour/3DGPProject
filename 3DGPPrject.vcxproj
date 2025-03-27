@@ -144,31 +144,42 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="src\Object.cpp" />
-    <ClCompile Include="src\SDLGLWindow.cpp" />
-    <ClCompile Include="src\ShaderProgram.cpp" />
-    <ClCompile Include="src\Texture.cpp" />
-    <ClCompile Include="src\VertexArray.cpp" />
-    <ClCompile Include="src\VertexBuffer.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\Pipeline\Model.h" />
-    <ClInclude Include="include\Pipeline\Object.h" />
-    <ClInclude Include="include\Pipeline\SDLGLWindow.h" />
-    <ClInclude Include="include\Pipeline\ShaderProgram.h" />
-    <ClInclude Include="include\Pipeline\Texture.h" />
-    <ClInclude Include="include\Pipeline\VertexArray.h" />
-    <ClInclude Include="include\Pipeline\VertexBuffer.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="resources\textureFrag.fs" />
-    <None Include="resources\textureVertex.vs" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="src\Components\Transform.cpp" />
+    <ClCompile Include="src\Pipeline\Camera.cpp" />
+    <ClCompile Include="src\Pipeline\Entity.cpp" />
+    <ClCompile Include="src\Pipeline\SDLGLWindow.cpp" />
+    <ClCompile Include="src\Pipeline\ShaderProgram.cpp" />
+    <ClCompile Include="src\Pipeline\Texture.cpp" />
+    <ClCompile Include="src\Pipeline\VertexArray.cpp" />
+    <ClCompile Include="src\Pipeline\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glew32.lib" />
     <Library Include="lib\glew32s.lib" />
     <Library Include="lib\SDL2.lib" />
     <Library Include="lib\SDL2main.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Components\Transform.h" />
+    <ClInclude Include="include\Pipeline\Camera.h" />
+    <ClInclude Include="include\Pipeline\Entity.h" />
+    <ClInclude Include="include\Pipeline\Model.h" />
+    <ClInclude Include="include\Pipeline\OpenGLError.h" />
+    <ClInclude Include="include\Pipeline\SDLGLWindow.h" />
+    <ClInclude Include="include\Pipeline\ShaderProgram.h" />
+    <ClInclude Include="include\Pipeline\Texture.h" />
+    <ClInclude Include="include\Pipeline\VertexArray.h" />
+    <ClInclude Include="include\Pipeline\VertexBuffer.h" />
+    <ClInclude Include="Scene.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\default\frag.fs" />
+    <None Include="resources\shaders\default\vert.vs" />
+    <None Include="resources\shaders\diffuse\frag.fs" />
+    <None Include="resources\shaders\diffuse\vert.vs" />
+    <None Include="resources\shaders\specular\frag.fs" />
+    <None Include="resources\shaders\specular\vert.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

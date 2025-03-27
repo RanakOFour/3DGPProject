@@ -7,6 +7,7 @@
 
 #include "Pipeline/ShaderProgram.h"
 #include "Pipeline/VertexArray.h"
+#include "Pipeline/OpenGLError.h"
 
 ShaderProgram::ShaderProgram(const std::string& _vertexPath, const std::string& _fragPath)
 {
@@ -58,7 +59,7 @@ ShaderProgram::ShaderProgram(const std::string& _vertexPath, const std::string& 
 	glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		printf("Failed to create vertex shader\n");
+		OpenGLError::DisplayError(ErrorType::Shader, (void*)&vertexShaderId);
 		throw std::exception();
 	}
 	printf("Vertex shader created\n");
@@ -73,7 +74,7 @@ ShaderProgram::ShaderProgram(const std::string& _vertexPath, const std::string& 
 	glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		printf("Failed to create frag shader\n");
+		OpenGLError::DisplayError(ErrorType::Shader, (void*)&fragmentShaderId);
 		throw std::exception();
 	}
 	printf("Vertex frag created\n");

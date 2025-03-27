@@ -52,6 +52,7 @@ SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
 SDLGLWindow::~SDLGLWindow()
 {
     SDL_DestroyWindow(m_Window);
+	delete m_camera;
 }
 
 void SDLGLWindow::Update()
@@ -109,6 +110,16 @@ void SDLGLWindow::Update()
 	if(key[SDL_SCANCODE_DOWN])
 	{
 		m_Entities[0]->Move(-forward);
+	}
+
+	if (key[SDL_SCANCODE_X])
+	{
+		m_Entities[0]->Scale(glm::vec3(0.1f, 0.1f, 0.1f));
+	}
+
+	if (key[SDL_SCANCODE_Z])
+	{
+		m_Entities[0]->Scale(glm::vec3(-0.1f, -0.1f, -0.1f));
 	}
 
     // Render
