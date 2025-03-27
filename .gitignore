@@ -1,7 +1,7 @@
 .vs/**
 .vscode/**
-3DGProject/.vs/**
-3DGProject/.vscode/**
-3DGProject/out/**
+3DGPProject/.vs/**
+3DGPProject/.vscode/**
+3DGPProject/out/**
 x64/**
 *.vcxproj.user
