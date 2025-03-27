@@ -14,7 +14,11 @@ private:
 
 
 public:
+	Scene();
+	~Scene();
 
+	void AddEntity(Entity* _entity);
+	void Update();
 };
 
 #endif
