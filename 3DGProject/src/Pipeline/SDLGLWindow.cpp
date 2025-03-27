@@ -1,6 +1,7 @@
 #include "Pipeline/SDLGLWindow.h"
 #include "Pipeline/Entity.h"
 #include "Pipeline/Camera.h"
+#include "Components/RenderTexture.h"
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
@@ -47,6 +48,8 @@ SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
 	glDepthFunc(GL_LESS);
 
     printf("Window created\n");
+
+	blue = new RenderTexture(800, 800);
 }
 
 SDLGLWindow::~SDLGLWindow()
@@ -133,10 +136,17 @@ void SDLGLWindow::Update()
 	// Instruct OpenGL to use our shader program, VAO and texture
 	m_camera->Use();
 
+	blue->Bind();
     for(int i = 0; i < m_Entities.size(); i++)
     {
         m_Entities[i]->Draw(m_camera->GetShader());
     }
+	blue->Unbind();
+
+	for (int i = 0; i < m_Entities.size(); i++)
+	{
+		m_Entities[i]->Draw(m_camera->GetShader());
+	}
 
 	glUseProgram(0);
 

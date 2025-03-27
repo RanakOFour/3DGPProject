@@ -2,6 +2,7 @@
 #define SDLGLWINDOW_H
 
 #include "Pipeline/Camera.h"
+#include "Components/RenderTexture.h"
 
 #include <SDL2/SDL.h>
 #include <memory>
@@ -15,6 +16,7 @@ class SDLGLWindow
 {
     SDL_Window* m_Window;
     Camera* m_camera;
+    RenderTexture* blue;
     std::vector<std::shared_ptr<Entity>> m_Entities;
 
     public:
