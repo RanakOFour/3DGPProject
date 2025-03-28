@@ -2,7 +2,7 @@
 
 #define RENDERTEXTURE_H
 
-#include "gl/glew.h"
+#include "GL/glew.h"
 #include "glm/ext.hpp"
 #include <vector>
 

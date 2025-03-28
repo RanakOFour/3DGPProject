@@ -1,5 +1,5 @@
 #include "Components/RenderTexture.h"
-#include "gl/glew.h"
+#include "GL/glew.h"
 #include "glm/ext.hpp"
 #include "stb_image.h"
 

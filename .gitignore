@@ -3,5 +3,6 @@
 3DGPProject/.vs/**
 3DGPProject/.vscode/**
 3DGPProject/out/**
+3DGPProject/build/**
 x64/**
 *.vcxproj.user
