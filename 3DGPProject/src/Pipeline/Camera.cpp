@@ -4,9 +4,6 @@
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/string_cast.hpp>
-
 Camera::Camera() :
     m_Projection(glm::perspective(45.0f, 1.0f, 0.1f, 100.0f)),
     m_Transform(),

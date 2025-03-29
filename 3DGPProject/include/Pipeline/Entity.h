@@ -1,20 +1,17 @@
 #ifndef ENTITY_H
 
 #define ENTITY_H
+
 #include "Pipeline/Model.h"
-#include "Components/Texture.h"
 #include "Pipeline/ShaderProgram.h"
-#include "Components/Transform.h"
+#include "Components/Component.h"
 #include <memory>
 #include <glm/ext.hpp>
-
-#pragma once
 
 class Entity 
 {
     Model m_Model;
-    Texture m_Texture;
-    Transform m_Transform;
+    std::vector<std::unique_ptr<Component>> m_Components;
 
     public:
     Entity(const char* _modelPath, const char* _texturePath);

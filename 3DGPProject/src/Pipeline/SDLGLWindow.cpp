@@ -62,7 +62,8 @@ void SDLGLWindow::Update()
 {
     // Handle input
 	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 0.25f);
-	glm::vec3 left = glm::vec3(0.25f, 0.0f, 0.0f);
+	glm::vec3 leftMove = glm::vec3(0.25f, 0.0f, 0.0f);
+	glm::vec3 rotateY = glm::vec3(0.0f, 0.25f, 0.0f);
 
     SDL_Event e = { 0 };
 
@@ -77,12 +78,12 @@ void SDLGLWindow::Update()
 	const Uint8* key = SDL_GetKeyboardState(NULL);
 	if (key[SDL_SCANCODE_A])
 	{
-		m_camera->Rotate(left);
+		m_camera->Rotate(rotateY);
 	}
 
 	if (key[SDL_SCANCODE_D])
 	{
-		m_camera->Rotate(-left);
+		m_camera->Rotate(-rotateY);
 	}
 		
 	if (key[SDL_SCANCODE_W])
@@ -97,12 +98,12 @@ void SDLGLWindow::Update()
 
 	if(key[SDL_SCANCODE_LEFT])
 	{
-		m_Entities[0]->Move(left);
+		m_Entities[0]->Move(leftMove);
 	}
 
 	if(key[SDL_SCANCODE_RIGHT])
 	{
-		m_Entities[0]->Move(-left);
+		m_Entities[0]->Move(-leftMove);
 	}
 
 	if(key[SDL_SCANCODE_UP])

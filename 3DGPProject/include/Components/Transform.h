@@ -2,9 +2,11 @@
 
 #define TRANSFORM_H
 
+#include "Components/Component.h"
 #include <glm/ext.hpp>
+#include <iostream>
 
-class Transform
+class Transform : public Component
 {
 private:
 
@@ -28,9 +30,9 @@ public:
     void inline Rotate(glm::vec3 _eulerRotation)
     {
         m_EulerRotation += _eulerRotation;
-        m_Forward += _eulerRotation;
-        m_Up += _eulerRotation;
-        m_Right += _eulerRotation;
+
+        // Need to find a way to express forward, up n right vectors
+        // smth with polar coords
     };
 
     void inline Scale(glm::vec3 _scaleChange) 
