@@ -10,6 +10,7 @@
 #pragma once
 class Texture
 {
+protected:
 	bool m_dirty;
 	std::vector<unsigned char> m_data;
 	glm::ivec2 m_size;
@@ -22,15 +23,15 @@ public:
 	Texture& operator=(const Texture& _assign);
 	~Texture();
 
-	void size(glm::ivec2 _size);
-	const glm::ivec2 size();
+	void Size(glm::ivec2 _size);
+	const glm::ivec2 Size();
 
-	void load(const std::string& _path);
+	virtual void Load(const std::string& _path);
 
-	void pixel(glm::ivec2 _position, glm::vec4& _color);
-	const glm::vec4 pixel(glm::ivec2 _position);
+	void Pixel(glm::ivec2 _position, glm::vec4& _color);
+	const glm::vec4 Pixel(glm::ivec2 _position);
 
-	GLuint id();
+	GLuint GetID();
 };
 
 #endif

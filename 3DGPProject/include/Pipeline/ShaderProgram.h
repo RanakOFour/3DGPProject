@@ -2,7 +2,7 @@
 #define SHADERPROGRAM_H
 
 #include "Pipeline/VertexArray.h"
-#include "Pipeline/Texture.h"
+#include "Components/Texture.h"
 
 #include <GL/glew.h>
 #include <glm/ext.hpp>

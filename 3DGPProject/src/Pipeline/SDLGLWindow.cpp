@@ -49,7 +49,7 @@ SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
 
     printf("Window created\n");
 
-	blue = new RenderTexture(800, 800);
+	blue = new RenderTexture(glm::ivec2(800, 800));
 }
 
 SDLGLWindow::~SDLGLWindow()

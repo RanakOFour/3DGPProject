@@ -2,7 +2,7 @@
 
 #define ENTITY_H
 #include "Pipeline/Model.h"
-#include "Pipeline/Texture.h"
+#include "Components/Texture.h"
 #include "Pipeline/ShaderProgram.h"
 #include "Components/Transform.h"
 #include <memory>

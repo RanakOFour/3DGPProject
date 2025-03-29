@@ -3,39 +3,12 @@
 #include "glm/ext.hpp"
 #include "stb_image.h"
 
-RenderTexture::RenderTexture(int _w, int _h) :
-	m_id(0),
+RenderTexture::RenderTexture(glm::ivec2 _size) : 
+	Texture(_size),
 	m_frameBufferId(0),
-	m_renderBufferId(0),
-	m_width(_w),
-	m_height(_h),
-	m_dirty(true),
-	m_data()
+	m_renderBufferId(0)
 {
 
-}
-
-RenderTexture::RenderTexture(const char* _path) :
-	m_id(0),
-	m_frameBufferId(0),
-	m_renderBufferId(0),
-	m_width(0),
-	m_height(0),
-	m_dirty(true),
-	m_data()
-{
-	unsigned char* data = stbi_load(_path, &m_width, &m_height, NULL, 4);
-
-	if (!data || data == NULL)
-	{
-		printf("Failed to load texture\n");
-		throw std::exception();
-	}
-
-	m_data.assign(data, data + m_width * m_height * 4);
-
-	// Free the loaded data because we now have a copy on the GPU
-	free(data);
 }
 
 RenderTexture::~RenderTexture()
@@ -73,12 +46,7 @@ void RenderTexture::Bind()
 
 		if (m_data.size() < 1)
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-		}
-		else
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_data.data());
-			glGenerateMipmap(GL_TEXTURE_2D);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.x, m_size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 		}
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -89,7 +57,7 @@ void RenderTexture::Bind()
 
 		glGenRenderbuffers(1, &m_renderBufferId);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_renderBufferId);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_width, m_height);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_size.x, m_size.y);
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBufferId);
 
@@ -108,7 +76,7 @@ void RenderTexture::Unbind()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-GLuint RenderTexture::GetID()
+void RenderTexture::Load(const std::string& _path)
 {
-	return m_id;
+	printf("You are loading a render texture, you should not be doing this!\n");
 }

@@ -1,4 +1,4 @@
-#include "Pipeline/Texture.h"
+#include "Components/Texture.h"
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 #include <string>
@@ -46,7 +46,7 @@ Texture::~Texture()
 	glDeleteTextures(1, &m_id);
 }
 
-GLuint Texture::id()
+GLuint Texture::GetID()
 {
 	if (m_dirty)
 	{
@@ -74,19 +74,19 @@ GLuint Texture::id()
 	return m_id;
 }
 
-void Texture::size(glm::ivec2 _size)
+void Texture::Size(glm::ivec2 _size)
 {
 	m_size = _size;
 
 	// Change size of vbo on gpu
 }
 
-const glm::ivec2 Texture::size()
+const glm::ivec2 Texture::Size()
 {
 	return m_size;
 }
 
-void Texture::load(const std::string& _path)
+void Texture::Load(const std::string& _path)
 {
 	if (!m_dirty)
 	{
@@ -124,7 +124,7 @@ void Texture::load(const std::string& _path)
 	m_dirty = true;
 }
 
-void Texture::pixel(glm::ivec2 _position, glm::vec4& _color)
+void Texture::Pixel(glm::ivec2 _position, glm::vec4& _color)
 {
 	// Put data from _color into pixel at _position
 	unsigned char* colStart = &m_data[m_size.y * _position.y * _position.x];
@@ -136,7 +136,7 @@ void Texture::pixel(glm::ivec2 _position, glm::vec4& _color)
 
 }
 
-const glm::vec4 Texture::pixel(glm::ivec2 _position)
+const glm::vec4 Texture::Pixel(glm::ivec2 _position)
 {
 	unsigned char* colStart = &m_data[m_size.y * _position.y * _position.x];
 

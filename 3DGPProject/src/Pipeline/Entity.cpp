@@ -1,6 +1,6 @@
 #include "Pipeline/Entity.h"
 #include "Pipeline/Model.h"
-#include "Pipeline/Texture.h"
+#include "Components/Texture.h"
 #include "Pipeline/ShaderProgram.h"
 #include "Pipeline/Camera.h"
 
@@ -23,7 +23,7 @@ Entity::~Entity()
 void Entity::Draw(ShaderProgram* _shaderProgram)
 {
     glBindVertexArray(m_Model.GetVAO());
-	glBindTexture(GL_TEXTURE_2D, m_Texture.id());
+	glBindTexture(GL_TEXTURE_2D, m_Texture.GetID());
 
 	_shaderProgram->SetUniform("u_Model", m_Transform.GetModelMatrix());
 
