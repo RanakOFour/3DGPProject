@@ -127,9 +127,9 @@ void SDLGLWindow::Update()
 	}
 
     // Render
-    int windowWidth, windowHeight;
-    SDL_GetWindowSize(m_Window, &windowWidth, &windowHeight);
-	glViewport(0, 0, windowWidth, windowHeight);
+    int L_windowWidth, L_windowHeight;
+    SDL_GetWindowSize(m_Window, &L_windowWidth, &L_windowHeight);
+	glViewport(0, 0, L_windowWidth, L_windowHeight);
 
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
