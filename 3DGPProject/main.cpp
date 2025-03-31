@@ -1,10 +1,10 @@
 #include <stdexcept>
 #include <glm/ext.hpp>
 
-#include "OpenGLPipeline/SDLGLWindow.h"
-#include "OpenGLPipeline/Scene.h"
-#include "OpenGLPipeline/Entity.h"
-#include "OpenGLPipeline/OpenGLError.h"
+#include "GLPipeline/SDLGLWindow.h"
+#include "GLPipeline/Scene/Scene.h"
+#include "GLPipeline/Entity/Entity.h"
+#include "GLPipeline/OpenGLError.h"
 
 #undef main
 

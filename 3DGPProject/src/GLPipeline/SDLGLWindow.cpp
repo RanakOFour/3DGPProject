@@ -1,7 +1,5 @@
 #include "GLPipeline/SDLGLWindow.h"
-
-#include "GLPipeline/Entity/Entity.h"
-#include "GLPipeline/Scene/Camera.h"
+#include "GLPipeline/Scene/Scene.h"
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
@@ -65,11 +63,6 @@ void SDLGLWindow::Update()
 
 	if(m_Scene != nullptr)
 	{
-		const Uint8* key = SDL_GetKeyboardState(NULL);
-
-		m_Scene->HandleSDLInput(key);
-
-    	// Render
     	int L_windowWidth, L_windowHeight;
     	SDL_GetWindowSize(m_Window, &L_windowWidth, &L_windowHeight);
 		glViewport(0, 0, L_windowWidth, L_windowHeight);
@@ -77,7 +70,8 @@ void SDLGLWindow::Update()
 		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		m_Scene->Update();
+		const Uint8* key = SDL_GetKeyboardState(NULL);
+		m_Scene->Update(key);
 
 		SDL_GL_SwapWindow(m_Window);
 	}

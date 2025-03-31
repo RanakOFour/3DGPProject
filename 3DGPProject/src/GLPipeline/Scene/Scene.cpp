@@ -18,17 +18,7 @@ void Scene::AddEntity(Entity* _entity)
     m_Entities.push_back(*_entity);
 }
 
-void Scene::Update()
-{
-    for (int i = 0; i < m_Entities.size(); i++)
-	{
-		m_Entities[i].Draw(&m_Camera);
-	}
-
-	glUseProgram(0);
-}
-
-void Scene::HandleSDLInput(const uint8_t _inputKeys)
+void Scene::Update(const uint8_t* _inputKeys)
 {
 	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 0.25f);
 	glm::vec3 leftMove = glm::vec3(0.25f, 0.0f, 0.0f);
@@ -84,7 +74,10 @@ void Scene::HandleSDLInput(const uint8_t _inputKeys)
 		m_Entities[0].Scale(glm::vec3(-0.1f, -0.1f, -0.1f));
 	}
 
-    printf("You are calling an SDL handle without compiling with SDL!\n");
-}
+    for (int i = 0; i < m_Entities.size(); i++)
+	{
+		m_Entities[i].Draw(&m_Camera);
+	}
 
-#endif
+	glUseProgram(0);
+}

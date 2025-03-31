@@ -2,8 +2,9 @@
 
 #define SCENE_H
 
-#include "OpenGLPipeline/Entity.h"
-#include "OpenGLPipeline/Camera.h"
+#include "GLPipeline/Entity/Entity.h"
+#include "GLPipeline/Scene/Camera.h"
+
 #include <vector>
 
 #pragma once
@@ -18,8 +19,7 @@ public:
 	~Scene();
 
 	void AddEntity(Entity* _entity);
-	void HandleSDLInput(const uint8_t* _inputKeys);
-	void Update();
+	void Update(const uint8_t* _inputKeys);
 };
 
 #endif
