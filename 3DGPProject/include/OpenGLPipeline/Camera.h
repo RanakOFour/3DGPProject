@@ -9,10 +9,7 @@
 
 class Camera
 {
-    ShaderProgram m_Shader;
-
     Transform m_Transform;
-    
     glm::mat4 m_Projection;
 
     void CalculateView();
@@ -21,7 +18,7 @@ class Camera
     Camera();
     ~Camera();
 
-    void Use();
+    void Use(ShaderProgram* _shader);
     void Translate(glm::vec3 _translation);
     void Rotate(glm::vec3 _eulerRotation);
     glm::vec3 GetForward();

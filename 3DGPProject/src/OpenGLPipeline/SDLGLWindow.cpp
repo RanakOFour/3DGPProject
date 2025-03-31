@@ -1,7 +1,7 @@
-#include "Pipeline/SDLGLWindow.h"
-#include "Pipeline/Entity.h"
-#include "Pipeline/Camera.h"
-#include "Components/RenderTexture.h"
+#include "OpenGLPipeline/SDLGLWindow.h"
+#include "OpenGLPipeline/Entity.h"
+#include "OpenGLPipeline/Camera.h"
+#include "OpenGLPipeline/RenderTexture.h"
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
@@ -134,19 +134,9 @@ void SDLGLWindow::Update()
 	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Instruct OpenGL to use our shader program, VAO and texture
-	m_camera->Use();
-
-	blue->Bind();
-    for(int i = 0; i < m_Entities.size(); i++)
-    {
-        m_Entities[i]->Draw(m_camera->GetShader());
-    }
-	blue->Unbind();
-
 	for (int i = 0; i < m_Entities.size(); i++)
 	{
-		m_Entities[i]->Draw(m_camera->GetShader());
+		m_Entities[i]->Draw(m_camera);
 	}
 
 	glUseProgram(0);

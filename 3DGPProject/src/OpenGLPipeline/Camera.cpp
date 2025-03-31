@@ -6,8 +6,7 @@
 
 Camera::Camera() :
     m_Projection(glm::perspective(45.0f, 1.0f, 0.1f, 100.0f)),
-    m_Transform(),
-    m_Shader("./resources/shaders/specular/vert.vs", "./resources/shaders/specular/frag.fs")
+    m_Transform()
 {
     
 }
@@ -22,14 +21,12 @@ void Camera::CalculateView()
 
 }
 
-void Camera::Use()
+void Camera::Use(ShaderProgram* _shader)
 {
-    m_Shader.Use();
-
     //CalculateView();
 
-	m_Shader.SetUniform("u_View", m_Transform.GetModelMatrix());
-	m_Shader.SetUniform("u_Projection", m_Projection);
+	_shader->SetUniform("u_View", m_Transform.GetModelMatrix());
+	_shader->SetUniform("u_Projection", m_Projection);
 }
 
 void Camera::Translate(glm::vec3 _translate)
@@ -40,9 +37,4 @@ void Camera::Translate(glm::vec3 _translate)
 void Camera::Rotate(glm::vec3 _eulerRotation)
 {
     m_Transform.Rotate(_eulerRotation);
-}
-
-ShaderProgram* Camera::GetShader()
-{
-    return &m_Shader;
 }
