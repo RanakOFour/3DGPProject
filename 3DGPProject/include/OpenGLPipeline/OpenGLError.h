@@ -35,6 +35,6 @@ public:
 		printf("OpenGLError Initialized\n");
 	}
 };
-
+ 
 
 #endif

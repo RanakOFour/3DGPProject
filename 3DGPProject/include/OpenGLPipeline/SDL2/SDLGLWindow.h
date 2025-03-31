@@ -1,8 +1,7 @@
 #ifndef SDLGLWINDOW_H
 #define SDLGLWINDOW_H
 
-#include "OpenGLPipeline/Camera.h"
-#include "OpenGLPipeline/RenderTexture.h"
+#include "OpenGLPipeline/Scene.h"
 
 #include <SDL2/SDL.h>
 #include <memory>
@@ -15,9 +14,7 @@ class ShaderProgram;
 class SDLGLWindow
 {
     SDL_Window* m_Window;
-    Camera* m_camera;
-    RenderTexture* blue;
-    std::vector<std::shared_ptr<Entity>> m_Entities;
+    Scene* m_Scene;
 
     public:
     bool m_Quit;
@@ -26,7 +23,7 @@ class SDLGLWindow
     ~SDLGLWindow();
 
     void Update();
-    void AddEntity(Entity* _object);
+    void SetScene(Scene* _scene);
 };
 
 #endif

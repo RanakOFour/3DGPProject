@@ -1,7 +1,8 @@
 #include <stdexcept>
 #include <glm/ext.hpp>
 
-#include "OpenGLPipeline/SDLGLWindow.h"
+#include "OpenGLPipeline/SDL2/SDLGLWindow.h"
+#include "OpenGLPipeline/Scene.h"
 #include "OpenGLPipeline/Entity.h"
 #include "OpenGLPipeline/OpenGLError.h"
 
@@ -16,7 +17,10 @@ int main()
 	Entity catWarrior("./resources/curuthers/curuthers.obj", 
 					  "./resources/curuthers/Whiskers_diffuse.png");
 
-	window.AddEntity(&catWarrior);
+	Scene scene;
+	scene.AddEntity(&catWarrior);
+
+	window.SetScene(&scene);
 
 	while (!window.m_Quit)
 	{
