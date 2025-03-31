@@ -2,11 +2,10 @@
 
 #define TRANSFORM_H
 
-#include "Components/Component.h"
 #include <glm/ext.hpp>
 #include <iostream>
 
-class Transform : public Component
+class Transform
 {
 private:
 

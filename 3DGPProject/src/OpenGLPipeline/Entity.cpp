@@ -1,8 +1,8 @@
-#include "Pipeline/Entity.h"
-#include "Pipeline/Model.h"
-#include "Components/Texture.h"
-#include "Pipeline/ShaderProgram.h"
-#include "Pipeline/Camera.h"
+#include "OpenGLPipeline/Entity.h"
+#include "OpenGLPipeline/Model.h"
+#include "OpenGLPipeline/Texture.h"
+#include "OpenGLPipeline/ShaderProgram.h"
+#include "OpenGLPipeline/Camera.h"
 
 #include <GL/glew.h>
 #include <glm/ext.hpp>

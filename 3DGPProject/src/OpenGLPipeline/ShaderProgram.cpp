@@ -5,9 +5,9 @@
 #include <fstream>
 #include <sstream>
 
-#include "Pipeline/ShaderProgram.h"
-#include "Pipeline/VertexArray.h"
-#include "Pipeline/OpenGLError.h"
+#include "OpenGLPipeline/ShaderProgram.h"
+#include "OpenGLPipeline/VertexArray.h"
+#include "OpenGLPipeline/OpenGLError.h"
 
 ShaderProgram::ShaderProgram(const std::string& _vertexPath, const std::string& _fragPath)
 {

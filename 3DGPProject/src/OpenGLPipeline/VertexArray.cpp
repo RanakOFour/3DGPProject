@@ -1,5 +1,5 @@
-#include "Pipeline/VertexArray.h"
-#include "Pipeline/VertexBuffer.h"
+#include "OpenGLPipeline/VertexArray.h"
+#include "OpenGLPipeline/VertexBuffer.h"
 #include <GL/glew.h>
 #include <vector>
 #include <memory>

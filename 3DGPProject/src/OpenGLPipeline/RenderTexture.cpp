@@ -1,4 +1,4 @@
-#include "Components/RenderTexture.h"
+#include "OpenGLPipeline/RenderTexture.h"
 #include "GL/glew.h"
 #include "glm/ext.hpp"
 #include "stb_image.h"

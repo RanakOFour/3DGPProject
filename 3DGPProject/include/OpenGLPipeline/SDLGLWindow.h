@@ -1,8 +1,8 @@
 #ifndef SDLGLWINDOW_H
 #define SDLGLWINDOW_H
 
-#include "Pipeline/Camera.h"
-#include "Components/RenderTexture.h"
+#include "OpenGLPipeline/Camera.h"
+#include "OpenGLPipeline/RenderTexture.h"
 
 #include <SDL2/SDL.h>
 #include <memory>

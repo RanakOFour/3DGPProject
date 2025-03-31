@@ -2,7 +2,7 @@
 
 #define RENDERTEXTURE_H
 
-#include "Components/Texture.h"
+#include "OpenGLPipeline/Texture.h"
 #include "GL/glew.h"
 #include "glm/ext.hpp"
 #include <vector>

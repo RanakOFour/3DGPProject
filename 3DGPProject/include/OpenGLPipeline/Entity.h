@@ -2,10 +2,10 @@
 
 #define ENTITY_H
 
-#include "Pipeline/Model.h"
-#include "Pipeline/ShaderProgram.h"
-#include "Components/Transform.h"
-#include "Components/Texture.h"
+#include "OpenGLPipeline/Model.h"
+#include "OpenGLPipeline/ShaderProgram.h"
+#include "OpenGLPipeline/Transform.h"
+#include "OpenGLPipeline/Texture.h"
 #include <memory>
 #include <glm/ext.hpp>
 

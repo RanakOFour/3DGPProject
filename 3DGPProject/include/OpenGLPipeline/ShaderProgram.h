@@ -1,8 +1,8 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
-#include "Pipeline/VertexArray.h"
-#include "Components/Texture.h"
+#include "OpenGLPipeline/VertexArray.h"
+#include "OpenGLPipeline/Texture.h"
 
 #include <GL/glew.h>
 #include <glm/ext.hpp>

@@ -1,5 +1,5 @@
-#include "Pipeline/Camera.h"
-#include "Pipeline/ShaderProgram.h"
+#include "OpenGLPipeline/Camera.h"
+#include "OpenGLPipeline/ShaderProgram.h"
 
 #include <GL/glew.h>
 #include <glm/ext.hpp>

@@ -1,4 +1,4 @@
-#include "Pipeline/VertexBuffer.h"
+#include "OpenGLPipeline/VertexBuffer.h"
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 #include <vector>

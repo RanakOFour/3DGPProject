@@ -2,14 +2,13 @@
 
 #define TEXTURE_H
 
-#include "Components/Component.h"
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 #include <string>
 #include <vector>
 
 #pragma once
-class Texture : public Component
+class Texture
 {
 protected:
 	bool m_dirty;

@@ -2,8 +2,8 @@
 
 #define SCENE_H
 
-#include "Pipeline/Entity.h"
-#include "Pipeline/Camera.h"
+#include "OpenGLPipeline/Entity.h"
+#include "OpenGLPipeline/Camera.h"
 #include <vector>
 
 #pragma once

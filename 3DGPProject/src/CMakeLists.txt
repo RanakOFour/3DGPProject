@@ -1,2 +1,1 @@
-add_subdirectory(Pipeline)
-add_subdirectory(Components)
+add_subdirectory(OpenGLPipeline)
