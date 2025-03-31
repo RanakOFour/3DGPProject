@@ -1,13 +1,14 @@
+
+#include "GLPipeline/Entity/ShaderProgram.h"
+#include "GLPipeline/VertexArray.h"
+#include "GLPipeline/OpenGLError.h"
+
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 #include <string>
 #include <vector>
 #include <fstream>
 #include <sstream>
-
-#include "OpenGLPipeline/ShaderProgram.h"
-#include "OpenGLPipeline/VertexArray.h"
-#include "OpenGLPipeline/OpenGLError.h"
 
 ShaderProgram::ShaderProgram(const std::string& _vertexPath, const std::string& _fragPath)
 {

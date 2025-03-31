@@ -1,8 +1,8 @@
-#include "OpenGLPipeline/Entity.h"
-#include "OpenGLPipeline/Model.h"
-#include "OpenGLPipeline/Texture.h"
-#include "OpenGLPipeline/ShaderProgram.h"
-#include "OpenGLPipeline/Camera.h"
+#include "GLPipeline/Entity/Entity.h"
+#include "GLPipeline/Entity/Model.h"
+#include "GLPipeline/Entity/Texture.h"
+#include "GLPipeline/Entity/ShaderProgram.h"
+#include "GLPipeline/Scene/Camera.h"
 
 #include <GL/glew.h>
 #include <glm/ext.hpp>

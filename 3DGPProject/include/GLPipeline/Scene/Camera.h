@@ -1,8 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "OpenGLPipeline/ShaderProgram.h"
-#include "OpenGLPipeline/Transform.h"
+#include "GLPipeline/Entity/ShaderProgram.h"
+#include "GLPipeline/Entity/Transform.h"
 
 #include <GL/glew.h>
 #include <glm/ext.hpp>

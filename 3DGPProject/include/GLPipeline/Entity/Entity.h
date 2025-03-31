@@ -2,15 +2,15 @@
 
 #define ENTITY_H
 
-#include "OpenGLPipeline/Model.h"
-#include "OpenGLPipeline/ShaderProgram.h"
-#include "OpenGLPipeline/Transform.h"
-#include "OpenGLPipeline/Texture.h"
-#include "OpenGLPipeline/Camera.h"
+#include "GLPipeline/Entity/Model.h"
+#include "GLPipeline/Entity/ShaderProgram.h"
+#include "GLPipeline/Entity/Transform.h"
+#include "GLPipeline/Entity/Texture.h"
+#include "GLPipeline/Scene/Camera.h"
 
+#include <glm/ext.hpp>
 #include <memory>
 #include <vector>
-#include <glm/ext.hpp>
 
 class Entity 
 {

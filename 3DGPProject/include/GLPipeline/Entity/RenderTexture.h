@@ -2,13 +2,15 @@
 
 #define RENDERTEXTURE_H
 
-#include "OpenGLPipeline/Texture.h"
-#include "GL/glew.h"
-#include "glm/ext.hpp"
+#include "GLPipeline/Entity/RenderTexture.h"
+#include "GLPipeline/Entity/Texture.h"
+
+#include <GL/glew.h>
+#include <glm/ext.hpp>
 #include <vector>
 #include <string>
 
-#pragma once
+
 class RenderTexture : public Texture
 {
 private:

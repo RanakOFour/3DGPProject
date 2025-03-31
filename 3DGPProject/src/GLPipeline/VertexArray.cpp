@@ -1,5 +1,6 @@
-#include "OpenGLPipeline/VertexArray.h"
-#include "OpenGLPipeline/VertexBuffer.h"
+#include "GLPipeline/VertexArray.h"
+#include "GLPipeline/VertexBuffer.h"
+
 #include <GL/glew.h>
 #include <vector>
 #include <memory>

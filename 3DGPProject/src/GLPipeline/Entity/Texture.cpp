@@ -1,4 +1,5 @@
-#include "OpenGLPipeline/Texture.h"
+#include "GLPipeline/Entity/Texture.h"
+
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 #include <string>

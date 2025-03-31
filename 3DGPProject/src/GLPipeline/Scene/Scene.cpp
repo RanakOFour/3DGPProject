@@ -1,6 +1,5 @@
-#include "OpenGLPipeline/Scene.h"
-
-#define SDLUSE true
+#include "GLPipeline/Scene/Scene.h"
+#include "SDL2/SDL.h"
 
 Scene::Scene() :
     m_Entities(),
@@ -29,10 +28,7 @@ void Scene::Update()
 	glUseProgram(0);
 }
 
-#if SDLUSE
-    #include "SDL2/SDL.h"
-
-void Scene::HandleSDLInput(const uint8_t* _inputKeys)
+void Scene::HandleSDLInput(const uint8_t _inputKeys)
 {
 	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 0.25f);
 	glm::vec3 leftMove = glm::vec3(0.25f, 0.0f, 0.0f);
@@ -87,12 +83,7 @@ void Scene::HandleSDLInput(const uint8_t* _inputKeys)
 	{
 		m_Entities[0].Scale(glm::vec3(-0.1f, -0.1f, -0.1f));
 	}
-}
 
-#else
-
-void Scene::HandleSDLInput(const uint8_t _inputKeys)
-{
     printf("You are calling an SDL handle without compiling with SDL!\n");
 }
 

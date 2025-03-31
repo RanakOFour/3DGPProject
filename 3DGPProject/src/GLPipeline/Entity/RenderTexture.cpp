@@ -1,6 +1,8 @@
-#include "OpenGLPipeline/RenderTexture.h"
-#include "GL/glew.h"
-#include "glm/ext.hpp"
+#include "GLPipeline/Entity/RenderTexture.h"
+#include "GLPipeline/Entity/Texture.h"
+
+#include <GL/glew.h>
+#include <glm/ext.hpp>
 #include "stb_image.h"
 
 RenderTexture::RenderTexture(glm::ivec2 _size) : 

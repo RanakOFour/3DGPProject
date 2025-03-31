@@ -1,7 +1,7 @@
 #ifndef SDLGLWINDOW_H
 #define SDLGLWINDOW_H
 
-#include "OpenGLPipeline/Scene.h"
+#include "GLPipeline/Scene/Scene.h"
 
 #include <SDL2/SDL.h>
 #include <memory>

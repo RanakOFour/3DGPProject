@@ -1,8 +1,7 @@
-#include "OpenGLPipeline/SDL2/SDLGLWindow.h"
+#include "GLPipeline/SDLGLWindow.h"
 
-#include "OpenGLPipeline/Entity.h"
-#include "OpenGLPipeline/Camera.h"
-#include "OpenGLPipeline/RenderTexture.h"
+#include "GLPipeline/Entity/Entity.h"
+#include "GLPipeline/Scene/Camera.h"
 
 #include <SDL2/SDL.h>
 #include <GL/glew.h>

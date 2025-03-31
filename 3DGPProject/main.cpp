@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <glm/ext.hpp>
 
-#include "OpenGLPipeline/SDL2/SDLGLWindow.h"
+#include "OpenGLPipeline/SDLGLWindow.h"
 #include "OpenGLPipeline/Scene.h"
 #include "OpenGLPipeline/Entity.h"
 #include "OpenGLPipeline/OpenGLError.h"

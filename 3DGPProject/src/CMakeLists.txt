@@ -1,1 +1,1 @@
-add_subdirectory(OpenGLPipeline)
+add_subdirectory(GLPipeline)
