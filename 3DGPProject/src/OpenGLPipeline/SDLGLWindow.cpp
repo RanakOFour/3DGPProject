@@ -13,7 +13,6 @@
 #include <iostream>
 
 
-
 SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
     m_Window(nullptr),
     m_Entities(),
