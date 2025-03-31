@@ -7,14 +7,6 @@
 #include "OpenGLPipeline/ShaderProgram.h"
 #include <vector>
 
-enum ErrorType
-{
-	Buffer,
-	Shader,
-	Array,
-	Texture
-};
-
 /*
 	Error logging static for OpenGLObjects
 */
@@ -25,23 +17,20 @@ public:
 	/*
 		Takes in a type of OpenGL object, and a pointer to said data, then prints the associated error while deleting the associated object
 	*/
-	static void DisplayError(ErrorType _type, GLuint* _data)
+	static void DisplayError(GLenum _source, GLenum _type, GLuint _id,
+							 GLenum _severity, GLsizei _length, const GLchar* _message,
+							 const void* _userParam)
 	{
-		GLint L_maxLength{ 0 };
-		std::vector<GLchar> L_errorLog;
+		printf("GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+			   ( _type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+			   _type, _severity, _message );
+	}
 
-		switch (_type)
-		{
-		case Shader:
-			glGetShaderiv(*_data, GL_INFO_LOG_LENGTH, &L_maxLength);
-
-			L_errorLog = std::vector<GLchar>(L_maxLength);
-			glGetShaderInfoLog(*_data, L_maxLength, &L_maxLength, &L_errorLog[0]);
-
-			glDeleteShader(*_data);
-		}
-
-		printf("OpenGLError: %s", &L_errorLog[0]);
+	static void Init()
+	{
+		glEnable(GL_DEBUG_OUTPUT);
+		glDebugMessageCallback(DisplayError, 0);
+		printf("OpenGLError Initialized\n");
 	}
 };
 
