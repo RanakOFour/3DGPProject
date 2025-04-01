@@ -11,13 +11,13 @@ Entity::Entity(const char* _modelPath, const char* _texturePath) :
 	m_Transform(),
 	m_Model(),
 	m_Texture(),
-	m_Shaders()
+	m_Shader()
 {
 	printf("Entity constructor\n");
 
 	m_Model = std::make_shared<Model>(_modelPath);
 	m_Texture = std::make_shared<Texture>(_texturePath);
-	m_Shaders.push_back(std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs"));
+	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
 }
 
 Entity::~Entity()
@@ -32,15 +32,12 @@ void Entity::Draw(Camera* _camera)
 
 	glm::mat4 L_modelMatrix = m_Transform.GetModelMatrix();
 
-	for(int i = 0; i < m_Shaders.size(); i++)
-	{
-		m_Shaders[i]->Use();
-		_camera->Use(m_Shaders[i].get());
-		m_Shaders[i]->SetUniform("u_Model", L_modelMatrix);
+	m_Shader->Use();
+	_camera->Use(m_Shader.get());
+	m_Shader->SetUniform("u_Model", L_modelMatrix);
 
-		// Draw shape
-		glDrawArrays(GL_TRIANGLES, 0, m_Model->GetVertexCount());
-	}
+	// Draw shape
+	glDrawArrays(GL_TRIANGLES, 0, m_Model->GetVertexCount());
 
 	// Reset the state
 	glBindVertexArray(0);

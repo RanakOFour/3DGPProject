@@ -17,7 +17,7 @@ class Entity
     Transform m_Transform;
     std::shared_ptr<Model> m_Model;
     std::shared_ptr<Texture> m_Texture;
-    std::vector<std::shared_ptr<ShaderProgram>> m_Shaders;
+    std::shared_ptr<ShaderProgram> m_Shader;
 
     public:
     Entity(const char* _modelPath, const char* _texturePath);

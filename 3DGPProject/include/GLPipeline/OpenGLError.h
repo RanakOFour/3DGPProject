@@ -2,11 +2,8 @@
 
 #define OPENGLERROR_H
 
-#include "GLPipeline/Entity/ShaderProgram.h"
-
 #include <GL/glew.h>
-#include <glm/ext.hpp>
-#include <vector>
+#include <iostream>
 #include <string>
 
 /*
