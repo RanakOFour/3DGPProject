@@ -2,15 +2,15 @@
 
 #define BOXCOLLIDER_H
 
+#include "GLPipeline/Entity/Collider/Collider.h"
 #include "GLPipeline/Entity/Transform.h"
 #include "GLPipeline/Entity/Size.h"
 
 #include <memory>
 
-class BoxCollider
+class BoxCollider : Collider
 {
 private:
-	std::shared_ptr<Transform> m_Transform;
 	Size m_Size;
 
 public:
@@ -18,8 +18,8 @@ public:
 	BoxCollider(Transform* _parentTransform, glm::vec3 _sizeDimensions);
 	~BoxCollider();
 
-	bool IsCollidingAABB(BoxCollider* _other);
-	Transform* GetTransform();
+	bool IsCollidingAABB(Collider* _other);
+	void CollisionResponse(Collider* _other);
 	Size* GetSize();
 };
 

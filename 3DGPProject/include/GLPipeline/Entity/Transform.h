@@ -39,24 +39,24 @@ public:
         m_Scale += _scaleChange;
     };
 
-    inline glm::vec3 Position()
+    inline glm::vec3* Position()
     {
-        return m_Position;
+        return &m_Position;
     };
 
-    inline glm::vec3 Forward()
+    inline glm::vec3* Forward()
     {
-        return m_Forward;
+        return &m_Forward;
     };
 
-    inline glm::vec3 Up()
+    inline glm::vec3* Up()
     {
-        return m_Up;
+        return &m_Up;
     };
 
-    inline glm::vec3 Right()
+    inline glm::vec3* Right()
     {
-        return m_Right;
+        return &m_Right;
     };
 
     glm::mat4 GetModelMatrix();
