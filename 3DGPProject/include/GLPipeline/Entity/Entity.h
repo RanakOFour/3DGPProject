@@ -6,6 +6,7 @@
 #include "GLPipeline/Entity/ShaderProgram.h"
 #include "GLPipeline/Entity/Transform.h"
 #include "GLPipeline/Entity/Texture.h"
+#include "GLPipeline//Entity/Collider/BoxCollider.h"
 #include "GLPipeline/Scene/Camera.h"
 
 #include <glm/ext.hpp>
@@ -18,6 +19,7 @@ class Entity
     std::shared_ptr<Model> m_Model;
     std::shared_ptr<Texture> m_Texture;
     std::shared_ptr<ShaderProgram> m_Shader;
+    std::shared_ptr<BoxCollider> m_Collider;
 
     public:
     Entity(const char* _modelPath, const char* _texturePath);

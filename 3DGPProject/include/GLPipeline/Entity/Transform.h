@@ -21,12 +21,12 @@ public:
     Transform();
     ~Transform();
 
-    void inline Translate(glm::vec3 _translation)
+    inline void Translate(glm::vec3 _translation)
     {
         m_Position += _translation;
     };
 
-    void inline Rotate(glm::vec3 _eulerRotation)
+    inline void Rotate(glm::vec3 _eulerRotation)
     {
         m_EulerRotation += _eulerRotation;
 
@@ -34,22 +34,27 @@ public:
         // smth with polar coords
     };
 
-    void inline Scale(glm::vec3 _scaleChange) 
+    inline void Scale(glm::vec3 _scaleChange)
     {
         m_Scale += _scaleChange;
     };
 
-    glm::vec3 inline Forward() 
+    inline glm::vec3 Position()
+    {
+        return m_Position;
+    };
+
+    inline glm::vec3 Forward()
     {
         return m_Forward;
     };
 
-    glm::vec3 inline Up()
+    inline glm::vec3 Up()
     {
         return m_Up;
     };
 
-    glm::vec3 inline Right()
+    inline glm::vec3 Right()
     {
         return m_Right;
     };
