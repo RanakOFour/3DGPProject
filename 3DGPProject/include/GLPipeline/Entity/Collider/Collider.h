@@ -23,7 +23,6 @@ public:
 	Collider(Transform* _parentTransform, ColliderType _type);
 	~Collider();
 
-	virtual bool IsCollidingAABB(Collider* _other);
 	virtual void CollisionResponse(Collider* _other);
 
 	Transform* GetTransform();

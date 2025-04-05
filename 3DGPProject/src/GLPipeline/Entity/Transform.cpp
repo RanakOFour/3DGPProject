@@ -18,6 +18,44 @@ Transform::~Transform()
 
 }
 
+void Transform::Translate(glm::vec3 _translation)
+{
+    m_Position += _translation;
+};
+
+void Transform::Rotate(glm::vec3 _eulerRotation)
+{
+    m_EulerRotation += _eulerRotation;
+
+    // Need to find a way to express forward, up n right vectors
+    // smth with polar coords
+};
+
+void Transform::Scale(glm::vec3 _scaleChange)
+{
+    m_Scale += _scaleChange;
+};
+
+glm::vec3 Transform::Position()
+{
+    return m_Position;
+};
+
+glm::vec3* Transform::Forward()
+{
+    return &m_Forward;
+};
+
+glm::vec3* Transform::Up()
+{
+    return &m_Up;
+};
+
+glm::vec3* Transform::Right()
+{
+    return &m_Right;
+};
+
 glm::mat4 Transform::GetModelMatrix()
 {
     glm::mat4 L_modelMatrix = glm::mat4(1.0f);

@@ -15,6 +15,7 @@ Scene::~Scene()
 
 void Scene::AddEntity(Entity* _entity)
 {
+	_entity->SetID(m_Entities.size());
     m_Entities.push_back(*_entity);
 }
 
@@ -72,6 +73,11 @@ void Scene::Update(const uint8_t* _inputKeys)
 	if (_inputKeys[SDL_SCANCODE_Z])
 	{
 		m_Entities[0].Scale(glm::vec3(-0.1f, -0.1f, -0.1f));
+	}
+
+	for(int i = 0; i < m_Entities.size(); i++)
+	{
+		m_Entities[i].Update(&m_Entities);
 	}
 
     for (int i = 0; i < m_Entities.size(); i++)

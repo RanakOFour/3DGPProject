@@ -15,6 +15,7 @@
 
 class Entity 
 {
+    int m_id;
     Transform m_Transform;
     std::shared_ptr<Model> m_Model;
     std::shared_ptr<Texture> m_Texture;
@@ -26,10 +27,13 @@ class Entity
     Entity(glm::vec3 _location);
     ~Entity();
 
+    void Update(std::vector<Entity>* _entityList);
     void Draw(Camera* _camera);
     void Move(glm::vec3 _movement);
     void Rotate(glm::vec3 _rotation);
     void Scale(glm::vec3 _scaleChange);
+    void SetID(int _id);
+    int GetID();
 };
 
 #endif

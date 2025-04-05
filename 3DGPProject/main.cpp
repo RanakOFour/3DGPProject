@@ -17,8 +17,12 @@ int main()
 	Entity catWarrior("./resources/curuthers/curuthers.obj", 
 					  "./resources/curuthers/Whiskers_diffuse.png");
 
+	Entity catWarrior2("./resources/curuthers/curuthers.obj", 
+					   "./resources/curuthers/Whiskers_diffuse.png");
+
 	Scene scene;
 	scene.AddEntity(&catWarrior);
+	scene.AddEntity(&catWarrior2);
 
 	window.SetScene(&scene);
 

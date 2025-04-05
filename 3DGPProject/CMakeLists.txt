@@ -14,3 +14,10 @@ if(WIN32)
 else()
 	target_link_libraries(3DGPProject PUBLIC SDL2 SDL2main GL GLEW)
 endif()
+
+
+# Move .dll files to build
+add_custom_command(TARGET 3DGPProject POST_BUILD
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory
+				   "${PROJECT_SOURCE_DIR}/bin"
+				   $<TARGET_FILE_DIR:3DGPProject>)

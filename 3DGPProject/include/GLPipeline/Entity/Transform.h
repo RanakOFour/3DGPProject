@@ -21,43 +21,14 @@ public:
     Transform();
     ~Transform();
 
-    inline void Translate(glm::vec3 _translation)
-    {
-        m_Position += _translation;
-    };
+    void Translate(glm::vec3 _translation);
+    void Rotate(glm::vec3 _eulerRotation);
+    void Scale(glm::vec3 _scaleChange);
 
-    inline void Rotate(glm::vec3 _eulerRotation)
-    {
-        m_EulerRotation += _eulerRotation;
-
-        // Need to find a way to express forward, up n right vectors
-        // smth with polar coords
-    };
-
-    inline void Scale(glm::vec3 _scaleChange)
-    {
-        m_Scale += _scaleChange;
-    };
-
-    inline glm::vec3* Position()
-    {
-        return &m_Position;
-    };
-
-    inline glm::vec3* Forward()
-    {
-        return &m_Forward;
-    };
-
-    inline glm::vec3* Up()
-    {
-        return &m_Up;
-    };
-
-    inline glm::vec3* Right()
-    {
-        return &m_Right;
-    };
+    glm::vec3 Position();
+    glm::vec3* Forward();
+    glm::vec3* Up();
+    glm::vec3* Right();
 
     glm::mat4 GetModelMatrix();
 };
