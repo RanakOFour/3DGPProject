@@ -34,6 +34,9 @@ class Entity
     void Scale(glm::vec3 _scaleChange);
     void SetID(int _id);
     int GetID();
+
+    BoxCollider* GetBoxCollider();
+    void PrintColliderInfo();
 };
 
 #endif

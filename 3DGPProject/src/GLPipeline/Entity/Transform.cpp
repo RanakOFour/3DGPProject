@@ -36,24 +36,24 @@ void Transform::Scale(glm::vec3 _scaleChange)
     m_Scale += _scaleChange;
 };
 
-glm::vec3 Transform::Position()
+glm::vec3& Transform::Position()
 {
     return m_Position;
 };
 
-glm::vec3* Transform::Forward()
+glm::vec3 Transform::Forward()
 {
-    return &m_Forward;
+    return m_Forward;
 };
 
-glm::vec3* Transform::Up()
+glm::vec3 Transform::Up()
 {
-    return &m_Up;
+    return m_Up;
 };
 
-glm::vec3* Transform::Right()
+glm::vec3 Transform::Right()
 {
-    return &m_Right;
+    return m_Right;
 };
 
 glm::mat4 Transform::GetModelMatrix()

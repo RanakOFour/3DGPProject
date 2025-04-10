@@ -21,7 +21,7 @@ Entity::Entity(const char* _modelPath, const char* _texturePath) :
 	m_Model = std::make_shared<Model>(_modelPath);
 	m_Texture = std::make_shared<Texture>(_texturePath);
 	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/specular/vert.vs", "./resources/shaders/specular/frag.fs");
-	m_Collider = std::make_shared<BoxCollider>(&m_Transform, glm::vec3(1.0f, 1.0f, 1.0f));
+	m_Collider = std::make_shared<BoxCollider>(&m_Transform, glm::vec3(2.0f, 3.0f, 2.0f));
 }
 
 Entity::~Entity()
@@ -38,7 +38,7 @@ void Entity::Update(std::vector<Entity>* _entityList)
 		if(_entityList->at(i).GetID() != m_id)
 		{
 			printf("	Colliding with Entity %d\n", _entityList->at(i).GetID());
-			m_Collider->CollisionResponse((Collider*)_entityList->at(i).m_Collider.get());
+			m_Collider->CollisionResponse(&m_Transform, (Collider*)_entityList->at(i).m_Collider.get(), &_entityList->at(i).m_Transform);
 		}
 	}
 }
@@ -86,4 +86,14 @@ void Entity::SetID(int _id)
 int Entity::GetID()
 {
 	return m_id;
+}
+
+BoxCollider* Entity::GetBoxCollider()
+{
+	return m_Collider.get();
+}
+
+void Entity::PrintColliderInfo()
+{
+	m_Collider.get()->PrintInfo();
 }

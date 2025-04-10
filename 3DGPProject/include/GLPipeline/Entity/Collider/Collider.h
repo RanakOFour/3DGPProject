@@ -23,9 +23,11 @@ public:
 	Collider(Transform* _parentTransform, ColliderType _type);
 	~Collider();
 
-	virtual void CollisionResponse(Collider* _other);
+	virtual void CollisionResponse(Transform* _transform, Collider* _otherCollider, Transform* _otherTransform);
 
 	Transform* GetTransform();
+
+	void PrintInfo();
 };
 
 #endif

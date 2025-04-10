@@ -25,10 +25,10 @@ public:
     void Rotate(glm::vec3 _eulerRotation);
     void Scale(glm::vec3 _scaleChange);
 
-    glm::vec3 Position();
-    glm::vec3* Forward();
-    glm::vec3* Up();
-    glm::vec3* Right();
+    glm::vec3& Position();
+    glm::vec3 Forward();
+    glm::vec3 Up();
+    glm::vec3 Right();
 
     glm::mat4 GetModelMatrix();
 };

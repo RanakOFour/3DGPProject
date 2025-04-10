@@ -98,6 +98,7 @@ void Texture::Load(const std::string& _path)
 
 	if (!data || data == NULL)
 	{
+		printf("Texture::Load -> Data to load is NULL or invalid!\n");
 		throw std::exception();
 	}
 
@@ -110,7 +111,6 @@ void Texture::Load(const std::string& _path)
 			// Iterate once for each channel (4)
 			for (int k = 0; k < 4; k++)
 			{
-
 				int placesToShift = 32 - (8 * k + 1);
 
 				// Put channel's color bits into the correct place
@@ -134,7 +134,6 @@ void Texture::Pixel(glm::ivec2 _position, glm::vec4& _color)
 	colStart[1] = _color[1];
 	colStart[2] = _color[2];
 	colStart[3] = _color[3];
-
 }
 
 const glm::vec4 Texture::Pixel(glm::ivec2 _position)

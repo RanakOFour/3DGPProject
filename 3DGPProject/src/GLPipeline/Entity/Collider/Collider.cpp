@@ -15,7 +15,7 @@ Collider::~Collider()
 
 }
 
-void Collider::CollisionResponse(Collider* _other)
+void Collider::CollisionResponse(Transform* _transform, Collider* _otherCollider, Transform* _otherTransform)
 {
 	printf("BASE COLLIDER CALL IS BAD!\n");
 }
@@ -23,4 +23,9 @@ void Collider::CollisionResponse(Collider* _other)
 Transform* Collider::GetTransform()
 {
 	return m_Transform.get();
+}
+
+void Collider::PrintInfo()
+{
+	printf("ColliderInfo:\n	Transform Pos: %f, %f, %f\n	Collider Type: %d\n", m_Transform->Position().x, m_Transform->Position().y, m_Transform->Position().z, type);
 }
