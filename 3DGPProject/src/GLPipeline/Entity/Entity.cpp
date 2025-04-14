@@ -2,13 +2,15 @@
 #include "GLPipeline/Entity/Model.h"
 #include "GLPipeline/Entity/Texture.h"
 #include "GLPipeline/Entity/ShaderProgram.h"
+#include "GLPipeline/Entity/Collider/Collider.h"
 #include "GLPipeline/Entity/Collider/BoxCollider.h"
+#include "GLPipeline/Entity/Collider/MeshCollider.h"
 #include "GLPipeline/Scene/Camera.h"
 
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 
-Entity::Entity(const char* _modelPath, const char* _texturePath) :
+Entity::Entity(const char* _modelPath, const char* _texturePath, bool _boxCollider, glm::vec3& _boxDims) :
 	m_id(-1),
 	m_Transform(),
 	m_Model(),
@@ -21,7 +23,16 @@ Entity::Entity(const char* _modelPath, const char* _texturePath) :
 	m_Model = std::make_shared<Model>(_modelPath);
 	m_Texture = std::make_shared<Texture>(_texturePath);
 	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/specular/vert.vs", "./resources/shaders/specular/frag.fs");
-	m_Collider = std::make_shared<BoxCollider>(&m_Transform, glm::vec3(2.0f, 3.0f, 2.0f));
+	if(_boxCollider)
+	{
+		BoxCollider* L_box = new BoxCollider(&m_Transform, _boxDims);
+		m_Collider.reset((Collider*)L_box);
+	}
+	else
+	{
+		MeshCollider* L_mesh = new MeshCollider(&m_Transform, m_Model->GetFaces());
+		m_Collider.reset((Collider*)L_mesh);
+	}
 }
 
 Entity::~Entity()
@@ -88,7 +99,7 @@ int Entity::GetID()
 	return m_id;
 }
 
-BoxCollider* Entity::GetBoxCollider()
+Collider* Entity::GetCollider()
 {
 	return m_Collider.get();
 }

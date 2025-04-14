@@ -1,6 +1,8 @@
 #include "GLPipeline/Entity/Collider/Collider.h"
 #include "GLPipeline/Entity/Transform.h"
 
+#include "glm/ext.hpp"
+
 #include <memory>
 #include <iostream>
 
@@ -13,6 +15,12 @@ Collider::Collider(Transform* _parentTransform,	ColliderType _type)
 Collider::~Collider()
 {
 
+}
+
+bool Collider::IsColliding(Transform* _transform, Collider* _otherCollider, Transform* _otherTransform)
+{
+	printf("ERROR: Collider::IsColliding call!\n");
+	return false;
 }
 
 void Collider::CollisionResponse(Transform* _transform, Collider* _otherCollider, Transform* _otherTransform)

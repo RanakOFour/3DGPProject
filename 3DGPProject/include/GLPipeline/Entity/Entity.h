@@ -6,7 +6,7 @@
 #include "GLPipeline/Entity/ShaderProgram.h"
 #include "GLPipeline/Entity/Transform.h"
 #include "GLPipeline/Entity/Texture.h"
-#include "GLPipeline//Entity/Collider/BoxCollider.h"
+#include "GLPipeline//Entity/Collider/Collider.h"
 #include "GLPipeline/Scene/Camera.h"
 
 #include <glm/ext.hpp>
@@ -20,10 +20,10 @@ class Entity
     std::shared_ptr<Model> m_Model;
     std::shared_ptr<Texture> m_Texture;
     std::shared_ptr<ShaderProgram> m_Shader;
-    std::shared_ptr<BoxCollider> m_Collider;
+    std::shared_ptr<Collider> m_Collider;
 
     public:
-    Entity(const char* _modelPath, const char* _texturePath);
+    Entity(const char* _modelPath, const char* _texturePath, bool _boxCollider, glm::vec3& _boxDims);
     Entity(glm::vec3 _location);
     ~Entity();
 
@@ -35,7 +35,7 @@ class Entity
     void SetID(int _id);
     int GetID();
 
-    BoxCollider* GetBoxCollider();
+    Collider* GetCollider();
     void PrintColliderInfo();
 };
 

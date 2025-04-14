@@ -14,11 +14,17 @@ int main()
 
 	OpenGLError::Init();
 
+	glm::vec3 L_catBox(2.0f, 3.0f, 2.0f);
+
 	Entity catWarrior("./resources/curuthers/curuthers.obj", 
-					  "./resources/curuthers/Whiskers_diffuse.png");
+					  "./resources/curuthers/Whiskers_diffuse.png",
+					  true,
+					  L_catBox);
 
 	Entity catWarrior2("./resources/curuthers/curuthers.obj", 
-					   "./resources/curuthers/Whiskers_diffuse.png");
+					   "./resources/curuthers/Whiskers_diffuse.png",
+					   false,
+					   L_catBox);
 
 	Scene scene;
 	scene.AddEntity(&catWarrior);

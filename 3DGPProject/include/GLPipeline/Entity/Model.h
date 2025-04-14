@@ -55,6 +55,8 @@ class Model
   Model& operator=(const Model& _assign);
   virtual ~Model();
 
+  std::vector<Face>& GetFaces();
+
   GLsizei GetVertexCount() const;
   GLuint GetVAO();
 };
@@ -229,6 +231,11 @@ inline void Model::SplitString(const std::string& _input, char _splitter,
   {
     _output.push_back(curr);
   }
+}
+
+inline std::vector<Face>& Model::GetFaces()
+{
+  return m_faces;
 }
 
 inline GLuint Model::GetVAO()
