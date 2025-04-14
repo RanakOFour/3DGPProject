@@ -36,7 +36,7 @@ bool BoxCollider::IsColliding(Transform* _transform, Collider* _otherCollider, T
 	glm::vec3 L_otherPos = _otherTransform->Position();
 	glm::vec3 L_halfSize = glm::vec3(m_Size.Width() * 0.5f, m_Size.Height() * 0.5f, m_Size.Depth() * 0.5f);
 
-	if(_otherCollider->type == ColliderType::Box)
+	if(_otherCollider->m_type == ColliderType::Box)
 	{
 		BoxCollider* L_otherBox = (BoxCollider*)_otherCollider;
 		glm::vec3 L_othHalfSize = glm::vec3(L_otherBox->GetSize().Width() / 2.0f, L_otherBox->GetSize().Height() / 2.0f, L_otherBox->GetSize().Depth() / 2.0f);
@@ -207,9 +207,11 @@ bool BoxCollider::IsColliding(Transform* _transform, Collider* _otherCollider, T
 		}
 	}
 	
+	printf("ERROR: Box Collider IsColliding normal exit!\n");
+	return false;
 }
 
 void BoxCollider::PrintInfo()
 {
-	printf("ColliderInfo:\n	Transform Pos: %f, %f, %f\n	Collider Type: %d\n", m_Transform->Position().x, m_Transform->Position().y, m_Transform->Position().z, type);
+	printf("ColliderInfo:\n	Transform Pos: %f, %f, %f\n	Collider Type: %d\n", m_Transform->Position().x, m_Transform->Position().y, m_Transform->Position().z, m_type);
 }

@@ -8,7 +8,7 @@
 
 #include <vector>
 
-class MeshCollider : Collider
+class MeshCollider : public Collider
 {
     std::vector<Face> m_Triangles;
     public:

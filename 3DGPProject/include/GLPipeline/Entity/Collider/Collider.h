@@ -18,7 +18,7 @@ public:
 		Mesh
 	};
 	
-	ColliderType type;
+	ColliderType m_type;
 	
 	Collider(Transform* _parentTransform, ColliderType _type);
 	~Collider();

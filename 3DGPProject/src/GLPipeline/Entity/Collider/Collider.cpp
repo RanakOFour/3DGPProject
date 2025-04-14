@@ -7,7 +7,7 @@
 Collider::Collider(Transform* _parentTransform,	ColliderType _type)
 {
 	m_Transform = std::shared_ptr<Transform>(_parentTransform);
-	type = _type;
+	m_type = _type;
 }
 
 Collider::~Collider()
@@ -62,5 +62,5 @@ Transform* Collider::GetTransform()
 
 void Collider::PrintInfo()
 {
-	printf("ColliderInfo:\n	Transform Pos: %f, %f, %f\n	Collider Type: %d\n", m_Transform->Position().x, m_Transform->Position().y, m_Transform->Position().z, type);
+	printf("ColliderInfo:\n	Transform Pos: %f, %f, %f\n	Collider Type: %d\n", m_Transform->Position().x, m_Transform->Position().y, m_Transform->Position().z, m_type);
 }

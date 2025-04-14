@@ -10,7 +10,7 @@ m_Triangles(_face)
     for(int i = 0; i < m_Triangles.size(); ++i)
     {
         m_Triangles[i].CalculateNormal();
-    }    
+    } 
 }
 
 MeshCollider::~MeshCollider()
@@ -20,8 +20,8 @@ MeshCollider::~MeshCollider()
 
 bool MeshCollider::IsColliding(Transform* _transform, Collider* _other, Transform* _otherTransform)
 {
-
-    if(_other->type == ColliderType::Box)
+    // May need to invert this
+    if(_other->m_type == ColliderType::Box)
     {
         BoxCollider* L_boxOther = (BoxCollider*)_other;
 
@@ -30,4 +30,7 @@ bool MeshCollider::IsColliding(Transform* _transform, Collider* _other, Transfor
     {
         
     }
+
+    printf("ERROR: MeshCollider::IsColliding normal exit!\n");
+    return false;
 }
