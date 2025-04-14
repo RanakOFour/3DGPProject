@@ -9,24 +9,32 @@
 #include <fstream>
 #include <vector>
 
+struct Vertex
+{
+  Vertex();
+
+  glm::vec3 position;
+  glm::vec2 texcoord;
+  glm::vec3 normal;
+};
+  
+struct Face
+{
+  Vertex a;
+  Vertex b;
+  Vertex c;
+  glm::vec3 normal;
+  void CalculateNormal()
+  {
+    glm::vec3 ac = c.position - a.position;
+    glm::vec3 ab = b.position - a.position;
+    
+    normal = glm::cross(ac, ab);
+  };
+};  
+
 class Model
 {
-  struct Vertex
-  {
-    Vertex();
-
-    glm::vec3 position;
-    glm::vec2 texcoord;
-    glm::vec3 normal;
-  };
-
-  struct Face
-  {
-    Vertex a;
-    Vertex b;
-    Vertex c;
-  };
-
   std::vector<Face> m_faces;
   GLuint m_vaoId;
   GLuint m_vboId;
@@ -39,7 +47,7 @@ class Model
     std::vector<std::string>& _output);
 
   public:
-  
+   
   Model();
   Model(const std::string& _path);
 
@@ -321,7 +329,7 @@ inline GLsizei Model::GetVertexCount() const
   return (GLsizei)m_faces.size() * 3;
 }
 
-inline Model::Vertex::Vertex()
+inline Vertex::Vertex()
   : position(0, 0, 0)
   , texcoord(0, 0)
   , normal(0, 0, 0)

@@ -18,7 +18,7 @@ public:
 	BoxCollider(Transform* _parentTransform, glm::vec3 _sizeDimensions);
 	~BoxCollider();
 
-	bool IsCollidingAABB(Transform* _transform, BoxCollider* _otherCollider, Transform* _otherTransform);
+	bool IsColliding(Transform* _transform, Collider* _otherCollider, Transform* _otherTransform);
 	void CollisionResponse(Transform* _transform, Collider* _otherCollider, Transform* _otherTransform);
 	Size& GetSize();
 

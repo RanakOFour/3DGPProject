@@ -23,7 +23,8 @@ public:
 	Collider(Transform* _parentTransform, ColliderType _type);
 	~Collider();
 
-	virtual void CollisionResponse(Transform* _transform, Collider* _otherCollider, Transform* _otherTransform);
+	virtual bool IsColliding(Transform* _transform, Collider* _other, Transform* _otherTransform);
+	void CollisionResponse(Transform* _transform, Collider* _otherCollider, Transform* _otherTransform);
 
 	Transform* GetTransform();
 
