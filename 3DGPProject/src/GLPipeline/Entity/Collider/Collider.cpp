@@ -31,35 +31,47 @@ void Collider::CollisionResponse(Transform* _transform, Collider* _otherCollider
 	float L_ammount = 0.1f;
 	float L_step = 0.1f;
 
-	while (true)
+	if(_otherCollider->m_type == ColliderType::Box)
 	{
-		printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
-		if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
-		L_pos.x += L_ammount;
-		printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
-		if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
-		L_pos.x -= L_ammount;
-		L_pos.x -= L_ammount;
-		printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
-		if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
-		L_pos.x += L_ammount;
-		L_pos.z += L_ammount;
-		printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
-		if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
-		L_pos.z -= L_ammount;
-		L_pos.z -= L_ammount;
-		printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
-		if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
-		L_pos.z += L_ammount;
-		L_pos.y += L_ammount;
-		printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
-		if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
-		L_pos.y -= L_ammount;
-		L_pos.y -= L_ammount;
-		printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
-		if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
-		L_pos.y += L_ammount;
-		L_ammount += L_step;
+		while (true)
+		{
+			printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
+			if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
+			L_pos.x += L_ammount;
+			printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
+			if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
+			L_pos.x -= L_ammount;
+			L_pos.x -= L_ammount;
+			printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
+			if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
+			L_pos.x += L_ammount;
+			L_pos.z += L_ammount;
+			printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
+			if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
+			L_pos.z -= L_ammount;
+			L_pos.z -= L_ammount;
+			printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
+			if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
+			L_pos.z += L_ammount;
+			L_pos.y += L_ammount;
+			printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
+			if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
+			L_pos.y -= L_ammount;
+			L_pos.y -= L_ammount;
+			printf("New PosA: %f, %f, %f\nNew PosB: %f, %f, %f\n", L_pos.x, L_pos.y, L_pos.z, L_otherPos.x, L_otherPos.y, L_otherPos.z);
+			if (!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
+			L_pos.y += L_ammount;
+			L_ammount += L_step;
+		}
+	}
+	else
+	{
+		while(true)
+		{
+			if(!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
+			// Add up normals n stuff
+		}
+
 	}
 }
 

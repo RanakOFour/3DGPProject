@@ -16,11 +16,7 @@ class MeshCollider : public Collider
     ~MeshCollider();
 
     bool IsColliding(Transform* _transform, Collider* _other, Transform* _otherTransform);
-
-    inline std::vector<Face>& GetFaces()
-    {
-        return m_Triangles;
-    }
+    std::vector<Face>& GetFaces();
 };
 
 #endif

@@ -28,7 +28,7 @@ public:
 
 	Transform* GetTransform();
 
-	void PrintInfo();
+	virtual void PrintInfo();
 };
 
 #endif
