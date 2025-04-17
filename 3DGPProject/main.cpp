@@ -26,14 +26,18 @@ int main()
 					   false,
 					   L_catBox);
 
+	catWarrior2.Move(glm::vec3(0.0f, 0.0f, 1.0f));
 	Scene scene;
 	scene.AddEntity(&catWarrior);
 	scene.AddEntity(&catWarrior2);
+
+	catWarrior2.Move(glm::vec3(0.0f, 0.0f, 1.0f));
 
 	window.SetScene(&scene);
 
 	while (!window.m_Quit)
 	{
 		window.Update();
+		std::system("clear");
 	}
 }

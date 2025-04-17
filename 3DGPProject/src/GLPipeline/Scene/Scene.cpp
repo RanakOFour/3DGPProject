@@ -15,8 +15,9 @@ Scene::~Scene()
 
 void Scene::AddEntity(Entity* _entity)
 {
-	_entity->SetID(m_Entities.size());
-    m_Entities.push_back(*_entity);
+	Entity& L_entity = *_entity;
+	L_entity.SetID(m_Entities.size());
+    m_Entities.push_back(L_entity);
 }
 
 void Scene::Update(const uint8_t* _inputKeys)

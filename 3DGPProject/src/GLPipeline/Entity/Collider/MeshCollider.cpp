@@ -30,15 +30,18 @@ bool MeshCollider::IsColliding(Transform* _transform, Collider* _other, Transfor
         BoxCollider* L_boxOther = (BoxCollider*)_other;
         glm::vec3 L_othHalfSize = L_boxOther->HalfSize();
 		
-		printf("MeshOnBox:\n");
+		printf("MeshOnBox:\nPos : %f, %f, %f\n PosB: %f, %f, %f\n",
+		L_pos.x, L_pos.y, L_pos.z,
+		L_otherPos.x, L_otherPos.y, L_otherPos.z);
+
         for(int i = 0; i < m_Triangles.size(); ++i)
 		{
 			Face L_currentFace;
 
 			// Create a triangle centered on the AABB of this box
-			L_currentFace.a.position = m_Triangles[i].a.position + L_otherPos - L_pos;
-			L_currentFace.b.position = m_Triangles[i].b.position + L_otherPos - L_pos;
-			L_currentFace.c.position = m_Triangles[i].c.position + L_otherPos - L_pos;
+			L_currentFace.a.position = m_Triangles[i].a.position + L_pos - L_otherPos;
+			L_currentFace.b.position = m_Triangles[i].b.position + L_pos - L_otherPos;
+			L_currentFace.c.position = m_Triangles[i].c.position + L_pos - L_otherPos;
 
 			glm::vec3 L_triEdges[3] = {
 				L_currentFace.b.position - L_currentFace.a.position,
@@ -130,7 +133,6 @@ bool MeshCollider::IsColliding(Transform* _transform, Collider* _other, Transfor
 
             // L_currentFace.CalculateNormal();
             // _normalTotal += L_currentFace.normal;
-			printf("Not Colliding\n");
 			return false;
 		}
     }
