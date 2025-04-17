@@ -213,6 +213,17 @@ bool BoxCollider::IsColliding(Transform* _transform, Collider* _otherCollider, T
 	return false;
 }
 
+glm::vec3 BoxCollider::HalfSize()
+{
+	glm::vec3 L_return = glm::vec3(
+		m_Size.Width() * 0.5f,
+		m_Size.Height() * 0.5f,
+		m_Size.Depth() * 0.5f	
+	);
+
+	return L_return;
+}
+
 void BoxCollider::PrintInfo()
 {
 	printf("ColliderInfo:\n	Transform Pos: %f, %f, %f\n	Collider Type: %d\n", m_Transform->Position().x, m_Transform->Position().y, m_Transform->Position().z, m_type);

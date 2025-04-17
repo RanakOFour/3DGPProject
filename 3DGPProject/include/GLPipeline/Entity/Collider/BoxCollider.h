@@ -20,6 +20,7 @@ public:
 
 	bool IsColliding(Transform* _transform, Collider* _otherCollider, Transform* _otherTransform);
 	Size& GetSize();
+	glm::vec3 HalfSize();
 
 	void PrintInfo();
 };

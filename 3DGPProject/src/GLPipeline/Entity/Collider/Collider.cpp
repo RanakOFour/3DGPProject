@@ -31,7 +31,7 @@ void Collider::CollisionResponse(Transform* _transform, Collider* _otherCollider
 	float L_ammount = 0.1f;
 	float L_step = 0.1f;
 
-	if(_otherCollider->m_type == ColliderType::Box)
+	if(_otherCollider->m_type == ColliderType::Box && m_type == ColliderType::Box)
 	{
 		while (true)
 		{
@@ -66,12 +66,10 @@ void Collider::CollisionResponse(Transform* _transform, Collider* _otherCollider
 	}
 	else
 	{
-		while(true)
+		if(IsColliding(_transform, _otherCollider, _otherTransform))
 		{
-			if(!IsColliding(_transform, _otherCollider, _otherTransform)){ break;}
-			// Add up normals n stuff
+			printf("Mesh Collision!\n");
 		}
-
 	}
 }
 

@@ -56,6 +56,8 @@ void Entity::Update(std::vector<Entity>* _entityList)
 
 void Entity::Draw(Camera* _camera)
 {
+	printf("Updating entity %d\n", m_id);
+
     glBindVertexArray(m_Model->GetVAO());
 	glBindTexture(GL_TEXTURE_2D, m_Texture->GetID());
 
