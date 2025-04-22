@@ -110,103 +110,26 @@ bool BoxCollider::IsColliding(Transform* _transform, Collider* _otherCollider, T
 		MeshCollider* L_otherMesh = (MeshCollider*)_otherCollider;
 		std::vector<Face>& L_faces = L_otherMesh->GetFaces();
 
-		for(int i = 0; i < L_faces.size(); ++i)
-		{
-			Face L_currentFace;
-
-			// Create a triangle centered on the AABB of this box
-			L_currentFace.a.position = L_faces[i].a.position - L_pos;
-			L_currentFace.b.position = L_faces[i].b.position - L_pos;
-			L_currentFace.c.position = L_faces[i].c.position - L_pos;
-
-			L_currentFace.CalculateNormal();
-
-			glm::vec3 L_triEdges[3] = {
-				L_currentFace.b.position - L_currentFace.a.position,
-				L_currentFace.c.position - L_currentFace.b.position,
-				L_currentFace.a.position - L_currentFace.c.position
-			};
-
-			glm::vec3 L_axis[3] = {
-				{1, 0, 0},
-				{0, 1, 0},
-				{0, 0, 1}
-			};
-
-			// Test 9 cross axis
-			for(int j = 0; j < 3; ++j)
-			{
-				for(int k = 0; k < 3; ++k)
-				{
-					glm::vec3 L_currentAxis = glm::cross(L_triEdges[j], L_axis[k]);
-					
-					// Ignore zero axis
-					if(L_currentAxis.length() == 0.0f)
-					{
-						continue;
-					}
-
-					glm::vec3 L_points = {
-						glm::dot(L_currentFace.a.position, L_currentAxis),
-						glm::dot(L_currentFace.b.position, L_currentAxis),
-						glm::dot(L_currentFace.c.position, L_currentAxis)
-					};
-
-					float L_pointMin = glm::min(L_points.x, L_points.y, L_points.z);
-					float L_pointMax = glm::max(L_points.x, L_points.y, L_points.z);
-
-					float L_boxRadius = L_halfSize.x * L_currentAxis.x +
-										L_halfSize.y * L_currentAxis.y +
-										L_halfSize.z * L_currentAxis.z;
-
-					if(L_pointMin > L_boxRadius || L_pointMax < -L_boxRadius)
-					{
-						return false;
-					}
-				}
-			}
-
-			// Overlap in x y and z
-			// There must be a better way to do this
-			float L_min, L_max;
-			L_min = glm::min(L_currentFace.a.position.x, L_currentFace.b.position.x, L_currentFace.c.position.x);
-			L_max = glm::max(L_currentFace.a.position.x, L_currentFace.b.position.x, L_currentFace.c.position.x);
+		printf("BoxOnMesh:\nPos : %f, %f, %f\n PosB: %f, %f, %f\n",
+			L_pos.x, L_pos.y, L_pos.z,
+			L_otherPos.x, L_otherPos.y, L_otherPos.z);
 			
-			if(L_min > L_halfSize.x || L_max < -L_halfSize.x)
+		for(int i = 0; i < L_faces.size(); i++)
+		{
+			Face L_currentFace = L_faces[i];
+
+			L_currentFace.a.position += L_otherPos;
+            L_currentFace.b.position += L_otherPos;
+            L_currentFace.c.position += L_otherPos;
+
+
+			if(TriangleBoxIntersect(L_currentFace, L_halfSize))
 			{
-				return false;
+				return true;
 			}
-
-
-			L_min = glm::min(L_currentFace.a.position.y, L_currentFace.b.position.y, L_currentFace.c.position.y);
-			L_max = glm::max(L_currentFace.a.position.y, L_currentFace.b.position.y, L_currentFace.c.position.y);
-
-			if(L_min > L_halfSize.y || L_max < -L_halfSize.y)
-			{
-				return false;
-			}
-
-
-			L_min = glm::min(L_currentFace.a.position.z, L_currentFace.b.position.z, L_currentFace.c.position.z);
-			L_max = glm::max(L_currentFace.a.position.z, L_currentFace.b.position.z, L_currentFace.c.position.z);
-
-			if(L_min > L_halfSize.z || L_max < -L_halfSize.z)
-			{
-				return false;
-			}
-
-			// Test triangle normal
-
-			glm::vec3 L_normal = glm::cross(L_triEdges[0], L_triEdges[1]);
-			float L_dotProd = glm::dot(L_normal, L_currentFace.a.position);
-			float L_radius = L_halfSize.x * fabs(L_normal.x) +
-							 L_halfSize.y * fabs(L_normal.y) +
-							 L_halfSize.z * fabs(L_normal.z);
-							 
-			if(L_dotProd > L_radius) return false;
-
-			return true;
 		}
+
+		return false;
 	}
 	
 	printf("ERROR: Box Collider IsColliding normal exit!\n");
