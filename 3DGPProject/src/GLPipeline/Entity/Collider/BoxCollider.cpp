@@ -108,28 +108,10 @@ bool BoxCollider::IsColliding(Transform* _transform, Collider* _otherCollider, T
 	else
 	{
 		MeshCollider* L_otherMesh = (MeshCollider*)_otherCollider;
-		std::vector<Face>& L_faces = L_otherMesh->GetFaces();
 
-		printf("BoxOnMesh:\nPos : %f, %f, %f\n PosB: %f, %f, %f\n",
-			L_pos.x, L_pos.y, L_pos.z,
-			L_otherPos.x, L_otherPos.y, L_otherPos.z);
-			
-		for(int i = 0; i < L_faces.size(); i++)
-		{
-			Face L_currentFace = L_faces[i];
-
-			L_currentFace.a.position += L_otherPos;
-            L_currentFace.b.position += L_otherPos;
-            L_currentFace.c.position += L_otherPos;
-
-
-			if(TriangleBoxIntersect(L_currentFace, L_halfSize))
-			{
-				return true;
-			}
-		}
-
-		return false;
+		printf("BoxOnMesh\n");
+		// Rewriting the collision is way too much work
+		return L_otherMesh->IsColliding(_otherTransform, (Collider*)this, _transform);
 	}
 	
 	printf("ERROR: Box Collider IsColliding normal exit!\n");

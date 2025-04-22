@@ -23,9 +23,6 @@ public:
 	
 	Collider(Transform* _parentTransform, ColliderType _type);
 	~Collider();
-
-	bool AxisTest(glm::vec3 _axis, Face& _face, glm::vec3& _boxHalfSize);
-	bool TriangleBoxIntersect(Face& _face, glm::vec3& _halfLength);
 	virtual bool IsColliding(Transform* _transform, Collider* _other, Transform* _otherTransform);
 	void CollisionResponse(Transform* _transform, Collider* _otherCollider, Transform* _otherTransform);
 
