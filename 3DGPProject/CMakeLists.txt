@@ -3,6 +3,8 @@ set(CMAKE_CXX_COMPILER g++)
 
 project(3DGPProject)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
+
 add_executable(3DGPProject main.cpp)
 
 add_subdirectory(src)
@@ -11,9 +13,9 @@ target_include_directories(3DGPProject PUBLIC include)
 target_link_directories(3DGPProject PUBLIC lib)
 
 if(WIN32)
-	target_link_libraries(3DGPProject PUBLIC SDL2 SDL2main opengl32 glew32)
+	target_link_libraries(3DGPProject PUBLIC SDL2 SDL2main opengl32 glew32 tbb)
 else()
-	target_link_libraries(3DGPProject PUBLIC SDL2 SDL2main GL GLEW)
+	target_link_libraries(3DGPProject PUBLIC SDL2 SDL2main GL GLEW tbb)
 endif()
 
 
@@ -22,3 +24,8 @@ add_custom_command(TARGET 3DGPProject POST_BUILD
 				   COMMAND ${CMAKE_COMMAND} -E copy_directory
 				   "${PROJECT_SOURCE_DIR}/bin"
 				   $<TARGET_FILE_DIR:3DGPProject>)
+
+add_custom_command(TARGET 3DGPProject POST_BUILD
+				   COMMAND ${CMAKE_COMMAND} -E copy_directory
+				   "${PROJECT_SOURCE_DIR}/resources"
+				   $<TARGET_FILE_DIR:3DGPProject>/resources/)
