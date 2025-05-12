@@ -35,6 +35,7 @@ public:
 	void Update(float _delta, const uint8_t* _keyInputs);
 
 	std::weak_ptr<Game> GetGame() { return m_Game; };
+	std::shared_ptr<GameEntity> GetPlayer() { return m_Entities[0]; };
 };
 
 #endif

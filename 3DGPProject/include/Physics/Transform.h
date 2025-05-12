@@ -23,7 +23,7 @@ public:
     void Move(glm::vec3 _translation);
     void Rotate(glm::vec3 _eulerRotation);
 
-    glm::vec3& GetPosition();
+    glm::vec3 GetPosition();
     void SetPosition(glm::vec3 _position);
     
     glm::quat GetRotation();

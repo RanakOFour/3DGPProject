@@ -23,7 +23,7 @@ void Transform::Move(glm::vec3 _translation)
     SetPosition(m_Position + _translation);
 };
 
-glm::vec3& Transform::GetPosition()
+glm::vec3 Transform::GetPosition()
 {
     return m_Position;
 };

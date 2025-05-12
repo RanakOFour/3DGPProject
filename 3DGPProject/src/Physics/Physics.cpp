@@ -167,7 +167,7 @@ glm::vec3 Physics::ComputeTorque(glm::vec3 _torqueArm, glm::vec3 _contactForce)
 
 void Physics::Kinematic(float _delta)
 {
-	glm::vec3& L_position = m_Transform.lock()->GetPosition();
+	glm::vec3 L_position = m_Transform.lock()->GetPosition();
 
     glm::vec3 L_posChange = (m_Velocity * _delta) + (0.5f * m_Acceleration * _delta * _delta);
 

@@ -11,7 +11,8 @@
 
 Camera::Camera() :
     m_Projection(glm::perspective(45.0f, 1.0f, 0.1f, 100.0f)),
-    m_Transform()
+    m_Transform(),
+	m_Target()
 {
 }
 
@@ -23,6 +24,7 @@ Camera::~Camera()
 void Camera::SetScene(std::shared_ptr<Scene> _scene)
 {
     m_Scene = std::weak_ptr<Scene>(_scene);
+	m_Target = m_Scene.lock()->GetPlayer()->GetPosition();
 }
 
 void Camera::Update(float _delta, const Uint8* _keys)
@@ -77,7 +79,7 @@ void Camera::Update(float _delta, const Uint8* _keys)
 
 void Camera::Use(ShaderProgram* _shader)
 {
-    glm::mat4 L_viewMatrix = glm::lookAt(m_Transform.GetPosition(), m_Transform.GetPosition() + m_Transform.Forward(), -m_Transform.Up());
+    glm::mat4 L_viewMatrix = glm::lookAt(m_Transform.GetPosition(), m_Target, -m_Transform.Up());
 	_shader->SetUniform("u_View", L_viewMatrix);
 	_shader->SetUniform("u_Projection", m_Projection);
 }

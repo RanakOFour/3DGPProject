@@ -16,6 +16,7 @@ class Camera
     std::weak_ptr<Scene> m_Scene;
     Transform m_Transform;
     glm::mat4 m_Projection;
+    glm::vec3 m_Target;
 
     public:
 

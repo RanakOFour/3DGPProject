@@ -43,6 +43,7 @@ class GameEntity
     void SetCollider(std::shared_ptr<CollisionShape> _shape);
 
     int GetID();
+    glm::vec3 GetPosition() { return m_Transform->GetPosition(); };
     Physics* GetPhysics() { return m_Physics.get(); };
     std::weak_ptr<CollisionShape> GetCollider();
 };
