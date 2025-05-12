@@ -5,7 +5,7 @@
 
 Game::Game()
 {
-    m_Window = std::make_unique<SDLGLWindow, SDL_DestroyWindow>("MyGame", 1000, 800);
+    m_Window = std::make_unique<SDLGLWindow>("MyGame", 1000, 800);
     m_Scene = std::make_shared<Scene>(glm::vec3(1000.0f), 50);
 
     const char* L_playerPath = "./resources/curuthers/curuthers.obj";

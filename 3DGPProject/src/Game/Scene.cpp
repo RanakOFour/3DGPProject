@@ -30,6 +30,8 @@ void Scene::AddEntity(std::shared_ptr<GameEntity>& _entity)
 void Scene::Update(float _delta, const uint8_t* _inputKeys)
 {
 	HandleInputs(_inputKeys);
+
+	printf("Camera Pos: %f, %f, %f\n", m_Camera.GetPosition().x, m_Camera.GetPosition.y, m_Camera.GetPosition.z);
 	// Update objects
     for(int i = 0; i < m_Entities.size(); ++i)
     {
@@ -38,6 +40,8 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
         //m_Octree.UpdateMovedObject(L_ph);
 		m_Entities[i]->Draw(&m_Camera);
     }
+
+
 
     //m_Octree.Prune();
 
@@ -76,8 +80,6 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
     }
 
     m_Collisions.clear();
-
-	glUseProgram(0);
 }
 
 void Scene::HandleInputs(const Uint8* _inputKeys)

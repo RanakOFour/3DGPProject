@@ -134,10 +134,6 @@ void Physics::Update(float _delta)
 
 	m_AngularVelocity *= glm::max(1.0f - m_AngularDamping * _delta, 0.0f);
 
-	// printf("Current Pos: %f, %f, %f\nCurrent Vel: %f, %f, %f\n",
-	// 		m_Transform.lock()->GetPosition().x,m_Transform.lock()->GetPosition().y,m_Transform.lock()->GetPosition().z,
-	// 		m_Velocity.x, m_Velocity.y, m_Velocity.z);
-
 	m_Force.x = 0.0f;
 	m_Force.y = 0.0f;
 	m_Force.z = 0.0f;

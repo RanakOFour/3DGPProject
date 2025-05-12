@@ -28,6 +28,11 @@ GameEntity::~GameEntity()
 void GameEntity::Update(float _delta)
 {
 	m_Physics->Update(_delta);
+
+	auto L_transform = m_Physics->GetTransform();
+	glm::vec3 L_pos = L_transform.lock()->GetPosition();
+	printf("ID %d:\n	Current Pos: %f, %f, %f\n", m_id,
+			L_pos.x, L_pos.y, L_pos.z);
 }
 
 void GameEntity::Draw(Camera* _camera)
@@ -46,8 +51,6 @@ void GameEntity::Draw(Camera* _camera)
 
 	L_modelMatrix = glm::scale(L_modelMatrix, m_Transform->GetScale());
 
-	m_Shader->Use();
-	_camera->Use(m_Shader.get());
 	m_Shader->SetUniform("u_Model", L_modelMatrix);
 
 	// Draw shape
@@ -56,6 +59,7 @@ void GameEntity::Draw(Camera* _camera)
 	// Reset the state
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glUseProgram(0);
 }
 
 void GameEntity::Move(glm::vec3 _movement)
