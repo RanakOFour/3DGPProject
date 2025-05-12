@@ -22,28 +22,24 @@ Scene::~Scene()
 
 }
 
+void Scene::SetGame(std::weak_ptr<Game> _game)
+{
+	m_Game = _game;
+	m_Camera.SetScene(m_Game.lock()->GetScene());
+}
+
 void Scene::AddEntity(std::shared_ptr<GameEntity>& _entity)
 {
 	m_Entities.push_back(_entity);
+	_entity->SetID(m_Entities.size() - 1);
 }
 
 void Scene::Update(float _delta, const uint8_t* _inputKeys)
 {
 	HandleInputs(_inputKeys);
+	m_Camera.Update(_delta, _inputKeys);
 
-	printf("Camera Pos: %f, %f, %f\n", m_Camera.GetPosition().x, m_Camera.GetPosition.y, m_Camera.GetPosition.z);
-	// Update objects
-    for(int i = 0; i < m_Entities.size(); ++i)
-    {
-        m_Entities[i]->Update(_delta);
-		//Physics* L_ph = m_Entities[i]->GetPhysics();
-        //m_Octree.UpdateMovedObject(L_ph);
-		m_Entities[i]->Draw(&m_Camera);
-    }
-
-
-
-    //m_Octree.Prune();
+	//m_Octree.Prune();
 
     // for (int i = 0; i < m_Entities.size(); ++i)
 	// {
@@ -80,6 +76,19 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
     }
 
     m_Collisions.clear();
+
+	// Update objects
+    for(int i = 0; i < m_Entities.size(); ++i)
+    {
+        m_Entities[i]->Update(_delta);
+		//Physics* L_ph = m_Entities[i]->GetPhysics();
+        //m_Octree.UpdateMovedObject(L_ph);
+    }
+
+	for(int i = 0; i < m_Entities.size(); ++i)
+	{
+		m_Entities[i]->Draw(&m_Camera);
+	}
 }
 
 void Scene::HandleInputs(const Uint8* _inputKeys)
@@ -87,26 +96,6 @@ void Scene::HandleInputs(const Uint8* _inputKeys)
 	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 0.25f);
 	glm::vec3 leftMove = glm::vec3(0.25f, 0.0f, 0.0f);
 	glm::vec3 rotateY = glm::vec3(0.0f, 0.25f, 0.0f);
-
-    if (_inputKeys[SDL_SCANCODE_A])
-	{
-		m_Camera.Rotate(rotateY);
-	}
-
-	if (_inputKeys[SDL_SCANCODE_D])
-	{
-		m_Camera.Rotate(-rotateY);
-	}
-		
-	if (_inputKeys[SDL_SCANCODE_W])
-	{
-		m_Camera.Translate(forward);
-	}
-
-	if (_inputKeys[SDL_SCANCODE_S])
-	{
-		m_Camera.Translate(-forward);
-	}
 
 	if(_inputKeys[SDL_SCANCODE_LEFT])
 	{
@@ -127,14 +116,4 @@ void Scene::HandleInputs(const Uint8* _inputKeys)
 	{
 		m_Entities[0]->Move(-forward);
 	}
-
-	// if (_inputKeys[SDL_SCANCODE_X])
-	// {
-	// 	m_Entities[0].Scale(glm::vec3(0.1f, 0.1f, 0.1f));
-	// }
-
-	// if (_inputKeys[SDL_SCANCODE_Z])
-	// {
-	// 	m_Entities[0].Scale(glm::vec3(-0.1f, -0.1f, -0.1f));
-	// }
 }

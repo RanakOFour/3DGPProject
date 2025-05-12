@@ -43,11 +43,17 @@ void Transform::SetRotation(glm::quat _rot)
     m_Rotation = _rot;
     m_Rotation = glm::normalize(m_Rotation);
 
-    glm::mat3 L_rotMat = glm::mat3_cast(m_Rotation);
+    glm::vec3 L_eulers = EulerAngles();
 
-    m_Right = L_rotMat[0];
-    m_Up = L_rotMat[1];
-    m_Forward = L_rotMat[2];
+    glm::vec3 L_front = glm::vec3(
+		glm::cos(L_eulers.y) * glm::cos(L_eulers.x),
+		glm::sin(L_eulers.x),
+		glm::sin(L_eulers.y) * glm::cos(L_eulers.x)
+	);
+
+	m_Forward = glm::normalize(L_front);
+	m_Right = glm::normalize(glm::cross(m_Forward, glm::vec3(0.0f, 1.0f, 0.0f)));
+	m_Up = glm::normalize(glm::cross(m_Forward, m_Right));
 }
 
 glm::vec3 Transform::EulerAngles()
@@ -60,11 +66,17 @@ void Transform::SetRotation(glm::vec3 _eulerAngles)
     m_Rotation = glm::quat(_eulerAngles);
     m_Rotation = glm::normalize(m_Rotation);
 
-    glm::mat3 L_rotMat = glm::mat3_cast(m_Rotation);
+	glm::vec3 L_eulers = EulerAngles();
 
-    m_Right = L_rotMat[0];
-    m_Up = L_rotMat[1];
-    m_Forward = L_rotMat[2];
+    glm::vec3 L_front = glm::vec3(
+		glm::cos(L_eulers.y) * glm::cos(L_eulers.x),
+		glm::sin(L_eulers.x),
+		glm::sin(L_eulers.y) * glm::cos(L_eulers.x)
+	);
+
+	m_Forward = glm::normalize(L_front);
+	m_Right = glm::normalize(glm::cross(m_Forward, glm::vec3(0.0f, 1.0f, 0.0f)));
+	m_Up = glm::normalize(glm::cross(m_Forward, m_Right));
 }
 
 glm::vec3 Transform::GetScale()
@@ -75,4 +87,20 @@ glm::vec3 Transform::GetScale()
 void Transform::SetScale(glm::vec3 _scale)
 {
     m_Scale = _scale;
+}
+
+glm::mat4 Transform::ModelMatrix()
+{
+    glm::mat4 L_modelMatrix = glm::mat4(1.0f);
+    glm::vec3 m_EulerRotation = glm::eulerAngles(m_Rotation);
+    
+    L_modelMatrix = glm::rotate(L_modelMatrix, glm::radians(m_EulerRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+    L_modelMatrix = glm::rotate(L_modelMatrix, glm::radians(m_EulerRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    L_modelMatrix = glm::rotate(L_modelMatrix, glm::radians(m_EulerRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    L_modelMatrix = glm::scale(L_modelMatrix, m_Scale);
+    
+    L_modelMatrix = glm::translate(L_modelMatrix, m_Position);
+
+    return L_modelMatrix;
 }

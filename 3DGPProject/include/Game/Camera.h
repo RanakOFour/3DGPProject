@@ -4,21 +4,27 @@
 #include "GLPipeline/ShaderProgram.h"
 #include "Physics/Transform.h"
 
+#include "SDL2/SDL.h"
+
 #include <GL/glew.h>
 #include <glm/ext.hpp>
+#include <memory>
 
+class Scene;
 class Camera
 {
+    std::weak_ptr<Scene> m_Scene;
     Transform m_Transform;
     glm::mat4 m_Projection;
 
     public:
-    glm::vec3 front;
-    glm::vec3 right;
-    glm::vec3 up;
 
     Camera();
     ~Camera();
+
+    void SetScene(std::shared_ptr<Scene> _scene);
+
+    void Update(float _delta, const Uint8* _keys);
 
     void Use(ShaderProgram* _shader);
     void Translate(glm::vec3 _translation);

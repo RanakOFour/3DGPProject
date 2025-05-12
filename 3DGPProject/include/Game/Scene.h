@@ -11,10 +11,11 @@
 #include <vector>
 #include <memory>
 
+class Game;
 class Scene
 {
 private:
-
+	std::weak_ptr<Game> m_Game;
 	// Spacial partitioning method
 	//Octree m_Octree;
 
@@ -28,9 +29,12 @@ public:
 	Scene(glm::vec3 _size, int _maxObjects);
 	~Scene();
 
+	void SetGame(std::weak_ptr<Game> _game);
 	void AddEntity(std::shared_ptr<GameEntity>& _entity);
 	void HandleInputs(const Uint8* _inputKeys);
 	void Update(float _delta, const uint8_t* _keyInputs);
+
+	std::weak_ptr<Game> GetGame() { return m_Game; };
 };
 
 #endif

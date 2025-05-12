@@ -35,6 +35,8 @@ public:
     glm::vec3 GetScale();
     void SetScale(glm::vec3 _scale);
 
+    glm::mat4 ModelMatrix();
+
     glm::vec3 Up() {return m_Up;};
     glm::vec3 Forward() {return m_Forward;};
     glm::vec3 Right() {return m_Right;};

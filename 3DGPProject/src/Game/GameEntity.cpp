@@ -27,7 +27,7 @@ GameEntity::~GameEntity()
 
 void GameEntity::Update(float _delta)
 {
-	m_Physics->Update(_delta);
+	//m_Physics->Update(_delta);
 
 	auto L_transform = m_Physics->GetTransform();
 	glm::vec3 L_pos = L_transform.lock()->GetPosition();
@@ -39,9 +39,6 @@ void GameEntity::Draw(Camera* _camera)
 {
 	printf("Drawing entity %d\n", m_id);
 
-	m_Shader->Use();
-	_camera->Use(m_Shader.get());
-
     glBindVertexArray(m_Model->GetVAO());
 	glBindTexture(GL_TEXTURE_2D, m_Texture->GetID());
 
@@ -51,15 +48,16 @@ void GameEntity::Draw(Camera* _camera)
 
 	L_modelMatrix = glm::scale(L_modelMatrix, m_Transform->GetScale());
 
-	m_Shader->SetUniform("u_Model", L_modelMatrix);
-
+	m_Shader->Use();
+	_camera->Use(m_Shader.get());
+	m_Shader->SetUniform("u_Model", m_Transform->ModelMatrix());
+	
 	// Draw shape
 	glDrawArrays(GL_TRIANGLES, 0, m_Model->GetVertexCount());
 
 	// Reset the state
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glUseProgram(0);
 }
 
 void GameEntity::Move(glm::vec3 _movement)

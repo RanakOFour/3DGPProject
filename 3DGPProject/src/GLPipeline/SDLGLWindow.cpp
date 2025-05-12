@@ -1,5 +1,6 @@
 #include "GLPipeline/SDLGLWindow.h"
 #include "Game/Game.h"
+#include "Game/Scene.h"
 #include "GLPipeline/OpenGLError.h"
 
 #include <SDL2/SDL.h>
@@ -15,7 +16,9 @@ SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
     m_Window(nullptr),
 	m_Width(_width),
 	m_Height(_height),
-    m_Quit(false)
+    m_Quit(false),
+	m_MouseDeltas(),
+	RMBDown(false)
 {
 	printf("Creating window\n");
     m_Window = SDL_CreateWindow(_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
@@ -65,11 +68,29 @@ const Uint8* SDLGLWindow::Update()
 {
 	SDL_Event e = { 0 };
 
+	m_MouseDeltas.x = 0.0f;
+	m_MouseDeltas.y = 0.0f;
+
 	while (SDL_PollEvent(&e))
 	{
 		if (e.type == SDL_QUIT)
 		{
 			m_Quit = true;
+		}
+
+		if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_RIGHT)
+		{
+			RMBDown = true;
+		}
+		else if(e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_RIGHT)
+		{
+			RMBDown = false;
+		}
+
+		if (RMBDown && e.type == SDL_MOUSEMOTION)
+		{
+			m_MouseDeltas.x = e.motion.xrel;
+			m_MouseDeltas.y = e.motion.yrel;
 		}
 	}
 

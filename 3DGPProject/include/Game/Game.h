@@ -19,6 +19,8 @@ class Game
     ~Game();
 
     void Play();
+    std::unique_ptr<SDLGLWindow>& GetWindow() { return m_Window; };
+    std::shared_ptr<Scene> GetScene() { return m_Scene; };
 };
 
 #endif
