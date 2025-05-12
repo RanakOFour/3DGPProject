@@ -29,11 +29,12 @@ void Scene::AddEntity(std::shared_ptr<GameEntity>& _entity)
 
 void Scene::Update(float _delta, const uint8_t* _inputKeys)
 {
+	HandleInputs(_inputKeys);
 	// Update objects
     for(int i = 0; i < m_Entities.size(); ++i)
     {
         m_Entities[i]->Update(_delta);
-		Physics* L_ph = m_Entities[i]->GetPhysics();
+		//Physics* L_ph = m_Entities[i]->GetPhysics();
         //m_Octree.UpdateMovedObject(L_ph);
 		m_Entities[i]->Draw(&m_Camera);
     }
@@ -79,51 +80,51 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
 	glUseProgram(0);
 }
 
-void HandleInputs(const uint8_t* _inputKeys)
+void Scene::HandleInputs(const Uint8* _inputKeys)
 {
 	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 0.25f);
 	glm::vec3 leftMove = glm::vec3(0.25f, 0.0f, 0.0f);
 	glm::vec3 rotateY = glm::vec3(0.0f, 0.25f, 0.0f);
 
-    // if (_inputKeys[SDL_SCANCODE_A])
-	// {
-	// 	m_Camera.Rotate(rotateY);
-	// }
+    if (_inputKeys[SDL_SCANCODE_A])
+	{
+		m_Camera.Rotate(rotateY);
+	}
 
-	// if (_inputKeys[SDL_SCANCODE_D])
-	// {
-	// 	m_Camera.Rotate(-rotateY);
-	// }
+	if (_inputKeys[SDL_SCANCODE_D])
+	{
+		m_Camera.Rotate(-rotateY);
+	}
 		
-	// if (_inputKeys[SDL_SCANCODE_W])
-	// {
-	// 	m_Camera.Translate(forward);
-	// }
+	if (_inputKeys[SDL_SCANCODE_W])
+	{
+		m_Camera.Translate(forward);
+	}
 
-	// if (_inputKeys[SDL_SCANCODE_S])
-	// {
-	// 	m_Camera.Translate(-forward);
-	// }
+	if (_inputKeys[SDL_SCANCODE_S])
+	{
+		m_Camera.Translate(-forward);
+	}
 
-	// if(_inputKeys[SDL_SCANCODE_LEFT])
-	// {
-	// 	m_Entities[0].Move(leftMove);
-	// }
+	if(_inputKeys[SDL_SCANCODE_LEFT])
+	{
+		m_Entities[0]->Move(leftMove);
+	}
 
-	// if(_inputKeys[SDL_SCANCODE_RIGHT])
-	// {
-	// 	m_Entities[0].Move(-leftMove);
-	// }
+	if(_inputKeys[SDL_SCANCODE_RIGHT])
+	{
+		m_Entities[0]->Move(-leftMove);
+	}
 
-	// if(_inputKeys[SDL_SCANCODE_UP])
-	// {
-	// 	m_Entities[0].Move(forward);
-	// }
+	if(_inputKeys[SDL_SCANCODE_UP])
+	{
+		m_Entities[0]->Move(forward);
+	}
 
-	// if(_inputKeys[SDL_SCANCODE_DOWN])
-	// {
-	// 	m_Entities[0].Move(-forward);
-	// }
+	if(_inputKeys[SDL_SCANCODE_DOWN])
+	{
+		m_Entities[0]->Move(-forward);
+	}
 
 	// if (_inputKeys[SDL_SCANCODE_X])
 	// {

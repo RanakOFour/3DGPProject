@@ -8,10 +8,10 @@
 #include "glm/ext.hpp"
 #include "GL/glew.h"
 
-Physics::Physics() :
+Physics::Physics(std::weak_ptr<Transform> _transform) :
 m_isKinematic(false),
 m_Shape(),
-m_Transform(),
+m_Transform(_transform),
 m_Velocity(0.0f, 0.0f, 0.0f),
 m_Acceleration(0.0f, -9.8f, 0.0f),
 m_PreviousPos(0.0f, 0.0f, 0.0f),
@@ -25,13 +25,13 @@ m_LinearDamping(0.3f),
 m_AngularDamping(0.2f),
 m_Friction(0.5f)
 {
-	SetMass(1.0f);
+	
 }
 
-Physics::Physics(float _radius) :
+Physics::Physics(float _radius, std::weak_ptr<Transform> _transform) :
 m_isKinematic(false),
 m_Shape(),
-m_Transform(),
+m_Transform(_transform),
 m_Velocity(0.0f, 0.0f, 0.0f),
 m_Acceleration(0.0f, -9.8f, 0.0f),
 m_PreviousPos(0.0f, 0.0f, 0.0f),
@@ -50,10 +50,10 @@ m_Friction(0.5f)
 	SetMass(1.0f);
 }
 
-Physics::Physics(glm::vec3 _size) :
+Physics::Physics(glm::vec3 _size, std::weak_ptr<Transform> _transform) :
 m_isKinematic(false),
 m_Shape(),
-m_Transform(),
+m_Transform(_transform),
 m_Velocity(0.0f, 0.0f, 0.0f),
 m_Acceleration(0.0f, -9.8f, 0.0f),
 m_PreviousPos(0.0f, 0.0f, 0.0f),
@@ -72,10 +72,10 @@ m_Friction(0.5f)
 	SetMass(1.0f);
 }
 
-Physics::Physics(std::shared_ptr<Model> _model) :
+Physics::Physics(std::shared_ptr<Model> _model, std::shared_ptr<Transform> _transform) :
 m_isKinematic(false),
 m_Shape(),
-m_Transform(),
+m_Transform(_transform),
 m_Velocity(0.0f, 0.0f, 0.0f),
 m_Acceleration(0.0f, 0.0f, 0.0f),
 m_PreviousPos(0.0f, 0.0f, 0.0f),

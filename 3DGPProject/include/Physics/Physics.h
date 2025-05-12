@@ -38,10 +38,10 @@ class Physics
     void Euler(float _delta);
     public:
 
-    Physics();
-    Physics(float _radius);
-    Physics(glm::vec3 _size);
-    Physics(std::shared_ptr<Model> _model);
+    Physics(std::weak_ptr<Transform> _transform);
+    Physics(float _radius, std::weak_ptr<Transform> _transform);
+    Physics(glm::vec3 _size, std::weak_ptr<Transform> _transform);
+    Physics(std::shared_ptr<Model> _model, std::shared_ptr<Transform> _transform);
     ~Physics();
 
     void Update(float _delta);

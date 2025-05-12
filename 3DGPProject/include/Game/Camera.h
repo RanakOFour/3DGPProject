@@ -13,8 +13,6 @@ class Camera
     glm::mat4 m_Projection;
 
     public:
-    float yaw;
-    float pitch;
     glm::vec3 front;
     glm::vec3 right;
     glm::vec3 up;

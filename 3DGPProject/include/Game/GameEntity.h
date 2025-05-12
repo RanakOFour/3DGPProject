@@ -25,8 +25,8 @@ class GameEntity
 
     // Properties
     int m_id;
-    Transform m_Transform;
-    Physics m_Physics;
+    std::shared_ptr<Physics> m_Physics;
+    std::shared_ptr<Transform> m_Transform;
     std::shared_ptr<ShaderProgram> m_Shader;
     std::shared_ptr<CollisionShape> m_Collider;
 
@@ -43,7 +43,7 @@ class GameEntity
     void SetCollider(std::shared_ptr<CollisionShape> _shape);
 
     int GetID();
-    Physics* GetPhysics() { return &m_Physics; };
+    Physics* GetPhysics() { return m_Physics.get(); };
     std::weak_ptr<CollisionShape> GetCollider();
 };
 

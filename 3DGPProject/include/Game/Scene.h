@@ -6,6 +6,8 @@
 #include "Physics/PhysicsSystem.h"
 #include "Physics/Octree.h"
 
+#include "SDL2/SDL.h"
+
 #include <vector>
 #include <memory>
 
@@ -27,6 +29,7 @@ public:
 	~Scene();
 
 	void AddEntity(std::shared_ptr<GameEntity>& _entity);
+	void HandleInputs(const Uint8* _inputKeys);
 	void Update(float _delta, const uint8_t* _keyInputs);
 };
 

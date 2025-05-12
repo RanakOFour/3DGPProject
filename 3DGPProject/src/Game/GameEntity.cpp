@@ -3,26 +3,21 @@
 #include "GLPipeline/Texture.h"
 #include "GLPipeline/ShaderProgram.h"
 #include "Physics/Transform.h"
+#include "Physics/Physics.h"
 #include "Game/Camera.h"
 
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 
-GameEntity::GameEntity(const char* _modelPath, const char* _texturePath, glm::vec3 _pos) :
-	m_id(-1),
-	m_Transform(),
-	m_Physics(),
-	m_Model(),
-	m_Texture(),
-	m_Shader(),
-	m_Collider()
+GameEntity::GameEntity(const char* _modelPath, const char* _texturePath, glm::vec3 _pos)
 {
 	printf("GameEntity constructor\n");
-
-	m_Model = std::make_unique<Model>(_modelPath);
-	m_Texture = std::make_unique<Texture>(_texturePath);
+	m_id = -1;
+	m_Transform = std::make_shared<Transform>();
+	m_Model = std::make_shared<Model>(_modelPath);
 	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/specular/vert.vs", "./resources/shaders/specular/frag.fs");
-	m_Physics = Physics(m_Model);
+	m_Texture = std::make_unique<Texture>(_texturePath);
+	m_Physics = std::make_shared<Physics>(m_Model, m_Transform);
 }
 
 GameEntity::~GameEntity()
@@ -32,7 +27,7 @@ GameEntity::~GameEntity()
 
 void GameEntity::Update(float _delta)
 {
-	m_Physics.Update(_delta);
+	m_Physics->Update(_delta);
 }
 
 void GameEntity::Draw(Camera* _camera)
@@ -45,11 +40,11 @@ void GameEntity::Draw(Camera* _camera)
     glBindVertexArray(m_Model->GetVAO());
 	glBindTexture(GL_TEXTURE_2D, m_Texture->GetID());
 
-	glm::mat4 L_modelMatrix = glm::translate(glm::mat4(1.0f), m_Transform.GetPosition());
+	glm::mat4 L_modelMatrix = glm::translate(glm::mat4(1.0f), m_Transform->GetPosition());
 
-	L_modelMatrix *= glm::mat4_cast(m_Transform.GetRotation());
+	L_modelMatrix *= glm::mat4_cast(m_Transform->GetRotation());
 
-	L_modelMatrix = glm::scale(L_modelMatrix, m_Transform.GetScale());
+	L_modelMatrix = glm::scale(L_modelMatrix, m_Transform->GetScale());
 
 	m_Shader->Use();
 	_camera->Use(m_Shader.get());
@@ -65,17 +60,17 @@ void GameEntity::Draw(Camera* _camera)
 
 void GameEntity::Move(glm::vec3 _movement)
 {
-	m_Transform.Move(_movement);
+	m_Transform->Move(_movement);
 }
 
 void GameEntity::Rotate(glm::vec3 _rotation)
 {
-	m_Transform.SetRotation(_rotation);
+	m_Transform->SetRotation(_rotation);
 }
 
 void GameEntity::Scale(glm::vec3 _scale)
 {
-	m_Transform.SetScale(_scale);
+	m_Transform->SetScale(_scale);
 }
 
 void GameEntity::SetID(int _id)
