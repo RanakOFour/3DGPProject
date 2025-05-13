@@ -30,7 +30,7 @@ RenderTexture::~RenderTexture()
 	}
 }
 
-void RenderTexture::Bind()
+void RenderTexture::BindBuffer()
 {
 	if (m_dirty)
 	{
@@ -70,11 +70,54 @@ void RenderTexture::Bind()
 	glBindRenderbuffer(GL_RENDERBUFFER, m_renderBufferId);
 }
 
-void RenderTexture::Unbind()
+void RenderTexture::UnbindBuffer()
 {
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void RenderTexture::Bind()
+{
+	if (m_dirty)
+	{
+		glGenFramebuffers(1, &m_frameBufferId);
+		if (!m_frameBufferId)
+		{
+			throw std::exception();
+		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, m_frameBufferId);
+
+		glGenTextures(1, &m_id);
+		glBindTexture(GL_TEXTURE_2D, m_id);
+
+		if (m_data.size() < 1)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_size.x, m_size.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		}
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_id, 0);
+
+		glGenRenderbuffers(1, &m_renderBufferId);
+		glBindRenderbuffer(GL_RENDERBUFFER, m_renderBufferId);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_size.x, m_size.y);
+		glBindRenderbuffer(GL_RENDERBUFFER, 0);
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBufferId);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, m_id);
+}
+
+void RenderTexture::Unbind()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void RenderTexture::Load(const std::string& _path)

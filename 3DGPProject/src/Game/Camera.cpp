@@ -4,6 +4,7 @@
 #include "Physics/Transform.h"
 #include "GLPipeline/ShaderProgram.h"
 #include "GLPipeline/SDLGLWindow.h"
+#include "GLPipeline/RenderTexture.h"
 
 #include <GL/glew.h>
 #include <glm/ext.hpp>
@@ -15,7 +16,6 @@ Camera::Camera() :
 	m_Target(),
 	m_DistanceFromTarget(15.0f),
 	m_Pitch(glm::radians(20.0f)),
-	m_Yaw(0.0f),
 	m_AngleAroundTarget(0.0f)
 {
 }
@@ -28,7 +28,11 @@ Camera::~Camera()
 void Camera::SetScene(std::shared_ptr<Scene> _scene)
 {
     m_Scene = std::weak_ptr<Scene>(_scene);
-	m_Target = std::weak_ptr<GameEntity>(m_Scene.lock()->GetPlayer());
+}
+
+void Camera::SetTarget(std::shared_ptr<GameEntity> _entity)
+{
+	m_Target = std::weak_ptr<GameEntity>(_entity);
 }
 
 void Camera::Update(float _delta, const Uint8* _keys)

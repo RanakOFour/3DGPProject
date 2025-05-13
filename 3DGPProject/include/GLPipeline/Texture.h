@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-#pragma once
 class Texture
 {
 protected:

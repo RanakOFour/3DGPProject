@@ -31,6 +31,8 @@ class GameEntity
     std::shared_ptr<CollisionShape> m_Collider;
 
     public:
+    GameEntity(glm::vec3 _position, float _size);
+    GameEntity(glm::vec3 _position, glm::vec3 _size);
     GameEntity(const char* _modelPath, const char* _texturePath, glm::vec3 _position);
     ~GameEntity();
 

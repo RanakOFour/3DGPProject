@@ -9,6 +9,28 @@
 #include <GL/glew.h>
 #include <glm/ext.hpp>
 
+GameEntity::GameEntity(glm::vec3 _position, float _radius)
+{
+	m_id = -1;
+	m_Transform = std::make_shared<Transform>();
+	m_Transform->SetScale(glm::vec3(_radius));
+	m_Model = std::make_shared<Model>("./resources/shapes/sphere.obj");
+	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
+	m_Texture = std::make_unique<Texture>("./resources/curuthers/Whiskers_diffuse.png");
+	m_Physics = std::make_shared<Physics>(_radius, m_Transform);
+}
+
+GameEntity::GameEntity(glm::vec3 _position, glm::vec3 _size)
+{
+	m_id = -1;
+	m_Transform = std::make_shared<Transform>();
+	m_Transform->SetScale(glm::vec3(_size));
+	m_Model = std::make_shared<Model>("./resources/shapes/cube.obj");
+	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
+	m_Texture = std::make_unique<Texture>("./resources/curuthers/Whiskers_diffuse.png");
+	m_Physics = std::make_shared<Physics>(_size, m_Transform);
+}
+
 GameEntity::GameEntity(const char* _modelPath, const char* _texturePath, glm::vec3 _pos)
 {
 	printf("GameEntity constructor\n");

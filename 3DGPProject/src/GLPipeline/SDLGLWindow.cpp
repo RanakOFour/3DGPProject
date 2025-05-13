@@ -112,35 +112,3 @@ const Uint8* SDLGLWindow::Update()
 	// Return keyboard state
 	return SDL_GetKeyboardState(NULL);
 }
-
-// void SDLGLWindow::Update()
-// {
-// 	SDL_Event e = { 0 };
-
-// 	while (SDL_PollEvent(&e))
-// 	{
-// 		if (e.type == SDL_QUIT)
-// 		{
-// 			m_Quit = true;
-// 		}
-// 	}
-
-// 	if(m_Scene != nullptr)
-// 	{
-//     	int L_windowWidth, L_windowHeight;
-//     	SDL_GetWindowSize(m_Window, &L_windowWidth, &L_windowHeight);
-// 		glViewport(0, 0, L_windowWidth, L_windowHeight);
-
-// 		glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-// 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-// 		const Uint8* key = SDL_GetKeyboardState(NULL);
-// 		m_Scene->Update(key);
-
-// 		SDL_GL_SwapWindow(m_Window);
-// 	}
-// 	else
-// 	{
-// 		printf("SDLGLWindow does not have a scene set!\n");
-// 	}
-// }

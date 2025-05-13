@@ -239,7 +239,7 @@ void Physics::SetMass(float _mass)
 			0.0f, 0.0f, L_bodyInertia
 			);
 	}
-	else
+	else if(m_Shape->GetType() == ShapeType::Cube)
 	{
 		glm::vec3 L_size = ((CubeShape*)m_Shape.get())->GetHalfSize() * 2.0f;
 		float L_val1 = (1.0f / 12.0f) * m_Mass * (L_size.z * L_size.z + L_size.y * L_size.y);

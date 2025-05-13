@@ -2,6 +2,7 @@
 #define CAMERA_H
 
 #include "Game/GameEntity.h"
+#include "GLPipeline/RenderTexture.h"
 #include "Physics/Transform.h"
 
 #include "SDL2/SDL.h"
@@ -17,11 +18,9 @@ class Camera
     Transform m_Transform;
     glm::mat4 m_Projection;
 
-    
     std::weak_ptr<GameEntity> m_Target;
     float m_DistanceFromTarget;
     float m_AngleAroundTarget;
-    float m_Yaw;
     float m_Pitch;
 
     public:
@@ -30,10 +29,12 @@ class Camera
     ~Camera();
 
     void SetScene(std::shared_ptr<Scene> _scene);
+    void SetTarget(std::shared_ptr<GameEntity> _entity);
 
     void Update(float _delta, const Uint8* _keys);
 
     void Use(ShaderProgram* _shader);
+    void Draw();
     void Translate(glm::vec3 _translation);
     void Rotate(glm::vec3 _eulerRotation);
     void SetPosition(glm::vec3 _pos);

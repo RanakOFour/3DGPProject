@@ -20,6 +20,8 @@ public:
 	RenderTexture(glm::ivec2 _size);
 	~RenderTexture();
 
+	void BindBuffer();
+	void UnbindBuffer();
 	void Bind();
 	void Unbind();
 	void Load(const std::string& _path);

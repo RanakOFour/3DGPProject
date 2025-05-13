@@ -7,7 +7,6 @@ Game::Game()
 {
     m_Window = std::make_unique<SDLGLWindow>("MyGame", 1000, 800);
     m_Scene = std::make_shared<Scene>(glm::vec3(1000.0f), 50);
-
     LoadGame();
 }
 
@@ -24,6 +23,9 @@ void Game::LoadGame()
     std::shared_ptr<GameEntity> L_playerPtr = std::make_shared<GameEntity>(L_playerPath, L_playerTexPath, glm::vec3(0.0f));
     
     m_Scene->AddEntity(L_playerPtr);
+
+    std::shared_ptr<GameEntity> L_floor = std::make_shared<GameEntity>(glm::vec3(0.0f), glm::vec3(1000.0f, 0.1f, 1000.0f));
+    m_Scene->AddEntity(L_floor);
 }
 
 void Game::Play()
