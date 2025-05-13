@@ -23,8 +23,11 @@ void Game::LoadGame()
     std::shared_ptr<GameEntity> L_playerPtr = std::make_shared<GameEntity>(L_playerPath, L_playerTexPath, glm::vec3(0.0f));
     
     m_Scene->AddEntity(L_playerPtr);
+    m_Scene->SetPlayer(L_playerPtr);
 
-    std::shared_ptr<GameEntity> L_floor = std::make_shared<GameEntity>(glm::vec3(0.0f), glm::vec3(1000.0f, 0.1f, 1000.0f));
+    const char* L_boxPath = "./resources/shapes/cube.obj";
+
+    std::shared_ptr<GameEntity> L_floor = std::make_shared<GameEntity>(L_boxPath, L_playerTexPath, glm::vec3(0.0f));
     m_Scene->AddEntity(L_floor);
 }
 

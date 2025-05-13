@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 project(3DGPProject)
 
-add_executable(3DGPProject main.cpp)
+add_executable(3DGPProject src/main.cpp)
 
 add_subdirectory(src)
 

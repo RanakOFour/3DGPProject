@@ -22,6 +22,7 @@ private:
 	// Thread safe vector
 	std::vector<PhysicsSystem::CollisionInfo> m_Collisions;
 
+	std::shared_ptr<GameEntity> m_Player;
 	std::vector<std::shared_ptr<GameEntity>> m_Entities;
 
 	Camera m_Camera;
@@ -30,6 +31,7 @@ public:
 	~Scene();
 
 	void SetGame(std::weak_ptr<Game> _game);
+	void SetPlayer(std::shared_ptr<GameEntity> _player);
 	void AddEntity(std::shared_ptr<GameEntity>& _entity);
 	void HandleInputs(const Uint8* _inputKeys);
 	void Update(float _delta, const uint8_t* _keyInputs);
