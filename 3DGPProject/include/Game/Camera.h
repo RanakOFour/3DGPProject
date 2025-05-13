@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "GLPipeline/ShaderProgram.h"
+#include "Game/GameEntity.h"
 #include "Physics/Transform.h"
 
 #include "SDL2/SDL.h"
@@ -16,7 +16,13 @@ class Camera
     std::weak_ptr<Scene> m_Scene;
     Transform m_Transform;
     glm::mat4 m_Projection;
-    glm::vec3 m_Target;
+
+    
+    std::weak_ptr<GameEntity> m_Target;
+    float m_DistanceFromTarget;
+    float m_AngleAroundTarget;
+    float m_Yaw;
+    float m_Pitch;
 
     public:
 

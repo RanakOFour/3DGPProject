@@ -16,6 +16,8 @@ class SDLGLWindow
     int m_Width;
     int m_Height;
 
+
+    float m_PreviousScroll;
     glm::vec3 m_MouseDeltas;
     bool RMBDown;
 

@@ -12,7 +12,11 @@
 Camera::Camera() :
     m_Projection(glm::perspective(45.0f, 1.0f, 0.1f, 100.0f)),
     m_Transform(),
-	m_Target()
+	m_Target(),
+	m_DistanceFromTarget(15.0f),
+	m_Pitch(glm::radians(20.0f)),
+	m_Yaw(0.0f),
+	m_AngleAroundTarget(0.0f)
 {
 }
 
@@ -24,62 +28,42 @@ Camera::~Camera()
 void Camera::SetScene(std::shared_ptr<Scene> _scene)
 {
     m_Scene = std::weak_ptr<Scene>(_scene);
-	m_Target = m_Scene.lock()->GetPlayer()->GetPosition();
+	m_Target = std::weak_ptr<GameEntity>(m_Scene.lock()->GetPlayer());
 }
 
 void Camera::Update(float _delta, const Uint8* _keys)
 {
-    if (_keys[SDL_SCANCODE_Q])
-	{
-		Translate(m_Transform.Up() * _delta * 3.0f);
-	}
-
-	if (_keys[SDL_SCANCODE_E])
-	{
-		Translate(-m_Transform.Up() * _delta * 3.0f);
-	}
-
-    if (_keys[SDL_SCANCODE_D])
-	{
-		Translate(m_Transform.Right() * _delta * 3.0f);
-	}
-
-	if (_keys[SDL_SCANCODE_A])
-	{
-		Translate(-m_Transform.Right() * _delta * 3.0f);
-	}
-		
-	if (_keys[SDL_SCANCODE_W])
-	{
-		Translate(m_Transform.Forward() * _delta * 3.0f);
-	}
-
-	if (_keys[SDL_SCANCODE_S])
-	{
-		Translate(-m_Transform.Forward() * _delta * 3.0f);
-	}
-
-    // Do rotation with mouse
+	// Do rotation with mouse
 	glm::vec3 L_mouseDeltas = m_Scene.lock()->GetGame().lock()->GetWindow()->GetMouseInput();
 
-    glm::vec3 L_eulers = m_Transform.EulerAngles();
+	m_DistanceFromTarget += L_mouseDeltas.z;
+	m_Pitch -= glm::radians(L_mouseDeltas.y);
+	m_AngleAroundTarget -= glm::radians(L_mouseDeltas.x);
 
-	L_eulers.y += glm::radians(L_mouseDeltas.x);
-	L_eulers.x -= glm::radians(L_mouseDeltas.y);
+	m_Pitch = glm::clamp(m_Pitch, -glm::radians(89.0f), glm::radians(89.0f));
+
+	glm::vec3 L_playerPos = m_Target.lock()->GetPosition();
+
+	float L_horizontalDist = m_DistanceFromTarget * glm::cos(m_Pitch);
+	float L_verticalDist = m_DistanceFromTarget * glm::sin(m_Pitch);
+	float L_theta = m_Target.lock()->GetRotation().y + m_AngleAroundTarget;
+
+	glm::vec3 L_cameraPos = glm::vec3(
+		L_playerPos.x - (L_horizontalDist * glm::sin(L_theta)),
+		L_playerPos.y + L_verticalDist,
+		L_playerPos.z - (L_horizontalDist * glm::cos(L_theta))
+	);
 	
-	L_eulers.x = glm::clamp(L_eulers.x, -glm::radians(89.0f), glm::radians(89.0f));
+	m_Transform.SetPosition(L_cameraPos);
 
-    m_Transform.SetRotation(L_eulers);
-
-
-	printf("Camera:\n	Mouse Deltas: %f, %f\n  Pos: %f, %f, %f\n  Rot: %f, %f, %f\n", L_mouseDeltas.x, L_mouseDeltas.y,
+	printf("Camera:\n	Mouse Deltas: %f, %f, %f\n  Pos: %f, %f, %f\n  Distance: %f\n", L_mouseDeltas.x, L_mouseDeltas.y, L_mouseDeltas.z,
 	m_Transform.GetPosition().x, m_Transform.GetPosition().x, m_Transform.GetPosition().z,
-	m_Transform.EulerAngles().x, m_Transform.EulerAngles().y, m_Transform.EulerAngles().z);
+	m_DistanceFromTarget);
 }
 
 void Camera::Use(ShaderProgram* _shader)
 {
-    glm::mat4 L_viewMatrix = glm::lookAt(m_Transform.GetPosition(), m_Target, -m_Transform.Up());
+    glm::mat4 L_viewMatrix = glm::lookAt(m_Transform.GetPosition(), m_Target.lock()->GetPosition(), glm::vec3(0.0f, 1.0f, 0.0f));
 	_shader->SetUniform("u_View", L_viewMatrix);
 	_shader->SetUniform("u_Projection", m_Projection);
 }

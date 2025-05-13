@@ -10,7 +10,6 @@ RenderTexture::RenderTexture(glm::ivec2 _size) :
 	m_frameBufferId(0),
 	m_renderBufferId(0)
 {
-
 }
 
 RenderTexture::~RenderTexture()

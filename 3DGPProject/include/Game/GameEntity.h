@@ -1,7 +1,6 @@
 #ifndef GAMEENTITY_H
 #define GAMEENTITY_H
 
-#include "Game/Camera.h"
 #include "GLPipeline/Model.h"
 #include "GLPipeline/Texture.h"
 #include "GLPipeline/ShaderProgram.h"
@@ -13,6 +12,7 @@
 #include <memory>
 #include <vector>
 
+class Camera;
 class Scene;
 class GameEntity 
 {
@@ -44,6 +44,7 @@ class GameEntity
 
     int GetID();
     glm::vec3 GetPosition() { return m_Transform->GetPosition(); };
+    glm::vec3 GetRotation() { return m_Transform->EulerAngles(); };
     Physics* GetPhysics() { return m_Physics.get(); };
     std::weak_ptr<CollisionShape> GetCollider();
 };

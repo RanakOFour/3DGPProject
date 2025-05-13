@@ -38,7 +38,6 @@ Texture::Texture(glm::ivec2 _size) :
 	m_size(_size),
 	m_id(0)
 {
-
 }
 
 Texture::~Texture()

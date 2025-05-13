@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 
+#include <SDL2/SDL_events.h>
 #include <memory>
 
 #include <stdexcept>
@@ -70,12 +71,18 @@ const Uint8* SDLGLWindow::Update()
 
 	m_MouseDeltas.x = 0.0f;
 	m_MouseDeltas.y = 0.0f;
+	m_MouseDeltas.z = 0.0f;
 
 	while (SDL_PollEvent(&e))
 	{
 		if (e.type == SDL_QUIT)
 		{
 			m_Quit = true;
+		}
+
+		if(e.type == SDL_MOUSEWHEEL)
+		{
+			m_MouseDeltas.z = e.wheel.preciseY;
 		}
 
 		if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_RIGHT)

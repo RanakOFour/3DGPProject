@@ -4,7 +4,7 @@
 
 Transform::Transform() :
     m_Position(0.0f, 0.0f, 0.0f),
-    m_Rotation(0.0f, 0.0f, 0.0f, 1.0f),
+    m_Rotation(0.0f, 0.0f, 0.0f, 0.0f),
     m_Scale(1.0f, 1.0f, 1.0f),
     m_Up(0.0f, 1.0f, 0.0f),
     m_Forward(0.0, 0.0, 1.0f),
@@ -18,19 +18,19 @@ Transform::~Transform()
 
 }
 
-void Transform::Move(glm::vec3 _translation)
+void Transform::SetPosition(glm::vec3 _position)
 {
-    SetPosition(m_Position + _translation);
-};
+    m_Position = _position;
+}
 
 glm::vec3 Transform::GetPosition()
 {
     return m_Position;
-};
+}
 
-void Transform::SetPosition(glm::vec3 _position)
+void Transform::Move(glm::vec3 _translation)
 {
-    m_Position = _position;
+    SetPosition(m_Position + _translation);
 }
 
 glm::quat Transform::GetRotation()
