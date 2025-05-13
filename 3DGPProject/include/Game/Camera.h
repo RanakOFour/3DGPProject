@@ -34,7 +34,6 @@ class Camera
     void Update(float _delta, const Uint8* _keys);
 
     void Use(ShaderProgram* _shader);
-    void Draw();
     void Translate(glm::vec3 _translation);
     void Rotate(glm::vec3 _eulerRotation);
     void SetPosition(glm::vec3 _pos);

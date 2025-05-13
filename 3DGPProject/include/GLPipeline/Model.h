@@ -9,6 +9,59 @@
 #include <fstream>
 #include <vector>
 
+/*
+bool MeshCollider::AxisTest(glm::vec3 axis, Face& _face, glm::vec3& boxHalfSize) 
+{
+	if (glm::length(axis) < 1e-6f){ return true; } // Skip near-zero axis
+
+    glm::vec3 L_normAxis = glm::normalize(axis);
+
+    float p0 = glm::dot(_face.a.position, L_normAxis);
+    float p1 = glm::dot(_face.b.position, L_normAxis);
+    float p2 = glm::dot(_face.c.position, L_normAxis);
+
+    float minP = glm::min(p0, p1, p2);
+    float maxP = glm::max(p0, p1, p2);
+
+    float r = boxHalfSize.x * fabs(L_normAxis.x) +
+              boxHalfSize.y * fabs(L_normAxis.y) +
+              boxHalfSize.z * fabs(L_normAxis.z);
+
+    return !(minP > r || maxP < -r);
+}
+
+bool MeshCollider::TriangleBoxIntersect(Face& _face, glm::vec3& _boxHalfSize) 
+{
+	glm::vec3 boxAxis[3] = { glm::vec3(1,0,0), glm::vec3(0,1,0), glm::vec3(0,0,1) };
+
+    glm::vec3 edges[3] = { _face.b.position - _face.a.position,
+								 _face.c.position - _face.b.position,
+								 _face.a.position - _face.c.position };
+
+    // Test box normals
+    for (int i = 0; i < 3; ++i)
+	{
+        if (!AxisTest(boxAxis[i], _face, _boxHalfSize)){ return false; }
+    }
+
+    // Test triangle normal
+    glm::vec3 L_triNormal = glm::cross(edges[0], edges[1]);
+    if (!AxisTest(L_triNormal, _face, _boxHalfSize)){ return false; }
+
+    // Test edge cross axes
+    for (int i = 0; i < 3; ++i) 
+	{
+        for (int j = 0; j < 3; ++j) 
+		{
+            glm::vec3 L_testAxis = glm::cross(edges[i], boxAxis[j]);
+            if (!AxisTest(L_testAxis, _face, _boxHalfSize)){ return false; }
+        }
+    }
+
+    return true;
+}
+*/
+
 struct Vertex
 {
   Vertex();

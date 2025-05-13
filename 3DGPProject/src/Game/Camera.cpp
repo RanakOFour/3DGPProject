@@ -1,13 +1,14 @@
 #include "Game/Camera.h"
 #include "Game/Scene.h"
+#include "Game/GameEntity.h"
 #include "Game/Game.h"
 #include "Physics/Transform.h"
 #include "GLPipeline/ShaderProgram.h"
 #include "GLPipeline/SDLGLWindow.h"
 #include "GLPipeline/RenderTexture.h"
 
-#include <GL/glew.h>
-#include <glm/ext.hpp>
+#include "GL/glew.h"
+#include "glm/ext.hpp"
 #include <memory>
 
 Camera::Camera() :

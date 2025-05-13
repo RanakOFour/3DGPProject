@@ -1,9 +1,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.20)
 set(CMAKE_CXX_COMPILER clang)
+set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 project(3DGPProject)
-
-set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 add_executable(3DGPProject main.cpp)
 

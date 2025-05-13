@@ -255,6 +255,175 @@ bool PhysicsSystem::CollisionDetection::SphereCollision(SphereShape *_sphereA, T
     return false;
 }
 
+// Helper function to project a triangle onto an axis
+void ProjectTriangle(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c, 
+                    const glm::vec3& axis, float& min, float& max) {
+    min = std::numeric_limits<float>::max();
+    max = -std::numeric_limits<float>::max();
+    
+    float val;
+    
+    val = glm::dot(a, axis);
+    min = std::min(min, val);
+    max = std::max(max, val);
+    
+    val = glm::dot(b, axis);
+    min = std::min(min, val);
+    max = std::max(max, val);
+    
+    val = glm::dot(c, axis);
+    min = std::min(min, val);
+    max = std::max(max, val);
+}
+
+// Check if two projections overlap
+bool Overlap(float min1, float max1, float min2, float max2) {
+    return !(max1 < min2 || max2 < min1);
+}
+
+// Edge cross product for finding potential separating axes
+glm::vec3 GetEdgeCross(const glm::vec3& a1, const glm::vec3& a2, 
+                      const glm::vec3& b1, const glm::vec3& b2) {
+    glm::vec3 edgeA = a2 - a1;
+    glm::vec3 edgeB = b2 - b1;
+    return glm::cross(edgeA, edgeB);
+}
+
+// Find the contact point between two triangles (simplified version)
+void FindContactPoint(const Face& tri1, const Face& tri2, const glm::vec3& normal,
+                     glm::vec3& contactA, glm::vec3& contactB) {
+    // Simplified approach - using the centroid of the overlapping region
+    // In a more complete implementation, you would use clipping to find the actual contact manifold
+    
+    // Get all vertices from both triangles
+    std::vector<glm::vec3> vertices;
+    vertices.push_back(tri1.a.position);
+    vertices.push_back(tri1.b.position);
+    vertices.push_back(tri1.c.position);
+    vertices.push_back(tri2.a.position);
+    vertices.push_back(tri2.b.position);
+    vertices.push_back(tri2.c.position);
+    
+    // Find the vertex most in the direction of the normal (from B to A)
+    float maxDot = -std::numeric_limits<float>::max();
+    glm::vec3 maxVertex;
+    
+    for (const auto& vertex : vertices) {
+        float dot = glm::dot(vertex, normal);
+        if (dot > maxDot) {
+            maxDot = dot;
+            maxVertex = vertex;
+        }
+    }
+    
+    // For simplicity, we'll use this as the contact point for both
+    // In reality, you'd want to find the actual intersection points
+    contactA = maxVertex;
+    contactB = maxVertex;
+}
+
+// SAT test between two triangles
+bool TestTrianglesSAT(const Face& tri1, const Face& tri2, PhysicsSystem::ContactPoint& contact) {
+    const glm::vec3& a1 = tri1.a.position;
+    const glm::vec3& b1 = tri1.b.position;
+    const glm::vec3& c1 = tri1.c.position;
+    
+    const glm::vec3& a2 = tri2.a.position;
+    const glm::vec3& b2 = tri2.b.position;
+    const glm::vec3& c2 = tri2.c.position;
+    
+    // Potential separating axes
+    std::vector<glm::vec3> axes;
+    
+    // Triangle normals
+    axes.push_back(tri1.normal);
+    axes.push_back(tri2.normal);
+    
+    // Edge cross products
+    axes.push_back(GetEdgeCross(a1, b1, a2, b2));
+    axes.push_back(GetEdgeCross(a1, b1, a2, c2));
+    axes.push_back(GetEdgeCross(a1, b1, b2, c2));
+    axes.push_back(GetEdgeCross(a1, c1, a2, b2));
+    axes.push_back(GetEdgeCross(a1, c1, a2, c2));
+    axes.push_back(GetEdgeCross(a1, c1, b2, c2));
+    axes.push_back(GetEdgeCross(b1, c1, a2, b2));
+    axes.push_back(GetEdgeCross(b1, c1, a2, c2));
+    axes.push_back(GetEdgeCross(b1, c1, b2, c2));
+    
+    float minDepth = std::numeric_limits<float>::max();
+    glm::vec3 minNormal;
+    
+    for (const auto& axis : axes) {
+        if (glm::length(axis) < 0.001f) continue; // Skip near-zero axes
+        
+        glm::vec3 normAxis = glm::normalize(axis);
+        
+        float min1, max1, min2, max2;
+        ProjectTriangle(a1, b1, c1, normAxis, min1, max1);
+        ProjectTriangle(a2, b2, c2, normAxis, min2, max2);
+        
+        if (!Overlap(min1, max1, min2, max2)) {
+            return false; // Separating axis found
+        }
+        
+        // Calculate penetration depth for this axis
+        float overlap = std::min(max1, max2) - std::max(min1, min2);
+        if (overlap < minDepth) {
+            minDepth = overlap;
+            minNormal = normAxis;
+        }
+    }
+    
+    // If we get here, all axes showed overlap - collision exists
+    // Determine the contact point
+    glm::vec3 contactA, contactB;
+    FindContactPoint(tri1, tri2, minNormal, contactA, contactB);
+    
+    contact.localA = contactA;
+    contact.localB = contactB;
+    contact.normal = minNormal;
+    contact.penetration = minDepth;
+    
+    return true;
+}
+
+bool PhysicsSystem::CollisionDetection::MeshCollision(MeshShape* _meshA, Transform* _transformA, MeshShape* _meshB, Transform* _transformB, CollisionInfo* _infoOut)
+{
+    // Assuming Physics class has a GetModel() method that returns a Model*
+    std::vector<Face>& L_facesA = _meshA->GetFaces();
+    std::vector<Face>& L_facesB = _meshB->GetFaces();
+    
+    ContactPoint L_bestContact;
+    L_bestContact.penetration = -1.0f; // Initialize to invalid value
+    
+    // For each triangle in model1
+    for (int i = 0; i < L_facesA.size(); ++i) {
+        L_facesA[i].CalculateNormal();
+        
+        // For each triangle in model2
+        for (int j = 0; j < L_facesB.size(); ++j) {
+            L_facesB[j].CalculateNormal();
+            
+            ContactPoint L_currentContact;
+            if (TestTrianglesSAT(L_facesA[i], L_facesB[j], L_currentContact)) {
+                // Keep the contact with deepest penetration
+                if (L_currentContact.penetration > L_bestContact.penetration) {
+                    L_bestContact = L_currentContact;
+                }
+            }
+        }
+    }
+    
+    if (L_bestContact.penetration >= 0.0f) {
+        // Collision found - create and return CollisionInfo
+        _infoOut->AddContactPoint(L_bestContact.localA, L_bestContact.localB, 
+                            L_bestContact.normal, L_bestContact.penetration);
+        return true;
+    }
+    
+    return false; // No collision
+}
+
 bool PhysicsSystem::CollisionDetection::CollisionCheck(Physics &_aObject, Physics &_bObject, CollisionInfo *_infoOut)
 {
     std::weak_ptr<CollisionShape> L_shapeA = _aObject.GetShape();

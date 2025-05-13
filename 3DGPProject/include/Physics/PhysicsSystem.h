@@ -56,7 +56,7 @@ class CollisionDetection
     static bool OBBCollision(CubeShape* _cubeA, Transform* _transformA, CubeShape* _cubeB, Transform* _transformB, CollisionInfo* _infoOut);
     static bool OBBvsSphereCollision(CubeShape* _cube, Transform* _cubeTransform, SphereShape* _sphere, Transform* _sphereTransform, CollisionInfo* _infoOut);
     static bool SphereCollision(SphereShape* _sphereA, Transform* _transformA, SphereShape* _sphereB, Transform* _transformB, CollisionInfo* _infoOut);
-    static bool MeshCollision(MeshShape* _meshA, Transform* _transformA, MeshShape* _meshB, Transform* _transformB);
+    static bool MeshCollision(MeshShape* _meshA, Transform* _transformA, MeshShape* _meshB, Transform* _transformB, CollisionInfo* _infoOut);
     
     public:
 
