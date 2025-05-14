@@ -100,13 +100,13 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
 
 	for(int i = 0; i < m_Entities.size(); ++i)
 	{
-		Physics* L_physicsA = m_Entities[i]->GetPhysics();
+		std::weak_ptr<CollisionShape> L_shapeA = m_Entities[i]->GetCollider();
 		for(int j = i; j < m_Entities.size(); ++j)
 		{
-			Physics* L_physicsB = m_Entities[j]->GetPhysics();
+			std::weak_ptr<CollisionShape> L_shapeB = m_Entities[j]->GetCollider();
 
 			PhysicsSystem::CollisionInfo L_info;
-			if(PhysicsSystem::CollisionDetection::CollisionCheck(*L_physicsA, *L_physicsB, &L_info))
+			if(PhysicsSystem::CollisionDetection::CollisionCheck(L_shapeA.lock().get(), L_shapeB.lock().get(), &L_info))
 			{
 				m_Collisions.push_back(L_info);
 			}

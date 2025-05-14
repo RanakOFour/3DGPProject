@@ -45,7 +45,7 @@ m_LinearDamping(0.3f),
 m_AngularDamping(0.2f),
 m_Friction(0.1f)
 {
-    CollisionShape* L_sphere = (CollisionShape*)(new SphereShape(_radius));
+    CollisionShape* L_sphere = (CollisionShape*)(new SphereShape(_radius, m_Transform, false));
     m_Shape = std::shared_ptr<CollisionShape>((CollisionShape*)L_sphere);
 	SetMass(1.0f);
 }
@@ -67,7 +67,7 @@ m_LinearDamping(0.3f),
 m_AngularDamping(0.2f),
 m_Friction(0.1f)
 {
-    CollisionShape* L_cube = (CollisionShape*)(new CubeShape(_size * 0.5f));
+    CollisionShape* L_cube = (CollisionShape*)(new CubeShape(_size * 0.5f, m_Transform, false));
     m_Shape = std::shared_ptr<CollisionShape>(L_cube);
 	SetMass(1.0f);
 }
@@ -89,7 +89,7 @@ m_LinearDamping(0.3f),
 m_AngularDamping(0.2f),
 m_Friction(0.1f)
 {
-	CollisionShape* L_mesh = (CollisionShape*)(new MeshShape(_model));
+	CollisionShape* L_mesh = (CollisionShape*)(new MeshShape(_model, m_Transform, false));
     m_Shape = std::shared_ptr<CollisionShape>(L_mesh);
 	SetMass(1.0f);
 }

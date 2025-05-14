@@ -167,106 +167,6 @@ bool PhysicsSystem::CollisionDetection::SphereCollision(SphereShape *_sphereA, T
     return false;
 }
 
-// Helper function to project a triangle onto an axis
-inline void ProjectTriangle(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c, 
-                    const glm::vec3& axis, float& min, float& max)
-{
-    const float d1 = glm::dot(a, axis);
-    const float d2 = glm::dot(b, axis);
-    const float d3 = glm::dot(c, axis);
-    
-    min = std::min(std::min(d1, d2), d3);
-    max = std::max(std::max(d1, d2), d3);
-}
-
-// SAT test between two triangles
-inline bool TestTrianglesSAT(const Face& tri1, const Face& tri2, PhysicsSystem::ContactPoint& contact)
-{
-    const glm::vec3& a1 = tri1.a.position;
-    const glm::vec3& b1 = tri1.b.position;
-    const glm::vec3& c1 = tri1.c.position;
-    
-    const glm::vec3& a2 = tri2.a.position;
-    const glm::vec3& b2 = tri2.b.position;
-    const glm::vec3& c2 = tri2.c.position;
-    
-    // Potential separating axes
-    glm::vec3 axes[11] = {
-        tri1.normal,
-        tri2.normal,
-        glm::cross(b1 - a1, b2 - a2),
-        glm::cross(b1 - a1, c2 - a2),
-        glm::cross(b1 - a1, c2 - b2),
-        glm::cross(c1 - a1, b2 - a2),
-        glm::cross(c1 - a1, c2 - a2),
-        glm::cross(c1 - a1, c2 - b2),
-        glm::cross(c1 - b1, b2 - a2),
-        glm::cross(c1 - b1, c2 - a2),
-        glm::cross(c1 - b1, c2 - b2)
-    };
-    
-    float minDepth = FLT_MAX;
-    glm::vec3 minNormal;
-    
-    for (int i = 0; i < 11; ++i)
-    {
-        if (glm::length(axes[i]) < 0.001f) continue; // Skip near-zero axes
-        
-        glm::vec3 normAxis = glm::normalize(axes[i]);
-        
-        float min1, max1, min2, max2;
-        ProjectTriangle(a1, b1, c1, normAxis, min1, max1);
-        ProjectTriangle(a2, b2, c2, normAxis, min2, max2);
-        
-        if (!(max1 >= min2 & max2 >= min1))
-        {
-            return false; // Separating axis found
-        }
-        
-
-        // Calculate penetration depth for this axis
-        float overlap = std::min(max1, max2) - std::max(min1, min2);
-        if (overlap < minDepth)
-        {
-            minDepth = overlap;
-            minNormal = normAxis;
-        }
-    }
-    
-    // If we get here, all axes showed overlap - collision exists
-    // Determine the contact point
-    
-    glm::vec3 vertices[6] = {
-        tri1.a.position,
-        tri1.b.position,
-        tri1.c.position,
-        tri2.a.position,
-        tri2.b.position,
-        tri2.c.position
-    };
-    
-    // Find the vertex most in the direction of the normal (from B to A)
-    float maxDot = -FLT_MAX;
-    glm::vec3 maxVertex;
-    
-    for (int i = 0; i < 6; ++i)
-    {
-        float dot = glm::dot(vertices[i], minNormal);
-        if (dot > maxDot)
-        {
-            maxDot = dot;
-            maxVertex = vertices[i];
-        }
-    }
-    
-    contact.localA = maxVertex;
-    contact.localB = maxVertex;
-    contact.normal = minNormal;
-    contact.penetration = minDepth;
-    
-    return true;
-}
-
 
 bool AxisTest(glm::vec3 axis, Face& _face, glm::vec3& boxHalfSize) 
 {
@@ -321,38 +221,8 @@ bool TriangleBoxIntersect(Face& _face, glm::vec3& _boxHalfSize)
 
 bool PhysicsSystem::CollisionDetection::MeshCollision(MeshShape* _meshA, Transform* _transformA, MeshShape* _meshB, Transform* _transformB, CollisionInfo* _infoOut)
 {
-    // Assuming Physics class has a GetModel() method that returns a Model*
-    std::vector<Face>& L_facesA = _meshA->GetFaces();
-    std::vector<Face>& L_facesB = _meshB->GetFaces();
-    
-    ContactPoint L_bestContact;
-    L_bestContact.penetration = -1.0f; // Initialize to invalid value
-    
-    for (int i = 0; i < L_facesA.size(); ++i) 
-    {
-        for (int j = 0; j < L_facesB.size(); ++j) 
-        {
-            ContactPoint L_currentContact;
-            if (TestTrianglesSAT(L_facesA[i], L_facesB[j], L_currentContact) && 
-                L_currentContact.penetration > L_bestContact.penetration)
-            {
-                // Keep the contact with deepest penetration
-                L_bestContact = L_currentContact;
-            }
-        }
-    }
-    
-    if (L_bestContact.penetration >= 0.0f)
-    {
-        // Collision found - create and return CollisionInfo
-        _infoOut->AddContactPoint(L_bestContact.localA, L_bestContact.localB, 
-                            L_bestContact.normal, L_bestContact.penetration);
-        printf("Colliding!\n");
-        return true;
-    }
-
-    printf("Not Colliding!\n");
-    return false; // No collision
+    //Beep boop
+    return false;
 }
 
 bool PhysicsSystem::CollisionDetection::MeshCubeCollision(MeshShape* _mesh, Transform* _meshTransform, CubeShape* _cube, Transform* _cubeTransform, CollisionInfo* _infoOut)
@@ -382,66 +252,63 @@ bool PhysicsSystem::CollisionDetection::MeshCubeCollision(MeshShape* _mesh, Tran
     return false;
 }
 
-bool PhysicsSystem::CollisionDetection::CollisionCheck(Physics &_aObject, Physics &_bObject, CollisionInfo *_infoOut)
+bool PhysicsSystem::CollisionDetection::CollisionCheck(CollisionShape* _aShape, CollisionShape* _bShape, CollisionInfo *_infoOut)
 {
-    CollisionShape* L_shapeA = _aObject.GetShape().lock().get();
-    CollisionShape* L_shapeB = _bObject.GetShape().lock().get();
+    _infoOut->objectA = _aShape;
+    _infoOut->objectB = _bShape;
 
-    _infoOut->objectA = &_aObject;
-    _infoOut->objectB = &_bObject;
+    Transform* L_transformA = _aShape->GetTransform();
+    Transform* L_transformB = _bShape->GetTransform();
 
-    Transform* L_transformA = _aObject.GetTransform().lock().get();
-    Transform* L_transformB = _bObject.GetTransform().lock().get();
+    int L_shapeTypeA = (int)_aShape->GetType();
+    int L_shapeTypeB = (int)_bShape->GetType();
 
-    int L_shapeTypeA = (int)L_shapeA->GetType();
-    int L_shapeTypeB = (int)L_shapeB->GetType();
-
-    ShapeType L_shapeType = (ShapeType)(((int)L_shapeA->GetType()) | ((int)L_shapeB->GetType()));
+    ShapeType L_shapeType = (ShapeType)(((int)_aShape->GetType()) | ((int)_bShape->GetType()));
 
     if (L_shapeType == ShapeType::Cube)
     {
-        return OBBCollision((CubeShape*)L_shapeA, L_transformA, (CubeShape*)L_shapeB, L_transformB, _infoOut);
+        return OBBCollision((CubeShape*)_aShape, L_transformA, (CubeShape*)_bShape, L_transformB, _infoOut);
     }
     else if (L_shapeType == ShapeType::Sphere)
     {
-        return SphereCollision((SphereShape*)L_shapeA, L_transformA, (SphereShape*)L_shapeB, L_transformB, _infoOut);
+        return SphereCollision((SphereShape*)_aShape, L_transformA, (SphereShape*)_bShape, L_transformB, _infoOut);
     }
     else if(L_shapeType == ShapeType::Mesh)
     {
-        return MeshCollision((MeshShape*)L_shapeA, L_transformA, (MeshShape*)L_shapeB, L_transformB, _infoOut);
+        return MeshCollision((MeshShape*)_aShape, L_transformA, (MeshShape*)_bShape, L_transformB, _infoOut);
     }
     
-    if (L_shapeA->GetType() == ShapeType::Cube)
+    if (_aShape->GetType() == ShapeType::Cube)
     {
-        if(L_shapeB->GetType() == ShapeType::Sphere)
+        if(_bShape->GetType() == ShapeType::Sphere)
         {
-            return OBBvsSphereCollision((CubeShape*)L_shapeA, L_transformA, (SphereShape*)L_shapeB, L_transformB, _infoOut);
+            return OBBvsSphereCollision((CubeShape*)_aShape, L_transformA, (SphereShape*)_bShape, L_transformB, _infoOut);
         }
         else
         { // Mesh
-            _infoOut->objectA = &_bObject;
-            _infoOut->objectB = &_aObject;
-            return MeshCubeCollision((MeshShape*)L_shapeB, L_transformB, (CubeShape*)L_shapeA, L_transformA, _infoOut);
+            _infoOut->objectA = _bShape;
+            _infoOut->objectB = _aShape;
+            return MeshCubeCollision((MeshShape*)_bShape, L_transformB, (CubeShape*)_aShape, L_transformA, _infoOut);
         }
     }
-    if (L_shapeA->GetType() == ShapeType::Sphere)
+    if (_aShape->GetType() == ShapeType::Sphere)
     {
-        if(L_shapeB->GetType() == ShapeType::Cube)
+        if(_bShape->GetType() == ShapeType::Cube)
         {
-            _infoOut->objectA = &_bObject;
-            _infoOut->objectB = &_aObject;
-            return OBBvsSphereCollision((CubeShape*)L_shapeB, L_transformB, (SphereShape*)L_shapeA, L_transformA, _infoOut);
+            _infoOut->objectA = _bShape;
+            _infoOut->objectB = _aShape;
+            return OBBvsSphereCollision((CubeShape*)_bShape, L_transformB, (SphereShape*)_aShape, L_transformA, _infoOut);
         }
         else
         { // Mesh
 
         }
     }
-    if (L_shapeA->GetType() == ShapeType::Mesh)
+    if (_aShape->GetType() == ShapeType::Mesh)
     {
-        if(L_shapeB->GetType() == ShapeType::Cube)
+        if(_bShape->GetType() == ShapeType::Cube)
         {
-            return MeshCubeCollision((MeshShape*)L_shapeA, L_transformA, (CubeShape*)L_shapeB, L_transformB, _infoOut);
+            return MeshCubeCollision((MeshShape*)_aShape, L_transformA, (CubeShape*)_bShape, L_transformB, _infoOut);
         }
         else
         { //Sphere
@@ -454,65 +321,77 @@ bool PhysicsSystem::CollisionDetection::CollisionCheck(Physics &_aObject, Physic
 
 void PhysicsSystem::CollisionDetection::ImpulseCollisionResolution(CollisionInfo* _info)
 {
-    Physics* L_aObject = _info->objectA;
-    Physics* L_bObject = _info->objectB;
+    CollisionShape* L_aObject = _info->objectA;
+    CollisionShape* L_bObject = _info->objectB;
     ContactPoint L_contact = _info->contactPoint;
 
     // Inverse masses
-    float L_invMassA = (L_aObject->GetMass() == INFINITY) ? 0.0f : 1.0f / L_aObject->GetMass();
-    float L_invMassB = (L_bObject->GetMass() == INFINITY) ? 0.0f : 1.0f / L_bObject->GetMass();
-    float L_totalInverseMass = L_invMassA + L_invMassB;
-    if(L_totalInverseMass <= 0) return;
+    if (L_aObject->Environment() && L_bObject->Environment()) return;
 
-    glm::vec3 L_correction = L_contact.normal * (L_contact.penetration / L_totalInverseMass);
-    L_aObject->GetTransform().lock()->Move(-L_correction * L_invMassA);
-    L_bObject->GetTransform().lock()->Move(L_correction * L_invMassB);
 
+    glm::vec3 L_correction = L_contact.normal * L_contact.penetration;
+
+    if(L_aObject->Environment())
+    {
+        L_bObject->GetTransform()->Move(L_correction);
+    }
+    else if(L_bObject->Environment())
+    {
+        L_bObject->GetTransform()->Move(-L_correction);
+    }
+    else
+    {
+        L_aObject->GetTransform()->Move(-L_correction);
+        L_bObject->GetTransform()->Move(L_correction);
+    }
+
+    // Silly physics things I don't need
+    // Newton died a virgin
     // Calculate torque arms in world space
-    glm::quat L_rotA = L_aObject->GetTransform().lock()->GetRotation();
-    glm::quat L_rotB = L_bObject->GetTransform().lock()->GetRotation();
-    glm::vec3 L_torqueArmA = L_rotA * L_contact.localA;
-    glm::vec3 L_torqueArmB = L_rotB * L_contact.localB;
+    // glm::quat L_rotA = L_aObject->GetTransform().lock()->GetRotation();
+    // glm::quat L_rotB = L_bObject->GetTransform().lock()->GetRotation();
+    // glm::vec3 L_torqueArmA = L_rotA * L_contact.localA;
+    // glm::vec3 L_torqueArmB = L_rotB * L_contact.localB;
 
-    // Relative velocity
-    glm::vec3 L_velA = L_aObject->GetVelocity() + glm::cross(L_aObject->GetAngularVelocity(), L_torqueArmA);
-    glm::vec3 L_velB = L_bObject->GetVelocity() + glm::cross(L_bObject->GetAngularVelocity(), L_torqueArmB);
-    glm::vec3 L_relVel = L_velB - L_velA;
+    // // Relative velocity
+    // glm::vec3 L_velA = L_aObject->GetVelocity() + glm::cross(L_aObject->GetAngularVelocity(), L_torqueArmA);
+    // glm::vec3 L_velB = L_bObject->GetVelocity() + glm::cross(L_bObject->GetAngularVelocity(), L_torqueArmB);
+    // glm::vec3 L_relVel = L_velB - L_velA;
 
-    // Normal impulse
-    float L_velAlongNormal = glm::dot(L_relVel, L_contact.normal);
-    if (L_velAlongNormal > 0) return;
+    // // Normal impulse
+    // float L_velAlongNormal = glm::dot(L_relVel, L_contact.normal);
+    // if (L_velAlongNormal > 0) return;
 
-    // Rotate inertia tensors to world space
-    glm::mat3 L_rotMatA = glm::mat3_cast(L_rotA);
-    glm::mat3 L_rotMatB = glm::mat3_cast(L_rotB);
-    glm::mat3 L_invInertiaA = L_rotMatA * L_aObject->GetInverseInertiaTensor() * glm::transpose(L_rotMatA);
-    glm::mat3 L_invInertiaB = L_rotMatB * L_bObject->GetInverseInertiaTensor() * glm::transpose(L_rotMatB);
+    // // Rotate inertia tensors to world space
+    // glm::mat3 L_rotMatA = glm::mat3_cast(L_rotA);
+    // glm::mat3 L_rotMatB = glm::mat3_cast(L_rotB);
+    // glm::mat3 L_invInertiaA = L_rotMatA * L_aObject->GetInverseInertiaTensor() * glm::transpose(L_rotMatA);
+    // glm::mat3 L_invInertiaB = L_rotMatB * L_bObject->GetInverseInertiaTensor() * glm::transpose(L_rotMatB);
 
-    glm::vec3 L_crossA = glm::cross(L_torqueArmA, L_contact.normal);
-    glm::vec3 L_crossB = glm::cross(L_torqueArmB, L_contact.normal);
-    float L_denominator = L_totalInverseMass + 
-                        glm::dot(L_crossA, L_invInertiaA * L_crossA) + 
-                        glm::dot(L_crossB, L_invInertiaB * L_crossB);
+    // glm::vec3 L_crossA = glm::cross(L_torqueArmA, L_contact.normal);
+    // glm::vec3 L_crossB = glm::cross(L_torqueArmB, L_contact.normal);
+    // float L_denominator = L_totalInverseMass + 
+    //                     glm::dot(L_crossA, L_invInertiaA * L_crossA) + 
+    //                     glm::dot(L_crossB, L_invInertiaB * L_crossB);
 
-    float L_restitution = glm::min(L_aObject->GetRestitution(), L_bObject->GetRestitution());
-    float L_numerator = -(1.0f + L_restitution) * L_velAlongNormal;
+    // float L_restitution = glm::min(L_aObject->GetRestitution(), L_bObject->GetRestitution());
+    // float L_numerator = -(1.0f + L_restitution) * L_velAlongNormal;
 
-    float L_normalImpulseMag = L_numerator / L_denominator;
-    glm::vec3 L_impulse = L_contact.normal * L_normalImpulseMag;
+    // float L_normalImpulseMag = L_numerator / L_denominator;
+    // glm::vec3 L_impulse = L_contact.normal * L_normalImpulseMag;
 
-    float L_frictionEffectA = L_bObject->GetFriction();
-    float L_frictionEffectB = L_aObject->GetFriction();
+    // float L_frictionEffectA = L_bObject->GetFriction();
+    // float L_frictionEffectB = L_aObject->GetFriction();
 
-    // Apply impulses
-    L_aObject->SetVelocity((L_aObject->GetVelocity() - L_impulse * L_invMassA) * L_frictionEffectA);
-    L_bObject->SetVelocity((L_bObject->GetVelocity() + L_impulse * L_invMassB) * L_frictionEffectB);
+    // // Apply impulses
+    // L_aObject->SetVelocity((L_aObject->GetVelocity() - L_impulse * L_invMassA) * L_frictionEffectA);
+    // L_bObject->SetVelocity((L_bObject->GetVelocity() + L_impulse * L_invMassB) * L_frictionEffectB);
 
-    // Angular velocity update
-    L_aObject->SetAngularVelocity(L_aObject->GetAngularVelocity() - 
-        L_invInertiaA * glm::cross(L_torqueArmA, L_impulse));
-    L_bObject->SetAngularVelocity(L_bObject->GetAngularVelocity() + 
-        L_invInertiaB * glm::cross(L_torqueArmB, L_impulse));
+    // // Angular velocity update
+    // L_aObject->SetAngularVelocity(L_aObject->GetAngularVelocity() - 
+    //     L_invInertiaA * glm::cross(L_torqueArmA, L_impulse));
+    // L_bObject->SetAngularVelocity(L_bObject->GetAngularVelocity() + 
+    //     L_invInertiaB * glm::cross(L_torqueArmB, L_impulse));
 
     // Friction (tangential impulse)
     

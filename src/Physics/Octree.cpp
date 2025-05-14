@@ -1,4 +1,10 @@
 #include "Physics/Octree.h"
+
+#include "Physics/Shape/CollisionShape.h"
+#include "Physics/Shape/CubeShape.h"
+#include "Physics/Shape/MeshShape.h"
+#include "Physics/Shape/SphereShape.h"
+
 #include "glm/ext.hpp"
 #include <tbb/parallel_for.h>
 
@@ -16,11 +22,11 @@ bool const Octree::OctreeNode::IsLeaf()
     return !children[0];
 }
 
-bool const Octree::OctreeNode::Contains(Physics* _obj)
+bool const Octree::OctreeNode::Contains(CollisionShape* _obj)
 {
-    glm::vec3 L_pos = _obj->GetTransform().lock()->GetPosition();
+    glm::vec3 L_pos = _obj->GetTransform()->GetPosition();
     glm::vec3 L_objHalfSize(0.0f);
-    CollisionShape* L_shape = _obj->GetShape().lock().get();
+    CollisionShape* L_shape = _obj;
 
     if (L_shape->GetType() == ShapeType::Sphere)
     {
@@ -56,8 +62,8 @@ void Octree::OctreeNode::CreateChildren()
     }
 }
 
-void Octree::OctreeNode::Insert(Physics* _obj, int _maxDepth, int _maxObjects,
-                                std::unordered_map<Physics*, std::vector<OctreeNode*>>& _objectNodes)
+void Octree::OctreeNode::Insert(CollisionShape* _obj, int _maxDepth, int _maxObjects,
+                                std::unordered_map<CollisionShape*, std::vector<OctreeNode*>>& _objectNodes)
 {
     if (!Contains(_obj))
         return;
@@ -107,8 +113,8 @@ void Octree::OctreeNode::Insert(Physics* _obj, int _maxDepth, int _maxObjects,
     }
 }
 
-void Octree::OctreeNode::Remove(Physics* _obj,
-                                std::unordered_map<Physics*, std::vector<OctreeNode*>>& _objectNodes)
+void Octree::OctreeNode::Remove(CollisionShape* _obj,
+                                std::unordered_map<CollisionShape*, std::vector<OctreeNode*>>& _objectNodes)
 {
     auto L_iteratorLocation = std::find(objects.begin(), objects.end(), _obj);
     if (L_iteratorLocation != objects.end())
@@ -137,7 +143,7 @@ void Octree::OctreeNode::Remove(Physics* _obj,
     }
 }
 
-void const Octree::OctreeNode::CollectObjects(std::vector<Physics*>& _results)
+void const Octree::OctreeNode::CollectObjects(std::vector<CollisionShape*>& _results)
 {
     if (IsLeaf())
     {
@@ -156,7 +162,7 @@ void const Octree::OctreeNode::CollectObjects(std::vector<Physics*>& _results)
 }
 
 void Octree::OctreeNode::Prune(int _maxObjects,
-                               std::unordered_map<Physics *, std::vector<OctreeNode *>>& _objectNodes)
+                               std::unordered_map<CollisionShape *, std::vector<OctreeNode *>>& _objectNodes)
 {
     if (IsLeaf())
         return;
@@ -212,12 +218,12 @@ Octree::~Octree()
 
 };
 
-void Octree::Insert(Physics* _obj)
+void Octree::Insert(CollisionShape* _obj)
 {
     m_Root->Insert(_obj, m_MaxDepth, m_MaxObjects, m_ObjectNodes);
 }
 
-void Octree::Remove(Physics* _obj)
+void Octree::Remove(CollisionShape* _obj)
 {
     m_Root->Remove(_obj, m_ObjectNodes);
     m_ObjectNodes.erase(_obj);
@@ -229,9 +235,9 @@ void Octree::Clear()
     m_ObjectNodes.clear();
 }
 
-std::vector<Physics*> const Octree::Query(Physics* _obj)
+std::vector<CollisionShape*> const Octree::Query(CollisionShape* _obj)
 {
-    std::vector<Physics*> L_results;
+    std::vector<CollisionShape*> L_results;
 
     auto L_iteratorLocation = m_ObjectNodes.find(_obj);
     if (L_iteratorLocation != m_ObjectNodes.end())
@@ -250,7 +256,7 @@ std::vector<Physics*> const Octree::Query(Physics* _obj)
     return L_results;
 }
 
-void Octree::UpdateMovedObject(Physics* _obj)
+void Octree::UpdateMovedObject(CollisionShape* _obj)
 {
     Remove(_obj);
     Insert(_obj);

@@ -2,7 +2,6 @@
 #define PHYSICSSYSTEM_H
 
 #include "Physics/Transform.h"
-#include "Physics/Physics.h"
 #include "Physics/Shape/CollisionShape.h"
 #include "Physics/Shape/CubeShape.h"
 #include "Physics/Shape/SphereShape.h"
@@ -37,8 +36,8 @@ class CollisionInfo
     ~CollisionInfo() {};
 
     // Raw is fine as CollisionInfo should not be made if 2 colliding objects do not exist
-    Physics* objectA;
-    Physics* objectB;
+    CollisionShape* objectA;
+    CollisionShape* objectB;
 
     ContactPoint contactPoint;
 
@@ -61,7 +60,7 @@ class CollisionDetection
     
     public:
 
-    static bool CollisionCheck(Physics& _aObject, Physics& _bObject, CollisionInfo* _infoOut);
+    static bool CollisionCheck(CollisionShape* _aShape, CollisionShape* _bShape, CollisionInfo* _infoOut);
     static void ImpulseCollisionResolution(CollisionInfo* _info);
 };
 }

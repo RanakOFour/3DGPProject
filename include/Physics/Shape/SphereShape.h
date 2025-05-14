@@ -9,7 +9,7 @@ class SphereShape : public CollisionShape
     float m_Radius;
 
     public:
-    SphereShape(float _radius) : CollisionShape(ShapeType::Sphere)
+    SphereShape(float _radius, std::weak_ptr<Transform> _trans, bool _env) : CollisionShape(ShapeType::Sphere, _trans, _env)
     { m_Radius = _radius; };
     ~SphereShape() {};
 

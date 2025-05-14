@@ -1,9 +1,7 @@
 #ifndef OCTREE_H
 #define OCTREE_H
 
-#include "Physics/Physics.h"
-#include "Physics/Shape/CubeShape.h"
-#include "Physics/Shape/SphereShape.h"
+#include "Physics/Shape/CollisionShape.h"
 #include <glm/ext.hpp>
 #include <vector>
 #include <memory>
@@ -17,22 +15,22 @@ private:
         glm::vec3 center;
         glm::vec3 halfSize;
         int depth;
-        std::vector<Physics*> objects;
+        std::vector<CollisionShape*> objects;
         std::unique_ptr<OctreeNode> children[8];
 
         OctreeNode(glm::vec3 _center, glm::vec3 _halfSize, int _depth);
 
         bool const IsLeaf();
 
-        bool const Contains(Physics* _obj);
+        bool const Contains(CollisionShape* _obj);
         void CreateChildren();
-        void Insert(Physics* _obj, int _maxDepth, int _maxObjects,
-                    std::unordered_map<Physics*, std::vector<OctreeNode*>>& _objectNodes);
-        void Remove(Physics* _obj,
-                    std::unordered_map<Physics*, std::vector<OctreeNode*>>& _objectNodes);
-        void const CollectObjects(std::vector<Physics*>& _results);
+        void Insert(CollisionShape* _obj, int _maxDepth, int _maxObjects,
+                    std::unordered_map<CollisionShape*, std::vector<OctreeNode*>>& _objectNodes);
+        void Remove(CollisionShape* _obj,
+                    std::unordered_map<CollisionShape*, std::vector<OctreeNode*>>& _objectNodes);
+        void const CollectObjects(std::vector<CollisionShape*>& _results);
         void Prune(int _maxObjects, 
-                   std::unordered_map<Physics*, std::vector<OctreeNode*>>& _objectNodes);
+                   std::unordered_map<CollisionShape*, std::vector<OctreeNode*>>& _objectNodes);
     };
 
     std::unique_ptr<OctreeNode> m_Root;
@@ -40,17 +38,17 @@ private:
     int m_MaxObjects;
 
     // Implementing this as smart pointers looks disgusting
-    std::unordered_map<Physics*, std::vector<OctreeNode*>> m_ObjectNodes;
+    std::unordered_map<CollisionShape*, std::vector<OctreeNode*>> m_ObjectNodes;
 
 public:
     Octree(glm::vec3 center, glm::vec3 size, int maxDepth, int maxObjects);
     ~Octree();
 
-    void Insert(Physics* _object);
-    void Remove(Physics* _object);
+    void Insert(CollisionShape* _object);
+    void Remove(CollisionShape* _object);
     void Clear();
-    std::vector<Physics*> const Query(Physics* _object);
-    void UpdateMovedObject(Physics* _object);
+    std::vector<CollisionShape*> const Query(CollisionShape* _object);
+    void UpdateMovedObject(CollisionShape* _object);
     void Prune();
 };
 
