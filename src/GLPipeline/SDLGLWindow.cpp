@@ -106,7 +106,7 @@ const Uint8* SDLGLWindow::Update()
     SDL_GetWindowSize(m_Window, &L_windowWidth, &L_windowHeight);
 	glViewport(0, 0, L_windowWidth, L_windowHeight);
 
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.39f, 0.58f, 0.93f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Return keyboard state

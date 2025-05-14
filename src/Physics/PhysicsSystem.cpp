@@ -10,149 +10,61 @@
 
 bool PhysicsSystem::CollisionDetection::OBBCollision(CubeShape* _cubeA, Transform* _transformA, CubeShape* _cubeB, Transform* _transformB, CollisionInfo* _infoOut)
 {
-    // Get rotation matrices from quaternions
-    glm::mat3 L_rotA = glm::mat3_cast(_transformA->GetRotation());
-    glm::mat3 L_rotB = glm::mat3_cast(_transformB->GetRotation());
+    //printf("AABB Collision\n");
+    glm::vec3 L_delta = _transformB->GetPosition() - _transformA->GetPosition();
+    glm::vec3 L_totalSize = _cubeA->GetHalfSize() + _cubeB->GetHalfSize();
 
-    // Get scaled half extents
-    glm::vec3 L_halfA = _cubeA->GetHalfSize();
-    glm::vec3 L_halfB = _cubeB->GetHalfSize();
-
-    // Center positions
-    glm::vec3 L_centerA = _transformA->GetPosition();
-    glm::vec3 L_centerB = _transformB->GetPosition();
-
-    // Calculate translation vector and rotation matrix
-    glm::vec3 L_delta = L_centerB - L_centerA;
-    glm::mat3 L_rotationMatrix = glm::transpose(L_rotA) * L_rotB;
-    glm::mat3 L_absRotMat = glm::abs(L_rotationMatrix);
-
-    // Transform L_delta to L_aObject's local space
-    glm::vec3 L_deltaAsLocalA = glm::vec3(
-        glm::dot(L_delta, L_rotA[0]),
-        glm::dot(L_delta, L_rotA[1]),
-        glm::dot(L_delta, L_rotA[2]));
-
-    float L_radiusA, L_radiusB;
-    float L_penetration = FLT_MAX;
-    glm::vec3 L_normal;
-    bool L_collisionFound = true;
-
-    // Test axes from OBB L_aObject
-    for (int i = 0; i < 3; ++i)
+    if(abs(L_delta.x) < L_totalSize.x &&
+       abs(L_delta.y) < L_totalSize.y &&
+       abs(L_delta.z) < L_totalSize.z)
     {
-        L_radiusA = L_halfA[i];
-        L_radiusB = L_halfB.x * L_absRotMat[i][0] + L_halfB.y * L_absRotMat[i][1] + L_halfB.z * L_absRotMat[i][2];
+        glm::vec3 L_posA = _transformA->GetPosition();
+        glm::vec3 L_posB = _transformB->GetPosition();
 
-        if (glm::abs(L_deltaAsLocalA[i]) > L_radiusA + L_radiusB)
+        glm::vec3 L_boxHalfA = _cubeA->GetHalfSize();
+        glm::vec3 L_boxHalfB = _cubeB->GetHalfSize();
+
+        glm::vec3 L_faces[6] = {
+            {-1, 0, 0}, {1, 0, 0},
+            {0, -1, 0}, {0, 1, 0},
+            {0, 0, -1}, {0, 0, 1}
+        };
+
+        glm::vec3 L_maxA = L_posA + L_boxHalfA;
+        glm::vec3 L_minA = L_posA - L_boxHalfA;
+
+        glm::vec3 L_maxB = L_posB + L_boxHalfB;
+        glm::vec3 L_minB = L_posB - L_boxHalfB;
+
+        float L_distance[6]
         {
-            L_collisionFound = false;
-            break;
-        }
+            (L_maxB.x - L_minA.x),
+            (L_maxA.x - L_minB.x),
+            (L_maxB.y - L_minA.y),
+            (L_maxA.y - L_minB.y),
+            (L_maxB.z - L_minA.z),
+            (L_maxA.z - L_minB.z)
+        };
 
-        float L_testPen = L_radiusA + L_radiusB - glm::abs(L_deltaAsLocalA[i]);
-        if (L_testPen < L_penetration)
+        float L_penetration = FLT_MAX;
+        glm::vec3 L_bestAxis;
+
+        for(int i = 0; i < 6; ++i)
         {
-            L_penetration = L_testPen;
-            L_normal = L_rotA[i] * glm::sign(L_deltaAsLocalA[i]);
-        }
-    }
-    if (!L_collisionFound)
-        return false;
-
-    // Test axes from OBB B
-    for (int i = 0; i < 3; ++i)
-    {
-        L_radiusA = L_halfA.x * L_absRotMat[0][i] + L_halfA.y * L_absRotMat[1][i] + L_halfA.z * L_absRotMat[2][i];
-        L_radiusB = L_halfB[i];
-
-        float L_projection = L_deltaAsLocalA.x * L_rotationMatrix[0][i] + L_deltaAsLocalA.y * L_rotationMatrix[1][i] + L_deltaAsLocalA.z * L_rotationMatrix[2][i];
-        if (glm::abs(L_projection) > L_radiusA + L_radiusB)
-        {
-            L_collisionFound = false;
-            break;
-        }
-
-        float L_testPen = L_radiusA + L_radiusB - glm::abs(L_projection);
-        if (L_testPen < L_penetration)
-        {
-            L_penetration = L_testPen;
-            L_normal = L_rotB[i] * glm::sign(L_projection);
-            L_normal = L_rotA * L_normal; // Convert to world space
-        }
-    }
-    if (!L_collisionFound)
-        return false;
-
-    // 3. Test edge cross products
-    const float epsilon = 1e-6f;
-    for (int i = 0; i < 3; ++i)
-    {
-        for (int j = 0; j < 3; ++j)
-        {
-            glm::vec3 L_axis = glm::cross(L_rotA[i], L_rotB[j]);
-            float L_squareAxisLength = glm::length(L_axis);
-            L_squareAxisLength *= L_squareAxisLength;
-            if (L_squareAxisLength < epsilon)
-                continue;
-
-            L_axis /= glm::sqrt(L_squareAxisLength); // Normalize
-
-            // Calculate projections
-            L_radiusA = L_halfA.x * glm::abs(glm::dot(L_rotA[0], L_axis)) +
-                 L_halfA.y * glm::abs(glm::dot(L_rotA[1], L_axis)) +
-                 L_halfA.z * glm::abs(glm::dot(L_rotA[2], L_axis));
-
-            L_radiusB = L_halfB.x * glm::abs(glm::dot(L_rotB[0], L_axis)) +
-                 L_halfB.y * glm::abs(glm::dot(L_rotB[1], L_axis)) +
-                 L_halfB.z * glm::abs(glm::dot(L_rotB[2], L_axis));
-
-            float L_separation = glm::abs(glm::dot(L_delta, L_axis));
-            if (L_separation > L_radiusA + L_radiusB)
+            if(L_distance[i] < L_penetration)
             {
-                L_collisionFound = false;
-                break;
-            }
-
-            float L_testPen = L_radiusA + L_radiusB - L_separation;
-            if (L_testPen < L_penetration)
-            {
-                L_penetration = L_testPen;
-                L_normal = L_axis * glm::sign(glm::dot(L_delta, L_axis));
+                L_penetration = L_distance[i];
+                L_bestAxis = L_faces[i];
             }
         }
 
-        if (!L_collisionFound)
-        {
-            break;
-        }
-    }
-    
-    if (!L_collisionFound)
-    {
-        return false;
+        glm::vec3 L_localA = glm::vec3(0.0f);
+
+        _infoOut->AddContactPoint(L_localA, L_localA, L_bestAxis, L_penetration);
+        return true;
     }
 
-    // Ensure L_normal points from B to A
-    if (glm::dot(L_normal, L_delta) < 0.0f)
-    {
-        L_normal = -L_normal;
-    }
-
-    glm::vec3 L_worldContactA = L_centerA + L_normal * (L_penetration * 0.5f);
-    glm::vec3 L_worldContactB = L_centerB - L_normal * (L_penetration * 0.5f);
-
-    // Convert to local space using rotation transpose
-    glm::vec3 L_localA = glm::transpose(L_rotA) * (L_worldContactA - L_centerA);
-    glm::vec3 L_localB = glm::transpose(L_rotB) * (L_worldContactB - L_centerB);
-
-    _infoOut->AddContactPoint(
-        L_localA,
-        L_localB,
-        L_normal,
-        L_penetration
-    );
-    return true;
+    return false;
 }
 
 bool PhysicsSystem::CollisionDetection::OBBvsSphereCollision(CubeShape* _cube, Transform* _cubeTransform, SphereShape* _sphere, Transform* _sphereTransform, CollisionInfo* _infoOut)
@@ -355,8 +267,8 @@ inline bool TestTrianglesSAT(const Face& tri1, const Face& tri2, PhysicsSystem::
     return true;
 }
 
-/*
-bool MeshCollider::AxisTest(glm::vec3 axis, Face& _face, glm::vec3& boxHalfSize) 
+
+bool AxisTest(glm::vec3 axis, Face& _face, glm::vec3& boxHalfSize) 
 {
 	if (glm::length(axis) < 1e-6f){ return true; } // Skip near-zero axis
 
@@ -376,7 +288,7 @@ bool MeshCollider::AxisTest(glm::vec3 axis, Face& _face, glm::vec3& boxHalfSize)
     return !(minP > r || maxP < -r);
 }
 
-bool MeshCollider::TriangleBoxIntersect(Face& _face, glm::vec3& _boxHalfSize) 
+bool TriangleBoxIntersect(Face& _face, glm::vec3& _boxHalfSize) 
 {
 	glm::vec3 boxAxis[3] = { glm::vec3(1,0,0), glm::vec3(0,1,0), glm::vec3(0,0,1) };
 
@@ -406,7 +318,6 @@ bool MeshCollider::TriangleBoxIntersect(Face& _face, glm::vec3& _boxHalfSize)
 
     return true;
 }
-*/
 
 bool PhysicsSystem::CollisionDetection::MeshCollision(MeshShape* _meshA, Transform* _transformA, MeshShape* _meshB, Transform* _transformB, CollisionInfo* _infoOut)
 {
@@ -501,7 +412,11 @@ bool PhysicsSystem::CollisionDetection::CollisionCheck(Physics &_aObject, Physic
     {
         if(L_shapeB->GetType() == ShapeType::Cube)
         {
-            
+            std::vector<Face> L_faces = ((MeshShape*)L_shapeA)->GetFaces();
+            for(int i = 0; i < L_faces.size())
+            {
+                
+            }
         }
         else
         { //Sphere

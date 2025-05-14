@@ -21,7 +21,7 @@ class GameEntity
 
     // Model & Texture Pool references
     std::shared_ptr<Model> m_Model;
-    std::unique_ptr<Texture> m_Texture;
+    std::shared_ptr<Texture> m_Texture;
 
     // Properties
     int m_id;
@@ -30,10 +30,12 @@ class GameEntity
     std::shared_ptr<ShaderProgram> m_Shader;
     std::shared_ptr<CollisionShape> m_Collider;
 
+    bool m_Environment;
+
     public:
     GameEntity(glm::vec3 _position, float _size);
     GameEntity(glm::vec3 _position, glm::vec3 _size);
-    GameEntity(const char* _modelPath, const char* _texturePath, glm::vec3 _position);
+    GameEntity(std::shared_ptr<Model> _model, std::shared_ptr<Texture> _tex, glm::vec3 _position, glm::vec3 _size);
     ~GameEntity();
 
     virtual void Update(float _delta);
@@ -48,7 +50,6 @@ class GameEntity
     glm::vec3 GetPosition() { return m_Transform->GetPosition(); };
     glm::vec3 GetRotation() { return m_Transform->EulerAngles(); };
     Physics* GetPhysics() { return m_Physics.get(); };
-    std::weak_ptr<CollisionShape> GetCollider();
 };
 
 #endif

@@ -23,7 +23,7 @@ m_InverseInertiaTensor(0.0f),
 m_Restitution(0.2f),
 m_LinearDamping(0.3f),
 m_AngularDamping(0.2f),
-m_Friction(0.5f)
+m_Friction(0.1f)
 {
 	
 }
@@ -43,10 +43,10 @@ m_InverseInertiaTensor(0.0f),
 m_Restitution(0.2f),
 m_LinearDamping(0.3f),
 m_AngularDamping(0.2f),
-m_Friction(0.5f)
+m_Friction(0.1f)
 {
     CollisionShape* L_sphere = (CollisionShape*)(new SphereShape(_radius));
-    m_Shape = std::unique_ptr<CollisionShape>((CollisionShape*)L_sphere);
+    m_Shape = std::shared_ptr<CollisionShape>((CollisionShape*)L_sphere);
 	SetMass(1.0f);
 }
 
@@ -65,10 +65,10 @@ m_InverseInertiaTensor(0.0f),
 m_Restitution(0.2f),
 m_LinearDamping(0.3f),
 m_AngularDamping(0.2f),
-m_Friction(0.5f)
+m_Friction(0.1f)
 {
     CollisionShape* L_cube = (CollisionShape*)(new CubeShape(_size * 0.5f));
-    m_Shape = std::unique_ptr<CollisionShape>(L_cube);
+    m_Shape = std::shared_ptr<CollisionShape>(L_cube);
 	SetMass(1.0f);
 }
 
@@ -77,7 +77,7 @@ m_isKinematic(false),
 m_Shape(),
 m_Transform(_transform),
 m_Velocity(0.0f, 0.0f, 0.0f),
-m_Acceleration(0.0f, 0.0f, 0.0f),
+m_Acceleration(0.0f, -9.8f, 0.0f),
 m_PreviousPos(0.0f, 0.0f, 0.0f),
 m_Force(0.0f, 0.0f, 0.0f),
 m_Torque(0.0f, 0.0f, 0.0f),
@@ -87,10 +87,10 @@ m_InverseInertiaTensor(0.0f),
 m_Restitution(0.2f),
 m_LinearDamping(0.3f),
 m_AngularDamping(0.2f),
-m_Friction(0.5f)
+m_Friction(0.1f)
 {
 	CollisionShape* L_mesh = (CollisionShape*)(new MeshShape(_model));
-    m_Shape = std::unique_ptr<CollisionShape>(L_mesh);
+    m_Shape = std::shared_ptr<CollisionShape>(L_mesh);
 	SetMass(1.0f);
 }
 
@@ -107,8 +107,6 @@ void Physics::Update(float _delta)
 		return;
 	}
 
-    //printf("Current Position: %f, %f, %f\n", m_Transform.lock()->GetPosition().x, m_Transform.lock()->GetPosition().y, m_Transform.lock()->GetPosition().z);
-
 	// Ignore objects that should not move
 	if(m_Mass == INFINITY){ return; }
 
@@ -116,7 +114,7 @@ void Physics::Update(float _delta)
 
 	Euler(_delta);
 
-	SetVelocity(m_Velocity * glm::max(1.0f - m_LinearDamping * _delta, 0.0f));
+	//SetVelocity(m_Velocity * glm::max(1.0f - m_LinearDamping * _delta, 0.0f));
 	
 	// Integrate angular motion
 	glm::quat L_rotation = m_Transform.lock()->GetRotation();
@@ -141,6 +139,11 @@ void Physics::Update(float _delta)
 	m_Torque.x = 0.0f;
 	m_Torque.y = 0.0f;
 	m_Torque.z = 0.0f;
+
+
+	printf("Current Pos: %f, %f, %f\n	Current Vel: %f, %f, %f\n",
+			m_Transform.lock()->GetPosition().x, m_Transform.lock()->GetPosition().y, m_Transform.lock()->GetPosition().z,
+			m_Velocity.x, m_Velocity.y, m_Velocity.z);
 }
 
 void Physics::AddForce(glm::vec3 _force)
@@ -192,7 +195,7 @@ void Physics::Euler(float _delta)
 
 	SetVelocity(m_Velocity + (m_Force * L_inverseMass) * _delta);
 
-	m_Transform.lock()->Move(m_Velocity * _delta);
+	m_Transform.lock()->Move(m_Velocity);
 }
 
 void Physics::SetFriction(float _friction)
@@ -262,12 +265,6 @@ void Physics::SetMass(float _mass)
 
 void Physics::SetVelocity(glm::vec3 _velocity)
 {
-	if(glm::length(_velocity) < 0.01f)
-	{
-		_velocity = glm::vec3(0.0f);
-	}
-
-	//m_Velocity = glm::round(_velocity * 1e4f) * 1e-4f; 
 	m_Velocity = _velocity;
 }
 

@@ -13,6 +13,7 @@ GameEntity::GameEntity(glm::vec3 _position, float _radius)
 {
 	m_id = -1;
 	m_Transform = std::make_shared<Transform>();
+	m_Transform->SetPosition(_position);
 	m_Transform->SetScale(glm::vec3(_radius));
 	m_Model = std::make_shared<Model>("./resources/shapes/sphere.obj");
 	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
@@ -24,6 +25,7 @@ GameEntity::GameEntity(glm::vec3 _position, glm::vec3 _size)
 {
 	m_id = -1;
 	m_Transform = std::make_shared<Transform>();
+	m_Transform->SetPosition(_position);
 	m_Transform->SetScale(glm::vec3(_size));
 	m_Model = std::make_shared<Model>("./resources/shapes/cube.obj");
 	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
@@ -31,15 +33,17 @@ GameEntity::GameEntity(glm::vec3 _position, glm::vec3 _size)
 	m_Physics = std::make_shared<Physics>(_size, m_Transform);
 }
 
-GameEntity::GameEntity(const char* _modelPath, const char* _texturePath, glm::vec3 _pos)
+GameEntity::GameEntity(std::shared_ptr<Model> _model, std::shared_ptr<Texture> _tex, glm::vec3 _pos, glm::vec3 _size)
 {
 	printf("GameEntity constructor\n");
 	m_id = -1;
 	m_Transform = std::make_shared<Transform>();
-	m_Model = std::make_shared<Model>(_modelPath);
-	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/specular/vert.vs", "./resources/shaders/specular/frag.fs");
-	m_Texture = std::make_unique<Texture>(_texturePath);
-	m_Physics = std::make_shared<Physics>(m_Model, m_Transform);
+	m_Transform->SetPosition(_pos);
+	m_Transform->SetScale(_size);
+	m_Model = _model;
+	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
+	m_Texture = _tex;
+	m_Physics = std::make_shared<Physics>(_size, m_Transform);
 }
 
 GameEntity::~GameEntity()
@@ -49,12 +53,7 @@ GameEntity::~GameEntity()
 
 void GameEntity::Update(float _delta)
 {
-	//m_Physics->Update(_delta);
-
-	auto L_transform = m_Physics->GetTransform();
-	glm::vec3 L_pos = L_transform.lock()->GetPosition();
-	printf("ID %d:\n	Current Pos: %f, %f, %f\n", m_id,
-			L_pos.x, L_pos.y, L_pos.z);
+	m_Physics->Update(_delta);
 }
 
 void GameEntity::Draw(Camera* _camera)
@@ -106,9 +105,4 @@ void GameEntity::SetID(int _id)
 int GameEntity::GetID()
 {
 	return m_id;
-}
-
-std::weak_ptr<CollisionShape> GameEntity::GetCollider()
-{
-	return std::weak_ptr<CollisionShape>(m_Collider);
 }

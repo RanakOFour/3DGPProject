@@ -42,7 +42,30 @@ void Scene::AddEntity(std::shared_ptr<GameEntity>& _entity)
 
 void Scene::Update(float _delta, const uint8_t* _inputKeys)
 {
-	HandleInputs(_inputKeys);
+	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 2.5f) * _delta;
+	glm::vec3 leftMove = glm::vec3(2.5f, 0.0f, 0.0f) * _delta;
+	glm::vec3 rotateY = glm::vec3(0.0f, 2.5f, 0.0f) * _delta;
+
+	if(_inputKeys[SDL_SCANCODE_A])
+	{
+		m_Player->Move(leftMove);
+	}
+
+	if(_inputKeys[SDL_SCANCODE_D])
+	{
+		m_Player->Move(-leftMove);
+	}
+
+	if(_inputKeys[SDL_SCANCODE_W])
+	{
+		m_Player->Move(forward);
+	}
+
+	if(_inputKeys[SDL_SCANCODE_S])
+	{
+		m_Player->Move(-forward);
+	}
+
 	m_Camera.Update(_delta, _inputKeys);
 
 	//m_Octree.Prune();
@@ -112,26 +135,26 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
 
 void Scene::HandleInputs(const Uint8* _inputKeys)
 {
-	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 0.25f);
-	glm::vec3 leftMove = glm::vec3(0.25f, 0.0f, 0.0f);
-	glm::vec3 rotateY = glm::vec3(0.0f, 0.25f, 0.0f);
+	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 2.5f);
+	glm::vec3 leftMove = glm::vec3(2.5f, 0.0f, 0.0f);
+	glm::vec3 rotateY = glm::vec3(0.0f, 2.5f, 0.0f);
 
-	if(_inputKeys[SDL_SCANCODE_LEFT])
+	if(_inputKeys[SDL_SCANCODE_A])
 	{
 		m_Player->Move(leftMove);
 	}
 
-	if(_inputKeys[SDL_SCANCODE_RIGHT])
+	if(_inputKeys[SDL_SCANCODE_D])
 	{
 		m_Player->Move(-leftMove);
 	}
 
-	if(_inputKeys[SDL_SCANCODE_UP])
+	if(_inputKeys[SDL_SCANCODE_W])
 	{
 		m_Player->Move(forward);
 	}
 
-	if(_inputKeys[SDL_SCANCODE_DOWN])
+	if(_inputKeys[SDL_SCANCODE_S])
 	{
 		m_Player->Move(-forward);
 	}

@@ -19,31 +19,38 @@ void Game::LoadGame()
 {
     const char* L_playerPath = "./resources/curuthers/curuthers.obj";
     const char* L_playerTexPath = "./resources/curuthers/Whiskers_diffuse.png";
+
+    std::shared_ptr<Model> L_model = std::make_shared<Model>(L_playerPath);
+    std::shared_ptr<Texture> L_tex = std::make_shared<Texture>(L_playerTexPath);
+
     // Create main scene
-    std::shared_ptr<GameEntity> L_playerPtr = std::make_shared<GameEntity>(L_playerPath, L_playerTexPath, glm::vec3(0.0f));
+    std::shared_ptr<GameEntity> L_playerPtr = std::make_shared<GameEntity>(L_model, L_tex, glm::vec3(5.0f), glm::vec3(1.0f));
     
     m_Scene->AddEntity(L_playerPtr);
     m_Scene->SetPlayer(L_playerPtr);
 
     const char* L_boxPath = "./resources/shapes/cube.obj";
+    std::shared_ptr<Model> L_cube = std::make_shared<Model>(L_boxPath);
 
-    std::shared_ptr<GameEntity> L_floor = std::make_shared<GameEntity>(L_boxPath, L_playerTexPath, glm::vec3(0.0f));
+    std::shared_ptr<GameEntity> L_floor = std::make_shared<GameEntity>(glm::vec3(0.0f), glm::vec3(100.0f, 0.0f, 100.0f));
     m_Scene->AddEntity(L_floor);
+    L_floor->GetPhysics()->SetMass(INFINITY);
 }
 
 void Game::Play()
 {
-    Uint64 L_oldTime = SDL_GetTicks64();
+    Uint64 L_oldTime = SDL_GetTicks();
     Uint64 L_newTime;
     float L_deltaTime;
 
     do
     {
-        L_newTime = SDL_GetTicks64();
+        L_newTime = SDL_GetTicks();
         L_deltaTime = (float)(L_newTime - L_oldTime) / 1000.0f; 
         // Get key inputs from window
         const Uint8* L_inputKeys = m_Window->Update();
 
+        printf("Delta: %f\n", L_deltaTime);
         m_Scene->Update(L_deltaTime, L_inputKeys);
 
         m_Window->Show();
