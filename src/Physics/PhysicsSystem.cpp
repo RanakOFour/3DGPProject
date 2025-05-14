@@ -355,6 +355,33 @@ bool PhysicsSystem::CollisionDetection::MeshCollision(MeshShape* _meshA, Transfo
     return false; // No collision
 }
 
+bool PhysicsSystem::CollisionDetection::MeshCubeCollision(MeshShape* _mesh, Transform* _meshTransform, CubeShape* _cube, Transform* _cubeTransform, CollisionInfo* _infoOut)
+{
+    std::vector<Face> L_faces = _mesh->GetFaces();
+    glm::vec3 L_halfSize = _cube->GetHalfSize();
+
+    glm::vec3 L_totalNormal = glm::vec3(0.0f);
+	printf("MeshOnBox\n");
+		
+	for(int i = 0; i < L_faces.size(); ++i)
+	{
+		Face L_currentFace = L_faces[i];
+        L_currentFace.a.position += _meshTransform - _cubeTransform;
+        L_currentFace.b.position += _meshTransform - _cubeTransform;
+        L_currentFace.c.position += _meshTransform - _cubeTransform;
+        L_currentFace.CalculateNormal();
+
+		if(TriangleBoxIntersect(L_currentFace, L_halfSize))
+		{
+            // The normals of the triangles are already calculated, and should be the same as L_currentFace
+            L_totalNormal += L_currentFace.normal;
+		}
+	}
+
+    printf("Mesh not colliding with box\n");
+    return false;
+}
+
 bool PhysicsSystem::CollisionDetection::CollisionCheck(Physics &_aObject, Physics &_bObject, CollisionInfo *_infoOut)
 {
     CollisionShape* L_shapeA = _aObject.GetShape().lock().get();
@@ -392,7 +419,9 @@ bool PhysicsSystem::CollisionDetection::CollisionCheck(Physics &_aObject, Physic
         }
         else
         { // Mesh
-
+            _infoOut->objectA = &_bObject;
+            _infoOut->objectB = &_aObject;
+            return MeshCubeCollision((MeshShape*)L_shapeB, L_transformB, (CubeShape*)L_shapeA, L_transformA, _infoOut);
         }
     }
     if (L_shapeA->GetType() == ShapeType::Sphere)
@@ -412,11 +441,7 @@ bool PhysicsSystem::CollisionDetection::CollisionCheck(Physics &_aObject, Physic
     {
         if(L_shapeB->GetType() == ShapeType::Cube)
         {
-            std::vector<Face> L_faces = ((MeshShape*)L_shapeA)->GetFaces();
-            for(int i = 0; i < L_faces.size())
-            {
-                
-            }
+            return MeshCubeCollision((MeshShape*)L_shapeA, L_transformA, (CubeShape*)L_shapeB, L_transformB, _infoOut);
         }
         else
         { //Sphere
