@@ -28,6 +28,8 @@ GameEntity::GameEntity(glm::vec3 _position, float _radius, bool _env)
 
 	SphereShape* L_sphere = new SphereShape(_radius, _env);
 	m_Collider = std::shared_ptr<CollisionShape>(L_sphere);
+
+	m_Environment = _env;
 }
 
 GameEntity::GameEntity(glm::vec3 _position, glm::vec3 _size, bool _env)
@@ -43,6 +45,8 @@ GameEntity::GameEntity(glm::vec3 _position, glm::vec3 _size, bool _env)
 
 	CubeShape* L_cube = new CubeShape(_size * 0.5f, _env);
 	m_Collider = std::shared_ptr<CollisionShape>(L_cube);
+
+	m_Environment = _env;
 }
 
 GameEntity::GameEntity(std::shared_ptr<Model> _model, std::shared_ptr<Texture> _tex, glm::vec3 _pos, glm::vec3 _size, bool _env)
@@ -58,6 +62,8 @@ GameEntity::GameEntity(std::shared_ptr<Model> _model, std::shared_ptr<Texture> _
 
 	CubeShape* L_mesh = new CubeShape(_size * 0.5f, _env);
 	m_Collider = std::shared_ptr<CollisionShape>(L_mesh);
+
+	m_Environment = _env;
 }
 
 GameEntity::~GameEntity()
@@ -67,10 +73,10 @@ GameEntity::~GameEntity()
 
 void GameEntity::Update(float _delta)
 {
-	//m_Physics->Update(_delta);
-	// Update position or smth
-	// Not really important for this, Move function already helps player move
 	// Interactable flags?
+
+	printf("ID: %d\nCurrent Pos: %f, %f, %f\n", m_id,
+		m_Transform->GetPosition().x, m_Transform->GetPosition().y, m_Transform->GetPosition().z);
 
 	m_Collider->ClearContacts();
 }

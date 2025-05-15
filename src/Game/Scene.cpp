@@ -3,6 +3,7 @@
 #include "Game/GameEntity.h"
 #include "Physics/Octree.h"
 #include "Physics/PhysicsSystem.h"
+#include "Physics/Rigidbody.h"
 
 #include "SDL2/SDL.h"
 
@@ -71,8 +72,6 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
 		m_Player->Move(-forward);
 	}
 
-	m_Camera.Update(_delta);
-
 	//m_Octree.Prune();
 
     // for (int i = 0; i < m_Entities.size(); ++i)
@@ -131,6 +130,8 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
 
 	m_Camera.DrawSkybox();
 
+	m_Camera.Update(_delta);
+
 	// Update objects
     for(int i = 0; i < m_Entities.size(); ++i)
     {
@@ -140,4 +141,6 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
 		// Saves on looping the entire set again.
 		m_Entities[i]->Draw(&m_Camera);
     }
+
+
 }

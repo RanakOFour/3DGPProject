@@ -318,6 +318,9 @@ bool PhysicsSystem::CollisionDetection::CollisionCheck(CollisionShape* _aShape, 
     return false;
 }
 
+#include "Game/GameEntity.h"
+#include "Physics/Rigidbody.h"
+
 void PhysicsSystem::CollisionDetection::ImpulseCollisionResolution(CollisionInfo* _info)
 {
     CollisionShape* L_aObject = _info->objectA;
@@ -332,28 +335,38 @@ void PhysicsSystem::CollisionDetection::ImpulseCollisionResolution(CollisionInfo
 
     glm::vec3 L_correction = L_contact.normal * L_contact.penetration;
 
-    if(L_aObject->Environment())
+    if(L_aObject->Environment() && !L_bObject->Environment())
     {
-        L_transformB->Move(L_correction);
+        L_bObject->GetParent().lock()->Move(L_correction);
     }
-    else if(L_bObject->Environment())
+    else if(L_bObject->Environment() && !L_aObject->Environment())
     {
-        L_transformA->Move(-L_correction);
+        L_aObject->GetParent().lock()->Move(-L_correction);
     }
     else
     {
-        L_transformA->Move(-L_correction);
-        L_transformB->Move(L_correction);
+        L_aObject->GetParent().lock()->Move(-L_correction);
+        L_bObject->GetParent().lock()->Move(L_correction);
     }
+
+    // glm::vec3 L_relativeVel = L_bObject->GetRigidbody().lock()->GetVelocity() - L_aObject->GetRigidbody().lock()->GetVelocity();
+
+    // float L_velAlongNormal = glm::dot(L_contact.normal, L_relativeVel);
+    // if(L_velAlongNormal > 0.0f){ return; }
+
+    // glm::vec3 L_impulseResponse = L_velAlongNormal * L_contact.normal;
+
+    // L_aObject->GetRigidbody().lock()->SetVelocity(
+    //     L_aObject->GetRigidbody().lock()->GetVelocity() + L_impulseResponse
+    // );
+
+
+    // L_bObject->GetRigidbody().lock()->SetVelocity(
+    //     L_bObject->GetRigidbody().lock()->GetVelocity() - L_impulseResponse
+    // );
 
     // Silly physics things I don't need
     // Newton died a virgin
-    // Calculate torque arms in world space
-    // glm::quat L_rotA = L_aObject->GetTransform().lock()->GetRotation();
-    // glm::quat L_rotB = L_bObject->GetTransform().lock()->GetRotation();
-    // glm::vec3 L_torqueArmA = L_rotA * L_contact.localA;
-    // glm::vec3 L_torqueArmB = L_rotB * L_contact.localB;
-
     // // Relative velocity
     // glm::vec3 L_velA = L_aObject->GetVelocity() + glm::cross(L_aObject->GetAngularVelocity(), L_torqueArmA);
     // glm::vec3 L_velB = L_bObject->GetVelocity() + glm::cross(L_bObject->GetAngularVelocity(), L_torqueArmB);
@@ -362,12 +375,6 @@ void PhysicsSystem::CollisionDetection::ImpulseCollisionResolution(CollisionInfo
     // // Normal impulse
     // float L_velAlongNormal = glm::dot(L_relVel, L_contact.normal);
     // if (L_velAlongNormal > 0) return;
-
-    // // Rotate inertia tensors to world space
-    // glm::mat3 L_rotMatA = glm::mat3_cast(L_rotA);
-    // glm::mat3 L_rotMatB = glm::mat3_cast(L_rotB);
-    // glm::mat3 L_invInertiaA = L_rotMatA * L_aObject->GetInverseInertiaTensor() * glm::transpose(L_rotMatA);
-    // glm::mat3 L_invInertiaB = L_rotMatB * L_bObject->GetInverseInertiaTensor() * glm::transpose(L_rotMatB);
 
     // glm::vec3 L_crossA = glm::cross(L_torqueArmA, L_contact.normal);
     // glm::vec3 L_crossB = glm::cross(L_torqueArmB, L_contact.normal);
@@ -380,26 +387,4 @@ void PhysicsSystem::CollisionDetection::ImpulseCollisionResolution(CollisionInfo
 
     // float L_normalImpulseMag = L_numerator / L_denominator;
     // glm::vec3 L_impulse = L_contact.normal * L_normalImpulseMag;
-
-    // float L_frictionEffectA = L_bObject->GetFriction();
-    // float L_frictionEffectB = L_aObject->GetFriction();
-
-    // // Apply impulses
-    // L_aObject->SetVelocity((L_aObject->GetVelocity() - L_impulse * L_invMassA) * L_frictionEffectA);
-    // L_bObject->SetVelocity((L_bObject->GetVelocity() + L_impulse * L_invMassB) * L_frictionEffectB);
-
-    // // Angular velocity update
-    // L_aObject->SetAngularVelocity(L_aObject->GetAngularVelocity() - 
-    //     L_invInertiaA * glm::cross(L_torqueArmA, L_impulse));
-    // L_bObject->SetAngularVelocity(L_bObject->GetAngularVelocity() + 
-    //     L_invInertiaB * glm::cross(L_torqueArmB, L_impulse));
-
-    // Friction (tangential impulse)
-    
-
-    // printf("New Pos: %f, %f %f\nNew Pos: %f, %f %f\nNew Vel: %f, %f %f\nNew Vel: %f, %f %f\n",
-    //         L_aObject->GetTransform().GetPosition().x, L_aObject->GetTransform().GetPosition().y, L_aObject->GetTransform().GetPosition().z,
-    //         L_bObject->GetTransform().GetPosition().x, L_bObject->GetTransform().GetPosition().y, L_bObject->GetTransform().GetPosition().z, 
-    //         L_aObject->GetVelocity().x, L_aObject->GetVelocity().y, L_aObject->GetVelocity().z,
-    //         L_bObject->GetVelocity().x, L_bObject->GetVelocity().y, L_bObject->GetVelocity().z);
 }
