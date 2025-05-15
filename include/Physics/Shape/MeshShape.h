@@ -11,7 +11,10 @@ class MeshShape : public CollisionShape
     std::weak_ptr<Model> m_Model;
 
     public:
-    MeshShape(std::shared_ptr<Model> _model, std::weak_ptr<Transform> _trans, bool _env) : CollisionShape(ShapeType::Mesh, _trans, _env),
+    MeshShape(std::shared_ptr<Model> _model, bool _env) : CollisionShape(ShapeType::Mesh, _env),
+    m_Model(_model)
+    {}
+    MeshShape(std::shared_ptr<Model> _model, std::weak_ptr<GameEntity> _parent, bool _env) : CollisionShape(ShapeType::Mesh, _parent, _env),
     m_Model(_model)
     {}
 

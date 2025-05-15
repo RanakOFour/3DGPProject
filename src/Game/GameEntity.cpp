@@ -25,8 +25,8 @@ GameEntity::GameEntity(glm::vec3 _position, float _radius, bool _env)
 	m_Model = std::make_shared<Model>("./resources/shapes/sphere.obj");
 	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
 	m_Texture = std::make_shared<Texture>("./resources/curuthers/Whiskers_diffuse.png");
-	
-	SphereShape* L_sphere = new SphereShape(_radius, m_Transform, _env);
+
+	SphereShape* L_sphere = new SphereShape(_radius, _env);
 	m_Collider = std::shared_ptr<CollisionShape>(L_sphere);
 }
 
@@ -41,7 +41,7 @@ GameEntity::GameEntity(glm::vec3 _position, glm::vec3 _size, bool _env)
 	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/sparks/vert.vs", "./resources/shaders/sparks/frag.fs");
 	m_Texture = std::make_unique<Texture>("./resources/textures/floor.jpg");
 
-	CubeShape* L_cube = new CubeShape(_size * 0.5f, m_Transform, _env);
+	CubeShape* L_cube = new CubeShape(_size * 0.5f, _env);
 	m_Collider = std::shared_ptr<CollisionShape>(L_cube);
 }
 
@@ -56,7 +56,7 @@ GameEntity::GameEntity(std::shared_ptr<Model> _model, std::shared_ptr<Texture> _
 	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/specular/vert.vs", "./resources/shaders/specular/frag.fs");
 	m_Texture = _tex;
 
-	CubeShape* L_mesh = new CubeShape(_size * 0.5f, m_Transform, _env);
+	CubeShape* L_mesh = new CubeShape(_size * 0.5f, _env);
 	m_Collider = std::shared_ptr<CollisionShape>(L_mesh);
 }
 
@@ -71,6 +71,8 @@ void GameEntity::Update(float _delta)
 	// Update position or smth
 	// Not really important for this, Move function already helps player move
 	// Interactable flags?
+
+	m_Collider->ClearContacts();
 }
 
 void GameEntity::Draw(Camera* _camera)
@@ -123,4 +125,11 @@ void GameEntity::SetID(int _id)
 int GameEntity::GetID()
 {
 	return m_id;
+}
+
+
+void GameEntity::SetScene(std::shared_ptr<Scene> _scene)
+{ 
+	m_Scene = std::weak_ptr<Scene>(_scene); 
+	m_Collider->SetParent(m_Scene.lock()->GetEntity(m_id)); 
 }

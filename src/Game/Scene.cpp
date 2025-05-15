@@ -38,8 +38,8 @@ void Scene::SetPlayer(std::shared_ptr<GameEntity> _player)
 void Scene::AddEntity(std::shared_ptr<GameEntity>& _entity)
 {
 	m_Entities.push_back(_entity);
-	_entity->SetScene(m_Game.lock()->GetScene());
 	_entity->SetID(m_Entities.size() - 1);
+	_entity->SetScene(m_Game.lock()->GetScene());
 	m_Camera.SetTarget(m_Entities[0]);
 }
 
@@ -106,13 +106,16 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
 	for(int i = 0; i < m_Entities.size(); ++i)
 	{
 		std::weak_ptr<CollisionShape> L_shapeA = m_Entities[i]->GetCollider();
-		for(int j = i; j < m_Entities.size(); ++j)
+		for(int j = i + 1; j < m_Entities.size(); ++j)
 		{
 			std::weak_ptr<CollisionShape> L_shapeB = m_Entities[j]->GetCollider();
 
+			printf("Collision Check %d %d", m_Entities[i]->GetID(), m_Entities[j]->GetID());
 			PhysicsSystem::CollisionInfo L_info;
 			if(PhysicsSystem::CollisionDetection::CollisionCheck(L_shapeA.lock().get(), L_shapeB.lock().get(), &L_info))
 			{
+				L_shapeA.lock()->AddContact(L_shapeB);
+				L_shapeB.lock()->AddContact(L_shapeA);
 				m_Collisions.push_back(L_info);
 			}
 		}

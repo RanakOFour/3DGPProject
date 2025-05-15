@@ -1,5 +1,7 @@
 #include "Physics/Octree.h"
 
+#include "Game/GameEntity.h"
+#include "Physics/Transform.h"
 #include "Physics/Shape/CollisionShape.h"
 #include "Physics/Shape/CubeShape.h"
 #include "Physics/Shape/MeshShape.h"
@@ -24,7 +26,7 @@ bool const Octree::OctreeNode::IsLeaf()
 
 bool const Octree::OctreeNode::Contains(CollisionShape* _obj)
 {
-    glm::vec3 L_pos = _obj->GetTransform()->GetPosition();
+    glm::vec3 L_pos = _obj->GetTransform().lock()->GetPosition();
     glm::vec3 L_objHalfSize(0.0f);
     CollisionShape* L_shape = _obj;
 

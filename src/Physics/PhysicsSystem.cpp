@@ -256,8 +256,8 @@ bool PhysicsSystem::CollisionDetection::CollisionCheck(CollisionShape* _aShape, 
     _infoOut->objectA = _aShape;
     _infoOut->objectB = _bShape;
 
-    Transform* L_transformA = _aShape->GetTransform();
-    Transform* L_transformB = _bShape->GetTransform();
+    Transform* L_transformA = _aShape->GetTransform().lock().get();
+    Transform* L_transformB = _bShape->GetTransform().lock().get();
 
     int L_shapeTypeA = (int)_aShape->GetType();
     int L_shapeTypeB = (int)_bShape->GetType();
@@ -324,6 +324,8 @@ void PhysicsSystem::CollisionDetection::ImpulseCollisionResolution(CollisionInfo
     CollisionShape* L_bObject = _info->objectB;
     ContactPoint L_contact = _info->contactPoint;
 
+    Transform* L_transformA = L_aObject->GetTransform().lock().get();
+    Transform* L_transformB = L_bObject->GetTransform().lock().get();
     // Inverse masses
     if (L_aObject->Environment() && L_bObject->Environment()) return;
 
@@ -332,16 +334,16 @@ void PhysicsSystem::CollisionDetection::ImpulseCollisionResolution(CollisionInfo
 
     if(L_aObject->Environment())
     {
-        L_bObject->GetTransform()->Move(L_correction);
+        L_transformB->Move(L_correction);
     }
     else if(L_bObject->Environment())
     {
-        L_aObject->GetTransform()->Move(-L_correction);
+        L_transformA->Move(-L_correction);
     }
     else
     {
-        L_aObject->GetTransform()->Move(-L_correction);
-        L_bObject->GetTransform()->Move(L_correction);
+        L_transformA->Move(-L_correction);
+        L_transformB->Move(L_correction);
     }
 
     // Silly physics things I don't need

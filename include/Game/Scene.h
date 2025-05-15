@@ -38,6 +38,10 @@ public:
 	void Update(float _delta, const uint8_t* _keyInputs);
 
 	std::weak_ptr<Game> GetGame() { return m_Game; };
+
+	// Going to assume I won't call this in a bad way
+	std::weak_ptr<GameEntity> GetEntity(int _id) { return m_Entities[_id]; };
+
 	std::shared_ptr<GameEntity> GetPlayer() { return m_Entities[0]; };
 	float GetDelta() { return m_CurrentDelta; };
 	float GetTime() { return m_TimeElapsed; };

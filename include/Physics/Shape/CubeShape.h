@@ -10,7 +10,9 @@ class CubeShape : public CollisionShape
     glm::vec3 m_halfSize;
 
     public:
-    CubeShape(glm::vec3 _halfSize, std::weak_ptr<Transform> _trans, bool _env) : CollisionShape(ShapeType::Cube, _trans, _env)
+    CubeShape(glm::vec3 _halfSize, bool _env) : CollisionShape(ShapeType::Cube, _env)
+    { m_halfSize = _halfSize; };
+    CubeShape(glm::vec3 _halfSize, std::weak_ptr<GameEntity> _parent, bool _env) : CollisionShape(ShapeType::Cube, _parent, _env)
     { m_halfSize = _halfSize; };
     ~CubeShape() {};
 
