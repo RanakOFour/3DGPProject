@@ -38,7 +38,7 @@ GameEntity::GameEntity(glm::vec3 _position, glm::vec3 _size, bool _env)
 	m_Transform->SetScale(glm::vec3(_size));
 	
 	m_Model = std::make_shared<Model>("./resources/models/cube.obj");
-	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/sparks/vert.vs", "./resources/shaders/sparks/frag.fs");
+	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
 	m_Texture = std::make_unique<Texture>("./resources/textures/floor.jpg");
 
 	CubeShape* L_cube = new CubeShape(_size * 0.5f, _env);

@@ -17,7 +17,8 @@ Camera::Camera() :
 	m_Target(),
 	m_DistanceFromTarget(15.0f),
 	m_Pitch(glm::radians(20.0f)),
-	m_AngleAroundTarget(0.0f)
+	m_AngleAroundTarget(0.0f),
+	m_Skybox(glm::vec3(500.0f))
 {
 }
 
@@ -29,11 +30,19 @@ Camera::~Camera()
 void Camera::SetScene(std::shared_ptr<Scene> _scene)
 {
     m_Scene = std::weak_ptr<Scene>(_scene);
+	m_Projection = glm::perspective(45.0f, m_Scene.lock()->GetGame().lock()->GetWindow()->GetAspectRatio(), 0.1f, 1000.0f);
 }
 
 void Camera::SetTarget(std::shared_ptr<GameEntity> _entity)
 {
 	m_Target = std::weak_ptr<GameEntity>(_entity);
+}
+
+void Camera::DrawSkybox()
+{
+	glm::mat4 L_modelMatrix = glm::translate(glm::mat4(1.0f), m_Transform.GetPosition());
+
+	m_Skybox.Draw(L_modelMatrix, this);
 }
 
 void Camera::Update(float _delta)
@@ -83,3 +92,6 @@ void Camera::Rotate(glm::vec3 _eulerRotation)
 {
     m_Transform.SetRotation(m_Transform.EulerAngles() + _eulerRotation);
 }
+
+std::weak_ptr<Scene> Camera::GetScene()
+{ return m_Scene; }

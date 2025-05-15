@@ -29,6 +29,7 @@ class SDLGLWindow
     const Uint8* Update();
     void inline Show() {SDL_GL_SwapWindow(m_Window);};
     glm::vec3 GetMouseInput() { return m_MouseDeltas; };
+    float GetAspectRatio() { return m_Width / m_Height; };
 };
 
 #endif

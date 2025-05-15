@@ -50,6 +50,7 @@ SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
 
     glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDepthFunc(GL_LESS);
 
     printf("Window created\n");

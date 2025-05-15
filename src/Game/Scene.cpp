@@ -110,7 +110,7 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
 		{
 			std::weak_ptr<CollisionShape> L_shapeB = m_Entities[j]->GetCollider();
 
-			printf("Collision Check %d %d", m_Entities[i]->GetID(), m_Entities[j]->GetID());
+			printf("Collision Check %d %d\n", m_Entities[i]->GetID(), m_Entities[j]->GetID());
 			PhysicsSystem::CollisionInfo L_info;
 			if(PhysicsSystem::CollisionDetection::CollisionCheck(L_shapeA.lock().get(), L_shapeB.lock().get(), &L_info))
 			{
@@ -128,6 +128,8 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
     }
 
     m_Collisions.clear();
+
+	m_Camera.DrawSkybox();
 
 	// Update objects
     for(int i = 0; i < m_Entities.size(); ++i)

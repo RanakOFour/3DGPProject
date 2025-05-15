@@ -2,6 +2,7 @@
 #define CAMERA_H
 
 #include "Game/GameEntity.h"
+#include "GLPipeline/Skybox.h"
 #include "GLPipeline/RenderTexture.h"
 #include "Physics/Transform.h"
 
@@ -15,6 +16,7 @@ class Scene;
 class Camera
 {
     std::weak_ptr<Scene> m_Scene;
+    Skybox m_Skybox;
     Transform m_Transform;
     glm::mat4 m_Projection;
 
@@ -33,6 +35,7 @@ class Camera
 
     void Update(float _delta);
 
+    void DrawSkybox();
     void Use(ShaderProgram* _shader);
     void Translate(glm::vec3 _translation);
     void Rotate(glm::vec3 _eulerRotation);
@@ -40,6 +43,7 @@ class Camera
     void SetRotation(glm::vec3 _euler);
     
     glm::vec3 GetPosition() { return m_Transform.GetPosition(); };
+    std::weak_ptr<Scene> GetScene();
 };
 
 #endif
