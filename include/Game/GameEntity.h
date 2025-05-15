@@ -16,7 +16,7 @@ class Scene;
 class GameEntity 
 {
     // Loop back for "purposes"?
-    //std::weak_ptr<Scene> m_Scene;
+    std::weak_ptr<Scene> m_Scene;
 
     std::shared_ptr<Model> m_Model;
 
@@ -48,6 +48,7 @@ class GameEntity
     // Set an object so it won't move during collision resolution, could be done in CollisionShape?
     void FlagEnvironment() {m_Environment = true;};
 
+    void SetScene(std::shared_ptr<Scene> _scene) { m_Scene = std::weak_ptr<Scene>(_scene); };
     glm::vec3 GetPosition() { return m_Transform->GetPosition(); };
     glm::vec3 GetRotation() { return m_Transform->EulerAngles(); };
     std::weak_ptr<CollisionShape> GetCollider() { return std::weak_ptr<CollisionShape>(m_Collider); };

@@ -12,12 +12,12 @@ class Game
     std::unique_ptr<SDLGLWindow> m_Window;
     std::shared_ptr<Scene> m_Scene;
 
-    void LoadGame();
 
     public:
     Game();
     ~Game();
 
+    void LoadGame();
     void Play();
     std::unique_ptr<SDLGLWindow>& GetWindow() { return m_Window; };
     std::shared_ptr<Scene> GetScene() { return m_Scene; };

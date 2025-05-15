@@ -1,7 +1,6 @@
 
 #include "Physics/PhysicsSystem.h"
 #include "Physics/Transform.h"
-#include "Physics/Physics.h"
 #include "Physics/Shape/CollisionShape.h"
 #include "Physics/Shape/CubeShape.h"
 #include "Physics/Shape/SphereShape.h"
@@ -14,9 +13,9 @@ bool PhysicsSystem::CollisionDetection::OBBCollision(CubeShape* _cubeA, Transfor
     glm::vec3 L_delta = _transformB->GetPosition() - _transformA->GetPosition();
     glm::vec3 L_totalSize = _cubeA->GetHalfSize() + _cubeB->GetHalfSize();
 
-    if(abs(L_delta.x) < L_totalSize.x &&
-       abs(L_delta.y) < L_totalSize.y &&
-       abs(L_delta.z) < L_totalSize.z)
+    if(glm::abs(L_delta.x) < L_totalSize.x &&
+       glm::abs(L_delta.y) < L_totalSize.y &&
+       glm::abs(L_delta.z) < L_totalSize.z)
     {
         glm::vec3 L_posA = _transformA->GetPosition();
         glm::vec3 L_posB = _transformB->GetPosition();
@@ -337,7 +336,7 @@ void PhysicsSystem::CollisionDetection::ImpulseCollisionResolution(CollisionInfo
     }
     else if(L_bObject->Environment())
     {
-        L_bObject->GetTransform()->Move(-L_correction);
+        L_aObject->GetTransform()->Move(-L_correction);
     }
     else
     {

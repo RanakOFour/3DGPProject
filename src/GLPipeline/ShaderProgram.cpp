@@ -60,6 +60,9 @@ ShaderProgram::ShaderProgram(const std::string& _vertexPath, const std::string& 
 	glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
+		char L_errorLog[512];
+		glGetShaderInfoLog(vertexShaderId, 512, nullptr, &L_errorLog[0]);
+		printf("%s", L_errorLog);
 		glDeleteVertexShaderEXT(vertexShaderId);
 		throw std::exception();
 	}
@@ -75,6 +78,9 @@ ShaderProgram::ShaderProgram(const std::string& _vertexPath, const std::string& 
 	glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
+		char L_errorLog[512];
+		glGetShaderInfoLog(fragmentShaderId, 512, nullptr, &L_errorLog[0]);
+		printf("%s", L_errorLog);
 		glDeleteFragmentShaderATI(fragmentShaderId);
 		throw std::exception();
 	}

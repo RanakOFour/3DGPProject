@@ -31,7 +31,7 @@ class Camera
     void SetScene(std::shared_ptr<Scene> _scene);
     void SetTarget(std::shared_ptr<GameEntity> _entity);
 
-    void Update(float _delta, const Uint8* _keys);
+    void Update(float _delta);
 
     void Use(ShaderProgram* _shader);
     void Translate(glm::vec3 _translation);

@@ -12,7 +12,7 @@
 #include <memory>
 
 Camera::Camera() :
-    m_Projection(glm::perspective(45.0f, 1.0f, 0.1f, 100.0f)),
+    m_Projection(glm::perspective(45.0f, 1.0f, 0.1f, 1000.0f)),
     m_Transform(),
 	m_Target(),
 	m_DistanceFromTarget(15.0f),
@@ -36,7 +36,7 @@ void Camera::SetTarget(std::shared_ptr<GameEntity> _entity)
 	m_Target = std::weak_ptr<GameEntity>(_entity);
 }
 
-void Camera::Update(float _delta, const Uint8* _keys)
+void Camera::Update(float _delta)
 {
 	// Do rotation with mouse
 	glm::vec3 L_mouseDeltas = m_Scene.lock()->GetGame().lock()->GetWindow()->GetMouseInput();
@@ -62,7 +62,7 @@ void Camera::Update(float _delta, const Uint8* _keys)
 	m_Transform.SetPosition(L_cameraPos);
 
 	printf("Camera:\n	Mouse Deltas: %f, %f, %f\n  Pos: %f, %f, %f\n  Distance: %f\n", L_mouseDeltas.x, L_mouseDeltas.y, L_mouseDeltas.z,
-	m_Transform.GetPosition().x, m_Transform.GetPosition().x, m_Transform.GetPosition().z,
+	m_Transform.GetPosition().x, m_Transform.GetPosition().y, m_Transform.GetPosition().z,
 	m_DistanceFromTarget);
 }
 
@@ -71,6 +71,7 @@ void Camera::Use(ShaderProgram* _shader)
     glm::mat4 L_viewMatrix = glm::lookAt(m_Transform.GetPosition(), m_Target.lock()->GetPosition(), glm::vec3(0.0f, 1.0f, 0.0f));
 	_shader->SetUniform("u_View", L_viewMatrix);
 	_shader->SetUniform("u_Projection", m_Projection);
+	_shader->SetUniform("u_lightPos", glm::vec3(0.0f, 10.0f, 0.0f));
 }
 
 void Camera::Translate(glm::vec3 _translate)

@@ -9,11 +9,13 @@
 #include <memory>
 
 Scene::Scene(glm::vec3 _size, int _maxObjects) :
-	//m_Octree(glm::vec3(0.0f), _size, 8, _maxObjects),
+	m_Octree(glm::vec3(0.0f), _size, 8, _maxObjects),
 	m_Collisions(),
     m_Entities(),
     m_Camera(),
-	m_Player()
+	m_Player(),
+	m_CurrentDelta(0.0f),
+	m_TimeElapsed(0.0f)
 {
 }
 
@@ -36,15 +38,18 @@ void Scene::SetPlayer(std::shared_ptr<GameEntity> _player)
 void Scene::AddEntity(std::shared_ptr<GameEntity>& _entity)
 {
 	m_Entities.push_back(_entity);
+	_entity->SetScene(m_Game.lock()->GetScene());
 	_entity->SetID(m_Entities.size() - 1);
 	m_Camera.SetTarget(m_Entities[0]);
 }
 
 void Scene::Update(float _delta, const uint8_t* _inputKeys)
 {
-	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 2.5f) * _delta;
-	glm::vec3 leftMove = glm::vec3(2.5f, 0.0f, 0.0f) * _delta;
-	glm::vec3 rotateY = glm::vec3(0.0f, 2.5f, 0.0f) * _delta;
+	m_CurrentDelta = _delta;
+	m_TimeElapsed += _delta;
+	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 25.0f) * _delta;
+	glm::vec3 leftMove = glm::vec3(25.0f, 0.0f, 0.0f) * _delta;
+	glm::vec3 rotateY = glm::vec3(0.0f, 25.0f, 0.0f) * _delta;
 
 	if(_inputKeys[SDL_SCANCODE_A])
 	{
@@ -66,7 +71,7 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
 		m_Player->Move(-forward);
 	}
 
-	m_Camera.Update(_delta, _inputKeys);
+	m_Camera.Update(_delta);
 
 	//m_Octree.Prune();
 
@@ -125,37 +130,9 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
     for(int i = 0; i < m_Entities.size(); ++i)
     {
         m_Entities[i]->Update(_delta);
-		//Physics* L_ph = m_Entities[i]->GetPhysics();
-        //m_Octree.UpdateMovedObject(L_ph);
+        m_Octree.UpdateMovedObject(m_Entities[i]->GetCollider().lock().get());
 
 		// Saves on looping the entire set again.
 		m_Entities[i]->Draw(&m_Camera);
     }
-}
-
-void Scene::HandleInputs(const Uint8* _inputKeys)
-{
-	glm::vec3 forward = glm::vec3(0.0f, 0.0f, 2.5f);
-	glm::vec3 leftMove = glm::vec3(2.5f, 0.0f, 0.0f);
-	glm::vec3 rotateY = glm::vec3(0.0f, 2.5f, 0.0f);
-
-	if(_inputKeys[SDL_SCANCODE_A])
-	{
-		m_Player->Move(leftMove);
-	}
-
-	if(_inputKeys[SDL_SCANCODE_D])
-	{
-		m_Player->Move(-leftMove);
-	}
-
-	if(_inputKeys[SDL_SCANCODE_W])
-	{
-		m_Player->Move(forward);
-	}
-
-	if(_inputKeys[SDL_SCANCODE_S])
-	{
-		m_Player->Move(-forward);
-	}
 }

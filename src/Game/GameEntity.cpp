@@ -1,10 +1,12 @@
 #include "Game/GameEntity.h"
+#include "Game/Camera.h"
+#include "Game/Scene.h"
+
 #include "GLPipeline/Model.h"
 #include "GLPipeline/Texture.h"
 #include "GLPipeline/ShaderProgram.h"
-#include "Physics/Transform.h"
-#include "Game/Camera.h"
 
+#include "Physics/Transform.h"
 #include "Physics/Shape/CollisionShape.h"
 #include "Physics/Shape/CubeShape.h"
 #include "Physics/Shape/SphereShape.h"
@@ -35,11 +37,11 @@ GameEntity::GameEntity(glm::vec3 _position, glm::vec3 _size, bool _env)
 	m_Transform->SetPosition(_position);
 	m_Transform->SetScale(glm::vec3(_size));
 	
-	m_Model = std::make_shared<Model>("./resources/shapes/cube.obj");
-	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
-	m_Texture = std::make_unique<Texture>("./resources/curuthers/Whiskers_diffuse.png");
+	m_Model = std::make_shared<Model>("./resources/models/cube.obj");
+	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/sparks/vert.vs", "./resources/shaders/sparks/frag.fs");
+	m_Texture = std::make_unique<Texture>("./resources/textures/floor.jpg");
 
-	CubeShape* L_cube = new CubeShape(_size, m_Transform, _env);
+	CubeShape* L_cube = new CubeShape(_size * 0.5f, m_Transform, _env);
 	m_Collider = std::shared_ptr<CollisionShape>(L_cube);
 }
 
@@ -49,13 +51,12 @@ GameEntity::GameEntity(std::shared_ptr<Model> _model, std::shared_ptr<Texture> _
 	m_id = -1;
 	m_Transform = std::make_shared<Transform>();
 	m_Transform->SetPosition(_pos);
-	m_Transform->SetScale(_size);
 	
 	m_Model = _model;
-	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
+	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/specular/vert.vs", "./resources/shaders/specular/frag.fs");
 	m_Texture = _tex;
 
-	MeshShape* L_mesh = new MeshShape(m_Model, m_Transform, _env);
+	CubeShape* L_mesh = new CubeShape(_size * 0.5f, m_Transform, _env);
 	m_Collider = std::shared_ptr<CollisionShape>(L_mesh);
 }
 
@@ -88,6 +89,7 @@ void GameEntity::Draw(Camera* _camera)
 	m_Shader->Use();
 	_camera->Use(m_Shader.get());
 	m_Shader->SetUniform("u_Model", m_Transform->ModelMatrix());
+	m_Shader->SetUniform("u_Time", m_Scene.lock()->GetTime());
 	
 	// Draw shape
 	glDrawArrays(GL_TRIANGLES, 0, m_Model->GetVertexCount());
