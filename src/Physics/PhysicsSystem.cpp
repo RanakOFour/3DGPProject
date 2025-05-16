@@ -203,7 +203,9 @@ void PhysicsSystem::CollisionDetection::ImpulseCollisionResolution(CollisionInfo
     float L_velAlongNormal = glm::dot(L_contact.normal, L_relativeVel);
     if(L_velAlongNormal > 0.0f){ return; }
 
-    glm::vec3 L_impulseResponse = L_velAlongNormal * L_contact.normal;
+    float L_totalInvMass = 1.0f / L_aObject->GetRigidbody()->GetMass() + 1.0f / L_bObject->GetRigidbody()->GetMass();
+
+    glm::vec3 L_impulseResponse = L_velAlongNormal * L_contact.normal/ L_totalInvMass;
 
     L_aObject->GetRigidbody()->SetVelocity(
         L_aObject->GetRigidbody()->GetVelocity() + L_impulseResponse / L_aObject->GetRigidbody()->GetMass()

@@ -12,7 +12,7 @@ void main()
     vec4 colorScale = vec4(1,2,3,0);
     gl_FragColor = texture2D(u_Texture, v_texCoord);
 
-    for (float a = 0.03, i = 0.0, t = u_Time;
+    for (float a = 0.5, i = 0.0, t = u_Time;
          i < 20.0; 
          ++i, a += 0.03, ++t)
     {
@@ -22,8 +22,6 @@ void main()
      // Rotates coordinates
      adjustedCoord *= mat2(cos(i + 0.02 * t - vec4(0, 11, 33, 0)));
 
-     // Creates tesselation / distortion effect
-                      // Contributes to tesselation
      adjustedCoord += tanh(40.0 * dot(adjustedCoord, adjustedCoord) * cos(adjustedCoord.yx + t)) 
                            
                       / 200.0
@@ -52,3 +50,5 @@ void main()
                     // Darkens edges
                     - dot(adjustedCoord, adjustedCoord) / 800.0;
 }
+
+
