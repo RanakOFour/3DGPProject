@@ -4,7 +4,6 @@
 #include "Game/Camera.h"
 #include "Game/GameEntity.h"
 #include "Physics/PhysicsSystem.h"
-#include "Physics/Octree.h"
 
 #include "SDL2/SDL.h"
 
@@ -16,8 +15,6 @@ class Scene
 {
 private:
 	std::weak_ptr<Game> m_Game;
-	// Spacial partitioning method
-	Octree m_Octree;
 
 	// Thread safe vector
 	std::vector<PhysicsSystem::CollisionInfo> m_Collisions;
@@ -29,7 +26,7 @@ private:
 	float m_CurrentDelta;
 	float m_TimeElapsed;
 public:
-	Scene(glm::vec3 _size, int _maxObjects);
+	Scene();
 	~Scene();
 
 	void SetGame(std::weak_ptr<Game> _game);

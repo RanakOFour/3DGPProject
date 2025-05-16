@@ -7,6 +7,14 @@
 #include <memory>
 #include <vector>
 
+struct MouseInfo
+{
+    glm::vec3 deltas;
+    glm::ivec2 position;
+    bool RMBDown;
+    bool LMBDown;
+};
+
 class Game;
 class SDLGLWindow
 {
@@ -16,8 +24,7 @@ class SDLGLWindow
     int m_Width;
     int m_Height;
 
-    glm::vec3 m_MouseDeltas;
-    bool RMBDown;
+    MouseInfo m_MouseInfo;
 
     public:
     bool m_Quit;
@@ -28,8 +35,11 @@ class SDLGLWindow
     void SetGame(std::shared_ptr<Game> _game);
     const Uint8* Update();
     void inline Show() {SDL_GL_SwapWindow(m_Window);};
-    glm::vec3 GetMouseInput() { return m_MouseDeltas; };
+    MouseInfo GetMouseInfo() { return m_MouseInfo; };
+    glm::vec3 GetMouseInput() { return m_MouseInfo.deltas; };
     float GetAspectRatio() { return m_Width / m_Height; };
+    float GetWidth() { return m_Width; };
+    float GetHeight() { return m_Height; };
 };
 
 #endif

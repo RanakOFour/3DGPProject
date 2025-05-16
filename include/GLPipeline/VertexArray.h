@@ -1,9 +1,11 @@
+#ifndef VERTEXARRAY_H
+#define VERTEXARRAY_H
+
 #include <GL/glew.h>
 #include <vector>
 #include <memory>
 #include <string>
 
-#pragma once
 class VertexBuffer;
 class VertexArray
 {
@@ -21,3 +23,5 @@ public:
     int GetVertexCount();
     GLuint GetID();
 };
+
+#endif

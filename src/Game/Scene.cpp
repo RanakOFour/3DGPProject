@@ -1,19 +1,16 @@
 #include "Game/Scene.h"
 #include "Game/Game.h"
 #include "Game/GameEntity.h"
-#include "Physics/Octree.h"
 #include "Physics/PhysicsSystem.h"
-#include "Physics/Rigidbody.h"
 
 #include "SDL2/SDL.h"
 
 #include <memory>
 
-Scene::Scene(glm::vec3 _size, int _maxObjects) :
-	m_Octree(glm::vec3(0.0f), _size, 8, _maxObjects),
+Scene::Scene() :
 	m_Collisions(),
     m_Entities(),
-    m_Camera(),
+    m_Camera(true),
 	m_Player(),
 	m_CurrentDelta(0.0f),
 	m_TimeElapsed(0.0f)
@@ -72,36 +69,6 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
 		m_Player->Move(-forward);
 	}
 
-	//m_Octree.Prune();
-
-    // for (int i = 0; i < m_Entities.size(); ++i)
-	// {
-    //     Physics* L_entityPhysics = m_Entities[i]->GetPhysics();
-    //     std::vector<std::weak_ptr<Physics>> L_potentialCollisions = m_Octree.Query(L_entityPhysics);
-
-    //     Use index comparison to avoid duplicates
-    //     for (int j = 0; j < L_potentialCollisions.size(); ++j)
-	// 	{
-	// 		Physics* L_entityPhysicsB = L_potentialCollisions[j].lock().get();
-
-	// 		Iterator types are too long to type out
-    //         auto L_objectPosition = std::find(m_Entities.begin(), m_Entities.end(), L_entityPhysics);
-	// 		if (L_objectPosition == m_Entities.end()){continue;}
-                
-    //         size_t L_properPos = L_objectPosition - m_Entities.begin();
-
-	// 		Prevents duplicates, don't add collisions from objects before this one
-    //         if (L_properPos <= i){continue;}
-
-    //         PhysicsSystem::CollisionInfo L_info;
-    //         if (PhysicsSystem::CollisionDetection::CollisionCheck(*L_entityPhysics, *L_entityPhysicsB, &L_info))
-	// 		{
-	// 			tbb::concurent_vector so insertion is thread safe
-	// 			m_Collisions.push_back(L_info);
-    //         }
-    //     }
-    // }
-
 	for(int i = 0; i < m_Entities.size(); ++i)
 	{
 		std::weak_ptr<CollisionShape> L_shapeA = m_Entities[i]->GetCollider();
@@ -128,7 +95,7 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
 
     m_Collisions.clear();
 
-	m_Camera.DrawSkybox();
+	//m_Camera.DrawSkybox();
 
 	m_Camera.Update(_delta);
 
@@ -136,11 +103,8 @@ void Scene::Update(float _delta, const uint8_t* _inputKeys)
     for(int i = 0; i < m_Entities.size(); ++i)
     {
         m_Entities[i]->Update(_delta);
-        m_Octree.UpdateMovedObject(m_Entities[i]->GetCollider().lock().get());
 
 		// Saves on looping the entire set again.
 		m_Entities[i]->Draw(&m_Camera);
     }
-
-
 }

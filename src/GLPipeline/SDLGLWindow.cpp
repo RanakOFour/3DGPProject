@@ -18,8 +18,7 @@ SDLGLWindow::SDLGLWindow(const char* _title, int _width, int _height) :
 	m_Width(_width),
 	m_Height(_height),
     m_Quit(false),
-	m_MouseDeltas(),
-	RMBDown(false)
+	m_MouseInfo()
 {
 	printf("Creating window\n");
     m_Window = SDL_CreateWindow(_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
@@ -70,9 +69,9 @@ const Uint8* SDLGLWindow::Update()
 {
 	SDL_Event e = { 0 };
 
-	m_MouseDeltas.x = 0.0f;
-	m_MouseDeltas.y = 0.0f;
-	m_MouseDeltas.z = 0.0f;
+	m_MouseInfo.deltas.x = 0.0f;
+	m_MouseInfo.deltas.y = 0.0f;
+	m_MouseInfo.deltas.z = 0.0f;
 
 	while (SDL_PollEvent(&e))
 	{
@@ -83,24 +82,40 @@ const Uint8* SDLGLWindow::Update()
 
 		if(e.type == SDL_MOUSEWHEEL)
 		{
-			m_MouseDeltas.z = e.wheel.preciseY;
+			m_MouseInfo.deltas.z = e.wheel.preciseY;
 		}
 
 		if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_RIGHT)
 		{
-			RMBDown = true;
+			if(e.button.button == SDL_BUTTON_LEFT)
+			{
+				m_MouseInfo.LMBDown = true;
+			}
+			else
+			{
+				m_MouseInfo.RMBDown = true;
+			}
 		}
 		else if(e.type == SDL_MOUSEBUTTONUP && e.button.button == SDL_BUTTON_RIGHT)
 		{
-			RMBDown = false;
+			if(e.button.button == SDL_BUTTON_LEFT)
+			{
+				m_MouseInfo.LMBDown = false;
+			}
+			else
+			{
+				m_MouseInfo.RMBDown = false;
+			}
 		}
 
-		if (RMBDown && e.type == SDL_MOUSEMOTION)
+		if (e.type == SDL_MOUSEMOTION)
 		{
-			m_MouseDeltas.x = e.motion.xrel;
-			m_MouseDeltas.y = e.motion.yrel;
+			m_MouseInfo.deltas.x = e.motion.xrel;
+			m_MouseInfo.deltas.y = e.motion.yrel;
 		}
 	}
+
+	SDL_GetMouseState(&m_MouseInfo.position.x, &m_MouseInfo.position.y);
 
 	// Resize screen
 	int L_windowWidth, L_windowHeight;

@@ -5,8 +5,8 @@
 
 Game::Game()
 {
-    m_Window = std::make_unique<SDLGLWindow>("MyGame", 1920, 1080);
-    m_Scene = std::make_shared<Scene>(glm::vec3(1000.0f), 50);
+    m_Window = std::make_unique<SDLGLWindow>("MyGame", 1000, 800);
+    m_Scene = std::make_shared<Scene>();
 }
 
 Game::~Game()
@@ -31,7 +31,7 @@ void Game::LoadGame()
     const char* L_boxPath = "./resources/models/cube.obj";
     std::shared_ptr<Model> L_cube = std::make_shared<Model>(L_boxPath);
 
-    std::shared_ptr<GameEntity> L_floor = std::make_shared<GameEntity>(glm::vec3(0.0f), glm::vec3(100.0f, 1.0f, 100.0f), true);
+    std::shared_ptr<GameEntity> L_floor = std::make_shared<GameEntity>(glm::vec3(0.0f), glm::vec3(1000.0f, 1.0f, 1000.0f), true);
     m_Scene->AddEntity(L_floor);
 
     std::shared_ptr<GameEntity> L_cubeEnt = std::make_shared<GameEntity>(glm::vec3(5.0f, 5.0f, 0.0f), glm::vec3(1.0f), false);

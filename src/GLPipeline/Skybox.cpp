@@ -28,7 +28,7 @@ void Skybox::Draw(glm::mat4 _cameraMatrix, Camera* _camera)
 	glBindTexture(GL_TEXTURE_2D, m_Texture.GetID());
 
 	m_Program.Use();
-	_camera->Use(&m_Program);
+	_camera->Use(&m_Program, false);
 	m_Program.SetUniform("u_Model", _cameraMatrix);
 	m_Program.SetUniform("u_Time", _camera->GetScene().lock()->GetTime());
 	
