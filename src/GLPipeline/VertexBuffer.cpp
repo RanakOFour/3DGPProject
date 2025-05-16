@@ -83,7 +83,7 @@ GLuint VertexBuffer::GetID()
         glBindBuffer(GL_ARRAY_BUFFER, m_id);
 
         // Upload a copy of the data from memory into the new VBO
-        glBufferData(GL_ARRAY_BUFFER, sizeof(m_data[0]) * m_data.size(), m_data.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, m_data.size() * sizeof(m_data.at(0)), &m_data.at(0), GL_STATIC_DRAW);
 
         // Reset the state
         glBindBuffer(GL_ARRAY_BUFFER, 0);

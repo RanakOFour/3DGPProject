@@ -3,7 +3,8 @@
 #include "Physics/Transform.h"
 #include "Physics/Shape/CollisionShape.h"
 #include "Physics/Shape/CubeShape.h"
-#include "Physics/Shape/SphereShape.h"
+
+#include "Physics/Rigidbody.h"
 
 #include "glm/ext.hpp"
 
@@ -66,106 +67,6 @@ bool PhysicsSystem::CollisionDetection::OBBCollision(CubeShape* _cubeA, Transfor
     return false;
 }
 
-bool PhysicsSystem::CollisionDetection::OBBvsSphereCollision(CubeShape* _cube, Transform* _cubeTransform, SphereShape* _sphere, Transform* _sphereTransform, CollisionInfo* _infoOut)
-{
-    // Calculate sphere position in cube's local space
-    glm::vec3 L_dist = _sphereTransform->GetPosition() - _cubeTransform->GetPosition();
-    glm::vec3 L_sphereLocal = glm::vec3(
-        glm::dot(_cubeTransform->Right(), L_dist),
-        glm::dot(_cubeTransform->Up(), L_dist),
-        glm::dot(_cubeTransform->Forward(), L_dist)
-    );
-
-    glm::vec3 L_cubeHalfSize = _cube->GetHalfSize();
-
-    // Find closest point on cube to sphere
-    glm::vec3 L_closestLocalPoint;
-    for (int axis = 0; axis < 3; ++axis)
-    {
-        float val = L_sphereLocal[axis];
-        val = glm::clamp(val, -L_cubeHalfSize[axis], L_cubeHalfSize[axis]);
-        L_closestLocalPoint[axis] = val;
-    }
-
-    // Vector from closest point to sphere
-    glm::vec3 L_localDifference = L_sphereLocal - L_closestLocalPoint;
-    float L_distance = glm::length(L_localDifference);
-    float L_penetration = _sphere->GetRadius() - L_distance;
-
-    if (L_penetration <= 0) return false;
-
-    glm::vec3 L_normalLocal;
-    if (L_distance > 1e-3f)
-    {
-        L_normalLocal = glm::normalize(L_localDifference);
-    }
-    else
-    {
-        L_normalLocal = glm::normalize(L_sphereLocal);
-    }
-
-    glm::vec3 L_normal = 
-        _cubeTransform->Right() * L_normalLocal.x +
-        _cubeTransform->Up() * L_normalLocal.y +
-        _cubeTransform->Forward() * L_normalLocal.z;
-    L_normal = glm::normalize(L_normal);
-
-    // Ensure normal points from A (cube) to B (sphere)
-    if (glm::dot(L_normal, L_dist) < 0.0f)
-    {
-        L_normal = -L_normal;
-    }
-
-    // CORRECTED: Use '+' for all axes (removed '-' for Right())
-    glm::vec3 L_worldContactA = _cubeTransform->GetPosition() +
-        _cubeTransform->Right() * L_closestLocalPoint.x +
-        _cubeTransform->Up() * L_closestLocalPoint.y +
-        _cubeTransform->Forward() * L_closestLocalPoint.z;
-
-    glm::vec3 L_worldContactB = _sphereTransform->GetPosition() - (L_normal * _sphere->GetRadius());
-
-    // Convert to local space
-    glm::mat3 L_rotCube = glm::mat3_cast(_cubeTransform->GetRotation());
-    glm::mat3 L_rotSphere = glm::mat3_cast(_sphereTransform->GetRotation());
-    glm::vec3 L_localA = glm::transpose(L_rotCube) * (L_worldContactA - _cubeTransform->GetPosition());
-    glm::vec3 L_localB = glm::transpose(L_rotSphere) * (L_worldContactB - _sphereTransform->GetPosition());
-
-    _infoOut->AddContactPoint(L_localA, L_localB, L_normal, L_penetration);
-    return true;
-}
-
-bool PhysicsSystem::CollisionDetection::SphereCollision(SphereShape *_sphereA, Transform *_transformA, SphereShape *_sphereB, Transform *_transformB, CollisionInfo *_infoOut)
-{
-    glm::vec3 L_delta = _transformB->GetPosition() - _transformA->GetPosition();
-    float L_distance = glm::length(L_delta);
-    float L_radii = _sphereA->GetRadius() + _sphereB->GetRadius() + 0.01f;
-
-    if (L_distance <= L_radii) 
-    {
-        float L_penetration = L_radii - L_distance;
-        glm::vec3 L_normal = (L_distance > 1e-7f) ? glm::normalize(L_delta) : glm::vec3(0.0f, 1.0f, 0.0f);
-
-        // Ensure normal points from A to B
-        if (glm::dot(L_normal, L_delta) < 0.0f)
-        {
-            L_normal = -L_normal;
-        }
-
-        glm::vec3 L_worldContactA = _transformA->GetPosition() + L_normal * _sphereA->GetRadius();
-        glm::vec3 L_worldContactB = _transformB->GetPosition() - L_normal * _sphereB->GetRadius();
-
-        // Convert to local space
-        glm::mat3 L_rotA = glm::mat3_cast(_transformA->GetRotation());
-        glm::mat3 L_rotB = glm::mat3_cast(_transformB->GetRotation());
-        glm::vec3 L_localA = glm::transpose(L_rotA) * (L_worldContactA - _transformA->GetPosition());
-        glm::vec3 L_localB = glm::transpose(L_rotB) * (L_worldContactB - _transformB->GetPosition());
-
-        _infoOut->AddContactPoint(L_localA, L_localB, L_normal, L_penetration);
-        return true;
-    }
-    return false;
-}
-
 
 bool AxisTest(glm::vec3 axis, Face& _face, glm::vec3& boxHalfSize) 
 {
@@ -218,12 +119,6 @@ bool TriangleBoxIntersect(Face& _face, glm::vec3& _boxHalfSize)
     return true;
 }
 
-bool PhysicsSystem::CollisionDetection::MeshCollision(MeshShape* _meshA, Transform* _transformA, MeshShape* _meshB, Transform* _transformB, CollisionInfo* _infoOut)
-{
-    //Beep boop
-    return false;
-}
-
 bool PhysicsSystem::CollisionDetection::MeshCubeCollision(MeshShape* _mesh, Transform* _meshTransform, CubeShape* _cube, Transform* _cubeTransform, CollisionInfo* _infoOut)
 {
     std::vector<Face> L_faces = _mesh->GetFaces();
@@ -247,6 +142,7 @@ bool PhysicsSystem::CollisionDetection::MeshCubeCollision(MeshShape* _mesh, Tran
 		}
 	}
 
+    // Unfinished
     printf("Mesh not colliding with box\n");
     return false;
 }
@@ -268,58 +164,22 @@ bool PhysicsSystem::CollisionDetection::CollisionCheck(CollisionShape* _aShape, 
     {
         return OBBCollision((CubeShape*)_aShape, L_transformA, (CubeShape*)_bShape, L_transformB, _infoOut);
     }
-    else if (L_shapeType == ShapeType::Sphere)
-    {
-        return SphereCollision((SphereShape*)_aShape, L_transformA, (SphereShape*)_bShape, L_transformB, _infoOut);
-    }
-    else if(L_shapeType == ShapeType::Mesh)
-    {
-        return MeshCollision((MeshShape*)_aShape, L_transformA, (MeshShape*)_bShape, L_transformB, _infoOut);
-    }
     
     if (_aShape->GetType() == ShapeType::Cube)
     {
-        if(_bShape->GetType() == ShapeType::Sphere)
-        {
-            return OBBvsSphereCollision((CubeShape*)_aShape, L_transformA, (SphereShape*)_bShape, L_transformB, _infoOut);
-        }
-        else
-        { // Mesh
-            _infoOut->objectA = _bShape;
-            _infoOut->objectB = _aShape;
-            return MeshCubeCollision((MeshShape*)_bShape, L_transformB, (CubeShape*)_aShape, L_transformA, _infoOut);
-        }
+        _infoOut->objectA = _bShape;
+        _infoOut->objectB = _aShape;
+        return MeshCubeCollision((MeshShape*)_bShape, L_transformB, (CubeShape*)_aShape, L_transformA, _infoOut);
     }
-    if (_aShape->GetType() == ShapeType::Sphere)
-    {
-        if(_bShape->GetType() == ShapeType::Cube)
-        {
-            _infoOut->objectA = _bShape;
-            _infoOut->objectB = _aShape;
-            return OBBvsSphereCollision((CubeShape*)_bShape, L_transformB, (SphereShape*)_aShape, L_transformA, _infoOut);
-        }
-        else
-        { // Mesh
-
-        }
-    }
+    
     if (_aShape->GetType() == ShapeType::Mesh)
     {
-        if(_bShape->GetType() == ShapeType::Cube)
-        {
-            return MeshCubeCollision((MeshShape*)_aShape, L_transformA, (CubeShape*)_bShape, L_transformB, _infoOut);
-        }
-        else
-        { //Sphere
-
-        }
+        return MeshCubeCollision((MeshShape*)_aShape, L_transformA, (CubeShape*)_bShape, L_transformB, _infoOut);
     }
 
     return false;
 }
 
-#include "Game/GameEntity.h"
-#include "Physics/Rigidbody.h"
 
 void PhysicsSystem::CollisionDetection::ImpulseCollisionResolution(CollisionInfo* _info)
 {
@@ -335,35 +195,23 @@ void PhysicsSystem::CollisionDetection::ImpulseCollisionResolution(CollisionInfo
 
     glm::vec3 L_correction = L_contact.normal * L_contact.penetration;
 
-    if(L_aObject->Environment() && !L_bObject->Environment())
-    {
-        L_bObject->GetParent().lock()->Move(L_correction);
-    }
-    else if(L_bObject->Environment() && !L_aObject->Environment())
-    {
-        L_aObject->GetParent().lock()->Move(-L_correction);
-    }
-    else
-    {
-        L_aObject->GetParent().lock()->Move(-L_correction);
-        L_bObject->GetParent().lock()->Move(L_correction);
-    }
+    L_aObject->GetRigidbody()->GetTransform().lock()->Move(-L_correction / L_aObject->GetRigidbody()->GetMass());
+    L_bObject->GetRigidbody()->GetTransform().lock()->Move(L_correction / L_bObject->GetRigidbody()->GetMass());
 
-    // glm::vec3 L_relativeVel = L_bObject->GetRigidbody().lock()->GetVelocity() - L_aObject->GetRigidbody().lock()->GetVelocity();
+    glm::vec3 L_relativeVel = L_bObject->GetRigidbody()->GetVelocity() - L_aObject->GetRigidbody()->GetVelocity();
 
-    // float L_velAlongNormal = glm::dot(L_contact.normal, L_relativeVel);
-    // if(L_velAlongNormal > 0.0f){ return; }
+    float L_velAlongNormal = glm::dot(L_contact.normal, L_relativeVel);
+    if(L_velAlongNormal > 0.0f){ return; }
 
-    // glm::vec3 L_impulseResponse = L_velAlongNormal * L_contact.normal;
+    glm::vec3 L_impulseResponse = L_velAlongNormal * L_contact.normal;
 
-    // L_aObject->GetRigidbody().lock()->SetVelocity(
-    //     L_aObject->GetRigidbody().lock()->GetVelocity() + L_impulseResponse
-    // );
+    L_aObject->GetRigidbody()->SetVelocity(
+        L_aObject->GetRigidbody()->GetVelocity() + L_impulseResponse / L_aObject->GetRigidbody()->GetMass()
+    );
 
-
-    // L_bObject->GetRigidbody().lock()->SetVelocity(
-    //     L_bObject->GetRigidbody().lock()->GetVelocity() - L_impulseResponse
-    // );
+    L_bObject->GetRigidbody()->SetVelocity(
+        L_bObject->GetRigidbody()->GetVelocity() - L_impulseResponse / L_bObject->GetRigidbody()->GetMass()
+    );
 
     // Silly physics things I don't need
     // Newton died a virgin

@@ -8,12 +8,12 @@
 enum ShapeType
 {
     Cube = 1,
-    Sphere = 2,
-    Mesh = 4
+    Mesh = 2
 };
 
 class Transform;
 class GameEntity;
+class Rigidbody;
 class CollisionShape
 {
 private:
@@ -21,21 +21,28 @@ private:
     std::vector<std::weak_ptr<CollisionShape>> m_Contacts;
     std::weak_ptr<GameEntity> m_Parent;
     std::weak_ptr<Transform> m_Transform;
+    std::shared_ptr<Rigidbody> m_Rigidbody;
 
     ShapeType m_Type;
     bool m_Environment;
 
 public:
-    CollisionShape(ShapeType _type, bool _env) : m_ContactList(),
-                                                 m_Type(_type),
-                                                 m_Environment(_env) 
-                                                 {};
+    CollisionShape(ShapeType _type, bool _env) :
+    m_ContactList(),
+    m_Type(_type),
+    m_Environment(_env) 
+    {
 
-    CollisionShape(ShapeType _type, std::weak_ptr<GameEntity> _parent, bool _env) : m_ContactList(),
-                                                                                    m_Type(_type),
-                                                                                    m_Environment(_env),
-                                                                                    m_Parent(_parent) {
-                                                                                    };
+    };
+
+    CollisionShape(ShapeType _type, std::weak_ptr<GameEntity> _parent, bool _env) : 
+    m_ContactList(),
+    m_Type(_type),
+    m_Environment(_env),
+    m_Parent(_parent)
+    {
+        
+    };
 
     ~CollisionShape() {};
 
@@ -97,6 +104,7 @@ public:
     ShapeType GetType() { return m_Type; };
     bool Environment() { return m_Environment; };
     std::weak_ptr<Transform> GetTransform() { return m_Transform; };
+    std::shared_ptr<Rigidbody> GetRigidbody() { return m_Rigidbody; };
 };
 
 #endif

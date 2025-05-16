@@ -80,7 +80,7 @@ void Camera::Use(ShaderProgram* _shader)
     glm::mat4 L_viewMatrix = glm::lookAt(m_Transform.GetPosition(), m_Target.lock()->GetPosition(), glm::vec3(0.0f, 1.0f, 0.0f));
 	_shader->SetUniform("u_View", L_viewMatrix);
 	_shader->SetUniform("u_Projection", m_Projection);
-	_shader->SetUniform("u_lightPos", glm::vec3(0.0f, 10.0f, 0.0f));
+	_shader->SetUniform("u_lightPos", m_Transform.GetPosition());
 }
 
 void Camera::Translate(glm::vec3 _translate)

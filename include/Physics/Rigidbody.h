@@ -13,18 +13,16 @@
 class Rigidbody
 {
     private:
-    bool m_isKinematic;
     std::weak_ptr<Transform> m_Transform;
 
+    float m_Mass;
     glm::vec3 m_Velocity;
     glm::vec3 m_Acceleration;
+    glm::vec3 m_Force;
 
-    float m_LinearDamping;
-
-    float m_Friction;
     public:
 
-    Rigidbody(std::weak_ptr<Transform> _transform);
+    Rigidbody(std::weak_ptr<Transform> _transform, float m_Mass);
     ~Rigidbody();
 
     void Update(float _delta);
@@ -34,16 +32,11 @@ class Rigidbody
     void SetVelocity(glm::vec3 _velocity);
     void SetAcceleration(glm::vec3 _accel);
 
-    void SetFriction(float _friction);
-
     void SetTransform(std::weak_ptr<Transform> _transform);
 
-    bool GetKinematic();
+    float GetMass() { return m_Mass; };
     glm::vec3 GetVelocity();
     glm::vec3 GetAcceleration();
-
-    float GetFriction();
-    float GetLinearDamping();
     
     std::weak_ptr<Transform> GetTransform();
 };

@@ -21,4 +21,5 @@ void CollisionShape::SetParent(std::weak_ptr<GameEntity> _parent)
 {
     m_Parent = _parent;
     m_Transform = m_Parent.lock()->GetTransform();
+    m_Rigidbody = m_Parent.lock()->GetRigidbody();
 }

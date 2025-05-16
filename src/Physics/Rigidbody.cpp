@@ -1,20 +1,17 @@
 #include "Physics/Rigidbody.h"
 #include "Physics/Transform.h"
 #include "Physics/Shape/CollisionShape.h"
-#include "Physics/Shape/SphereShape.h"
 #include "Physics/Shape/CubeShape.h"
 #include "Physics/Shape/MeshShape.h"
 
 #include "glm/ext.hpp"
 #include "GL/glew.h"
 
-Rigidbody::Rigidbody(std::weak_ptr<Transform> _transform) :
-m_isKinematic(false),
+Rigidbody::Rigidbody(std::weak_ptr<Transform> _transform, float _mass) :
 m_Transform(_transform),
 m_Velocity(0.0f, 0.0f, 0.0f),
 m_Acceleration(0.0f, -9.8f, 0.0f),
-m_LinearDamping(0.3f),
-m_Friction(0.1f)
+m_Mass(_mass)
 {
 	
 }
@@ -26,23 +23,29 @@ Rigidbody::~Rigidbody()
 
 void Rigidbody::Update(float _delta)
 {
-    glm::vec3 L_position = m_Transform.lock()->GetPosition();
+	if(m_Mass == INFINITY) { return; }
+	
+	m_Force += m_Mass * m_Acceleration;
 
-    glm::vec3 L_posChange = (m_Velocity * _delta) + (0.5f * m_Acceleration * _delta * _delta);
+    float L_inverseMass = 1.0f / m_Mass;
 
-    m_Transform.lock()->Move(L_posChange);
+	m_Velocity += (m_Force * L_inverseMass) * _delta;
 
-    SetVelocity(m_Velocity + m_Acceleration * _delta);
+	glm::vec3 L_posChange = m_Velocity * _delta;
+
+	m_Transform.lock()->Move(L_posChange);
+
+	// Damping
+	m_Velocity -= m_Velocity * 0.4f * _delta;
+
+	m_Force.x = 0.0f;
+	m_Force.y = 0.0f;
+	m_Force.z = 0.0f;
 }
 
 void Rigidbody::AddForce(glm::vec3 _force)
 {
-	m_Acceleration += _force;
-}
-
-void Rigidbody::SetFriction(float _friction)
-{
-	m_Friction = _friction;
+	m_Force += _force;
 }
 
 void Rigidbody::SetVelocity(glm::vec3 _velocity)
@@ -60,11 +63,6 @@ void Rigidbody::SetTransform(std::weak_ptr<Transform> _transform)
 	m_Transform = _transform;
 }
 
-bool Rigidbody::GetKinematic()
-{
-	return m_isKinematic;
-}
-
 glm::vec3 Rigidbody::GetVelocity()
 {
 	return m_Velocity;
@@ -73,16 +71,6 @@ glm::vec3 Rigidbody::GetVelocity()
 glm::vec3 Rigidbody::GetAcceleration()
 {
 	return m_Acceleration;
-}
-
-float Rigidbody::GetFriction()
-{
-    return m_Friction;
-}
-
-float Rigidbody::GetLinearDamping()
-{
-	return m_LinearDamping;
 }
 
 std::weak_ptr<Transform> Rigidbody::GetTransform()

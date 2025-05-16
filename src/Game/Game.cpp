@@ -36,6 +36,14 @@ void Game::LoadGame()
 
     std::shared_ptr<GameEntity> L_cubeEnt = std::make_shared<GameEntity>(glm::vec3(5.0f, 5.0f, 0.0f), glm::vec3(1.0f), false);
     m_Scene->AddEntity(L_cubeEnt);
+
+    m_Scene->AddElement("./resources/textures/untitled.png", glm::vec2(10, 10), glm::vec2(300, 100));
+
+    std::shared_ptr<GameEntity> L_sparkCube = std::make_shared<GameEntity>(glm::vec3(0.0f, 5.0f, 5.0f), glm::vec3(1.0f), false);
+    std::shared_ptr<ShaderProgram> L_sparkShader = std::make_shared<ShaderProgram>("./resources/shaders/sparks/vert.vs", "./resources/shaders/sparks/frag.fs");
+    L_sparkCube->SetShader(L_sparkShader);
+
+    m_Scene->AddEntity(L_sparkCube);
 }
 
 void Game::Play()

@@ -9,28 +9,10 @@
 #include "Physics/Transform.h"
 #include "Physics/Shape/CollisionShape.h"
 #include "Physics/Shape/CubeShape.h"
-#include "Physics/Shape/SphereShape.h"
 #include "Physics/Shape/MeshShape.h"
 
 #include <GL/glew.h>
 #include <glm/ext.hpp>
-
-GameEntity::GameEntity(glm::vec3 _position, float _radius, bool _env)
-{
-	m_id = -1;
-	m_Transform = std::make_shared<Transform>();
-	m_Transform->SetPosition(_position);
-	m_Transform->SetScale(glm::vec3(_radius));
-
-	m_Model = std::make_shared<Model>("./resources/shapes/sphere.obj");
-	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
-	m_Texture = std::make_shared<Texture>("./resources/curuthers/Whiskers_diffuse.png");
-
-	SphereShape* L_sphere = new SphereShape(_radius, _env);
-	m_Collider = std::shared_ptr<CollisionShape>(L_sphere);
-
-	m_Environment = _env;
-}
 
 GameEntity::GameEntity(glm::vec3 _position, glm::vec3 _size, bool _env)
 {
@@ -43,10 +25,19 @@ GameEntity::GameEntity(glm::vec3 _position, glm::vec3 _size, bool _env)
 	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/default/vert.vs", "./resources/shaders/default/frag.fs");
 	m_Texture = std::make_unique<Texture>("./resources/textures/floor.jpg");
 
-	CubeShape* L_cube = new CubeShape(_size * 0.5f, _env);
+	CubeShape* L_cube = new CubeShape(_size, _env);
 	m_Collider = std::shared_ptr<CollisionShape>(L_cube);
 
 	m_Environment = _env;
+
+	if(m_Environment)
+	{
+		m_Rigidbody = std::make_shared<Rigidbody>(std::weak_ptr<Transform>(m_Transform), INFINITY);
+	}
+	else
+	{
+		m_Rigidbody = std::make_shared<Rigidbody>(std::weak_ptr<Transform>(m_Transform), 1.0f);
+	}
 }
 
 GameEntity::GameEntity(std::shared_ptr<Model> _model, std::shared_ptr<Texture> _tex, glm::vec3 _pos, glm::vec3 _size, bool _env)
@@ -60,10 +51,18 @@ GameEntity::GameEntity(std::shared_ptr<Model> _model, std::shared_ptr<Texture> _
 	m_Shader = std::make_shared<ShaderProgram>("./resources/shaders/specular/vert.vs", "./resources/shaders/specular/frag.fs");
 	m_Texture = _tex;
 
-	CubeShape* L_mesh = new CubeShape(_size * 0.5f, _env);
-	m_Collider = std::shared_ptr<CollisionShape>(L_mesh);
+	CubeShape* L_cube = new CubeShape(_size, _env);
+	m_Collider = std::shared_ptr<CollisionShape>(L_cube);
 
 	m_Environment = _env;
+	if(m_Environment)
+	{
+		m_Rigidbody = std::make_shared<Rigidbody>(std::weak_ptr<Transform>(m_Transform), INFINITY);
+	}
+	else
+	{
+		m_Rigidbody = std::make_shared<Rigidbody>(std::weak_ptr<Transform>(m_Transform), 1.0f);
+	}
 }
 
 GameEntity::~GameEntity()
@@ -74,6 +73,8 @@ GameEntity::~GameEntity()
 void GameEntity::Update(float _delta)
 {
 	// Interactable flags?
+
+	m_Rigidbody->Update(_delta);
 
 	printf("ID: %d\nCurrent Pos: %f, %f, %f\n", m_id,
 		m_Transform->GetPosition().x, m_Transform->GetPosition().y, m_Transform->GetPosition().z);
@@ -105,6 +106,11 @@ void GameEntity::Draw(Camera* _camera)
 	// Reset the state
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void GameEntity::AddForce(glm::vec3 _force)
+{
+	m_Rigidbody->AddForce(_force);
 }
 
 void GameEntity::Move(glm::vec3 _movement)
